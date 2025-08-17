@@ -25,7 +25,7 @@
     <div class="list" id="pagesList"></div>
   </div>
   <script>
-    // Configuração do Firebase
+    // MESMO firebaseConfig do admin!
     const firebaseConfig = {
       apiKey: "AIzaSyAr-qpOVl3aooDY56W9fHHLmmIxfms1P5I",
       authDomain: "presta-9f617.firebaseapp.com",
@@ -55,4 +55,59 @@
               } else if(a.type.startsWith("audio/")){
                 anexosHtml += `<span>🔊<br><audio controls src="${a.url}" style="width:100%;"></audio></span>`;
               } else if(a.type.startsWith("video/")){
-                anexosHtml += `<span>🎬<br><video controls src="${a.url}" style="width:100%;max-height:240px;border-radius
+                anexosHtml += `<span>🎬<br><video controls src="${a.url}" style="width:100%;max-height:240px;border-radius:7px;margin:6px 0;" controls></video></span>`;
+              } else if(a.type.includes("pdf")){
+                anexosHtml += `<span>📄 <a href="${a.url}" target="_blank">${a.name}</a></span>`;
+              } else {
+                anexosHtml += `<span>📎 <a href="${a.url}" target="_blank">${a.name}</a></span>`;
+              }
+            });
+            anexosHtml += '</div>';
+          }
+          document.body.innerHTML = `
+            <div class="container" style="margin-top:28px;">
+              <div class="header" style="margin-bottom:9px;">
+                ${p.name}
+                <div style="font-size:0.93em;font-weight:400;color:#e5f6ff;">Página completa</div>
+              </div>
+              <div style="padding:13px;">
+                <div style="background:#f8fafc;border-radius:10px;padding:10px;margin-bottom:13px;">
+                  <b>HTML desta página:</b><br>
+                  <iframe style="width:100%;min-height:200px;border-radius:7px;background:#fff;" srcdoc="${encodeURIComponent(p.html)}"></iframe>
+                </div>
+                <b>Anexos:</b>
+                ${anexosHtml || '<span style="color:#bbb;">Nenhum anexo</span>'}
+                <div style="text-align:center;margin:22px 0 4px 0;">
+                  <a href="portal.html" style="background:#1694b7;color:#fff;border-radius:8px;padding:10px 20px;text-decoration:none;font-weight:600;">⬅ Voltar ao Portal</a>
+                </div>
+              </div>
+            </div>
+          `;
+        }else{
+          document.body.innerHTML = `<div class="container"><div class="header">Página não encontrada</div></div>`;
+        }
+      }
+    }
+    // Se for página individual, mostra só ela
+    if(location.search.includes("pg=")){
+      openPage();
+    } else {
+      // Listagem de todas as páginas (real time)
+      db.collection('pages').orderBy('created', 'desc').onSnapshot((snap)=>{
+        const list = document.getElementById('pagesList');
+        let html = '';
+        snap.forEach(doc=>{
+          const p = doc.data();
+          html += `
+            <div class="page-link">
+              <a href="portal.html?pg=${doc.id}">${p.name}</a>
+              <span style="font-size:0.92em;color:#888">${p.anexos?.length||0} arquivos</span>
+            </div>
+          `;
+        });
+        list.innerHTML = html || '<div style="text-align:center;color:#888;margin:24px 0;">Nenhuma página disponível.</div>';
+      });
+    }
+  </script>
+</body>
+</html>
