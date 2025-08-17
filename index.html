@@ -3,29 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Portal de Páginas</title>
+  <title>Painel Admin - Portal de Páginas Completo</title>
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
   <style>
-    body { background: #f8fafc; margin:0; font-family:'Segoe UI',Arial,sans-serif; color:#222;}
-    .container { max-width: 440px; margin:38px auto 0; background:#fff; border-radius:17px; box-shadow:0 4px 18px #0002; }
-    .header { padding:24px 8px 12px 8px; background:linear-gradient(100deg,#21a2ee 70%,#144a6b); border-radius:17px 17px 0 0; text-align:center; font-size:1.25em; font-weight:600; color:#fff;}
-    .list { margin:16px 0 0 0; padding:0 14px 12px 14px; }
-    .page-link { display:flex;align-items:center;justify-content:space-between; background:#e7f3fb; border-radius:10px; padding:13px 18px; margin-bottom:12px; font-size:1.1em; box-shadow:0 2px 7px #0012;}
-    .page-link a { color:#144a6b; text-decoration:none; font-weight:600;}
-    @media (max-width: 560px){ .container{max-width:99vw;} .header{font-size:1.09em;} }
-    .anexos-list span { display:block; margin-bottom:2px;font-size:0.98em;}
+    body { background: #132337; color: #fff; font-family: 'Segoe UI',Arial,sans-serif; margin: 0;}
+    .container { max-width: 490px; margin: 38px auto 0; background: #fff; color: #222; border-radius: 18px; box-shadow: 0 6px 32px #0005;}
+    .header { padding: 26px 14px 18px 14px; background: linear-gradient(120deg,#21a2ee 60%,#144a6b); border-radius: 18px 18px 0 0; text-align: center; font-size: 1.43em; font-weight: 600; color: #fff;}
+    .list { margin: 14px 0 0 0; padding: 0 16px 8px 16px; }
+    .page-link { display: flex; align-items: center; justify-content: space-between; background: #e7f3fb; border-radius: 10px; padding: 12px 16px; margin-bottom: 11px; font-size: 1.09em; box-shadow: 0 1px 4px #0013;}
+    .page-link a { color: #144a6b; text-decoration: none; font-weight: bold;}
+    .page-link button { margin-left:7px; background:#21a2ee; color:#fff; border:none; padding:4px 10px; border-radius:7px; font-size:0.97em; cursor:pointer;}
+    .add-form { padding: 14px;}
+    .add-form input, .add-form textarea, .add-form input[type="file"] { width: 100%; font-size: 1.06em; margin: 4px 0 8px 0; padding: 7px; border-radius: 7px; border: 1px solid #bbb; box-sizing: border-box;}
+    .add-form textarea { height: 86px; resize: vertical; font-family: monospace;}
+    .add-form button { width: 100%; background: linear-gradient(90deg, #21a2ee, #144a6b); color: #fff; border: none; padding: 12px 0; font-size: 1.08em; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 3px;}
+    .add-form button:hover { background: linear-gradient(90deg, #144a6b, #21a2ee);}
+    .anexos-list { margin: 4px 0 8px 0; font-size:0.95em; }
+    .anexos-list span { display:block; margin-bottom:2px;}
+    .edit-modal-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #0009; z-index: 99; display: none; align-items: center; justify-content: center;}
+    .edit-modal { background: #fff; border-radius: 13px; padding: 21px 15px; max-width: 390px; width: 95vw; color: #111; box-shadow: 0 4px 24px #0004;}
+    .edit-modal input,.edit-modal textarea,.edit-modal input[type="file"] {width:100%; margin:7px 0; padding:7px; border-radius:7px;}
+    .edit-modal textarea{height:72px;}
+    .edit-modal .modal-btns{display:flex;gap:10px;margin-top:7px;}
+    .edit-modal button{flex:1;background:#21a2ee;color:#fff;border:none;padding:8px;border-radius:6px;font-weight:bold;font-size:1.01em;}
+    .edit-modal .cancel{background:#e74c3c;}
+    .edit-anexos-list { margin: 6px 0 0 0;}
+    .edit-anexos-list span { display:block; margin-bottom:2px;}
+    @media (max-width: 560px) {.container{max-width:99vw;}.header{font-size:1.12em;}.add-form textarea{height:65px;}}
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      Portal de Páginas <span style="font-size:0.9em;font-weight:400;">(visualização)</span>
+      🔒 Painel Admin<br>
+      <span style="font-size:0.91em;font-weight:400; color:#d9f6ff;">Páginas com arquivos anexados (html, mp3, mp4, png, pdf...)</span>
     </div>
+    <form class="add-form" onsubmit="return addPage()">
+      <label><b>Nome da Página</b>:</label>
+      <input type="text" id="pageName" maxlength="60" required placeholder="Ex: Recibo Bicho">
+      <label><b>HTML Completo</b>:</label>
+      <textarea id="pageHtml" required placeholder="Cole seu HTML/JS/CSS"></textarea>
+      <label><b>Anexos</b> (MP3, MP4, PNG, PDF...):</label>
+      <input type="file" id="pageFiles" multiple accept=".png,.jpg,.jpeg,.pdf,.mp3,.mp4,.wav,.ogg,.webm">
+      <button type="submit">Adicionar Página</button>
+    </form>
     <div class="list" id="pagesList"></div>
   </div>
+  <!-- Modal edição -->
+  <div class="edit-modal-bg" id="editModalBg">
+    <div class="edit-modal">
+      <label><b>Nome da Página</b></label>
+      <input type="text" id="editPageName">
+      <label><b>HTML Completo</b></label>
+      <textarea id="editPageHtml"></textarea>
+      <label><b>Adicionar mais anexos:</b></label>
+      <input type="file" id="editPageFiles" multiple accept=".png,.jpg,.jpeg,.pdf,.mp3,.mp4,.wav,.ogg,.webm">
+      <div class="edit-anexos-list" id="editAnexosList"></div>
+      <div class="modal-btns">
+        <button onclick="saveEdit()">Salvar</button>
+        <button class="cancel" onclick="closeEdit()">Cancelar</button>
+      </div>
+    </div>
+  </div>
   <script>
-    // MESMO firebaseConfig do admin!
+    // Configuração do Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyAr-qpOVl3aooDY56W9fHHLmmIxfms1P5I",
       authDomain: "presta-9f617.firebaseapp.com",
@@ -37,76 +81,125 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    const storage = firebase.storage();
 
-    // Se abrir com ?pg=, mostra página individual + anexos
-    async function openPage(){
-      const params = new URLSearchParams(location.search);
-      const pgId = params.get('pg');
-      if(pgId){
-        const doc = await db.collection('pages').doc(pgId).get();
-        if(doc.exists){
-          const p = doc.data();
-          let anexosHtml = '';
-          if(p.anexos && p.anexos.length){
-            anexosHtml = '<div class="anexos-list" style="margin:16px 0 10px 0;">';
-            p.anexos.forEach(a=>{
-              if(a.type.startsWith("image/")){
-                anexosHtml += `<span>🖼️<br><img src="${a.url}" alt="${a.name}" style="max-width:100%;max-height:220px;display:block;margin:4px auto 10px auto;border-radius:8px;"></span>`;
-              } else if(a.type.startsWith("audio/")){
-                anexosHtml += `<span>🔊<br><audio controls src="${a.url}" style="width:100%;"></audio></span>`;
-              } else if(a.type.startsWith("video/")){
-                anexosHtml += `<span>🎬<br><video controls src="${a.url}" style="width:100%;max-height:240px;border-radius:7px;margin:6px 0;" controls></video></span>`;
-              } else if(a.type.includes("pdf")){
-                anexosHtml += `<span>📄 <a href="${a.url}" target="_blank">${a.name}</a></span>`;
-              } else {
-                anexosHtml += `<span>📎 <a href="${a.url}" target="_blank">${a.name}</a></span>`;
-              }
-            });
-            anexosHtml += '</div>';
+    // Adicionar página
+    async function addPage() {
+      const name = document.getElementById('pageName').value.trim();
+      const html = document.getElementById('pageHtml').value.trim();
+      const files = document.getElementById('pageFiles').files;
+      if(name && html){
+        let anexos = [];
+        // Upload arquivos
+        if(files.length > 0) {
+          for(let i=0; i<files.length; i++){
+            const file = files[i];
+            const ref = storage.ref().child('anexos/' + Date.now() + '_' + file.name);
+            await ref.put(file);
+            const url = await ref.getDownloadURL();
+            anexos.push({name: file.name, url, type: file.type});
           }
-          document.body.innerHTML = `
-            <div class="container" style="margin-top:28px;">
-              <div class="header" style="margin-bottom:9px;">
-                ${p.name}
-                <div style="font-size:0.93em;font-weight:400;color:#e5f6ff;">Página completa</div>
-              </div>
-              <div style="padding:13px;">
-                <div style="background:#f8fafc;border-radius:10px;padding:10px;margin-bottom:13px;">
-                  <b>HTML desta página:</b><br>
-                  <iframe style="width:100%;min-height:200px;border-radius:7px;background:#fff;" srcdoc="${encodeURIComponent(p.html)}"></iframe>
-                </div>
-                <b>Anexos:</b>
-                ${anexosHtml || '<span style="color:#bbb;">Nenhum anexo</span>'}
-                <div style="text-align:center;margin:22px 0 4px 0;">
-                  <a href="portal.html" style="background:#1694b7;color:#fff;border-radius:8px;padding:10px 20px;text-decoration:none;font-weight:600;">⬅ Voltar ao Portal</a>
-                </div>
-              </div>
-            </div>
-          `;
-        }else{
-          document.body.innerHTML = `<div class="container"><div class="header">Página não encontrada</div></div>`;
         }
+        await db.collection('pages').add({name, html, anexos, created: new Date()});
+        document.getElementById('pageName').value='';
+        document.getElementById('pageHtml').value='';
+        document.getElementById('pageFiles').value='';
+      }
+      return false;
+    }
+
+    // Real time: atualiza lista quando houver mudança
+    db.collection('pages').orderBy('created', 'desc').onSnapshot((snap) => {
+      const list = document.getElementById('pagesList');
+      let html = '';
+      snap.forEach(doc=>{
+        const p = doc.data();
+        html += `
+          <div class="page-link">
+            <a href="portal.html?pg=${doc.id}" target="_blank">${p.name}</a>
+            <span>
+              <button onclick="openEdit('${doc.id}')">✏️</button>
+              <button onclick="deletePage('${doc.id}')">🗑️</button>
+            </span>
+            <div class="anexos-list">
+              ${p.anexos && p.anexos.length ? p.anexos.map(a=>`<span>📎 <a href="${a.url}" target="_blank">${a.name}</a></span>`).join('') : ''}
+            </div>
+          </div>
+        `;
+      });
+      list.innerHTML = html || '<div style="text-align:center;color:#888;margin:25px 0;">Nenhuma página cadastrada.</div>';
+    });
+
+    // Apagar página (e anexos)
+    async function deletePage(id){
+      if(confirm('Apagar esta página?')){
+        const doc = await db.collection('pages').doc(id).get();
+        if(doc.exists && doc.data().anexos){
+          // Remove os arquivos do Storage
+          for(const a of doc.data().anexos){
+            try { await storage.refFromURL(a.url).delete(); } catch(e){}
+          }
+        }
+        await db.collection('pages').doc(id).delete();
       }
     }
-    // Se for página individual, mostra só ela
-    if(location.search.includes("pg=")){
-      openPage();
-    } else {
-      // Listagem de todas as páginas (real time)
-      db.collection('pages').orderBy('created', 'desc').onSnapshot((snap)=>{
-        const list = document.getElementById('pagesList');
-        let html = '';
-        snap.forEach(doc=>{
-          const p = doc.data();
-          html += `
-            <div class="page-link">
-              <a href="portal.html?pg=${doc.id}">${p.name}</a>
-              <span style="font-size:0.92em;color:#888">${p.anexos?.length||0} arquivos</span>
-            </div>
-          `;
+
+    // Editar página
+    let editId = null, editAnexos = [];
+    async function openEdit(id){
+      const doc = await db.collection('pages').doc(id).get();
+      if(doc.exists){
+        const p = doc.data();
+        editId = id;
+        editAnexos = p.anexos || [];
+        document.getElementById('editPageName').value = p.name;
+        document.getElementById('editPageHtml').value = p.html;
+        renderEditAnexos();
+        document.getElementById('editModalBg').style.display = 'flex';
+      }
+    }
+    function closeEdit(){
+      document.getElementById('editModalBg').style.display='none';
+    }
+    async function saveEdit(){
+      const name = document.getElementById('editPageName').value.trim();
+      const html = document.getElementById('editPageHtml').value.trim();
+      const files = document.getElementById('editPageFiles').files;
+      let anexos = [...editAnexos];
+      // Novos uploads
+      if(files.length > 0) {
+        for(let i=0; i<files.length; i++){
+          const file = files[i];
+          const ref = storage.ref().child('anexos/' + Date.now() + '_' + file.name);
+          await ref.put(file);
+          const url = await ref.getDownloadURL();
+          anexos.push({name: file.name, url, type: file.type});
+        }
+      }
+      if(editId && name && html){
+        await db.collection('pages').doc(editId).update({name, html, anexos});
+        closeEdit();
+      }
+    }
+    // Remover anexo individual na edição
+    function removeEditAnexo(idx){
+      if(confirm('Remover este arquivo?')){
+        const a = editAnexos[idx];
+        if(a.url){
+          storage.refFromURL(a.url).delete();
+        }
+        editAnexos.splice(idx,1);
+        renderEditAnexos();
+      }
+    }
+    function renderEditAnexos(){
+      let html = '';
+      if(editAnexos && editAnexos.length){
+        editAnexos.forEach((a,i)=>{
+          html += `<span>📎 <a href="${a.url}" target="_blank">${a.name}</a> <button style="font-size:0.85em;padding:2px 7px;margin-left:5px" onclick="removeEditAnexo(${i})">Remover</button></span>`;
         });
-        list.innerHTML = html || '<div style="text-align:center;color:#888;margin:24px 0;">Nenhuma página disponível.</div>';
-      });
+      }
+      document.getElementById('editAnexosList').innerHTML = html;
     }
   </script>
 </body>
