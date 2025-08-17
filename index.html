@@ -2,8 +2,10 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Portal de Páginas</title>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <style>
     body { background: #f8fafc; margin:0; font-family:'Segoe UI',Arial,sans-serif; color:#222;}
     .container { max-width: 430px; margin:38px auto 0; background:#fff; border-radius:17px; box-shadow:0 4px 18px #0002; }
@@ -11,10 +13,7 @@
     .list { margin:16px 0 0 0; padding:0 14px 12px 14px; }
     .page-link { display:flex;align-items:center;justify-content:space-between; background:#e7f3fb; border-radius:10px; padding:13px 18px; margin-bottom:12px; font-size:1.1em; box-shadow:0 2px 7px #0012;}
     .page-link a { color:#144a6b; text-decoration:none; font-weight:600;}
-    @media (max-width: 560px){
-      .container{max-width:99vw;}
-      .header{font-size:1.09em;}
-    }
+    @media (max-width: 560px){ .container{max-width:99vw;} .header{font-size:1.09em;} }
   </style>
 </head>
 <body>
@@ -25,32 +24,29 @@
     <div class="list" id="pagesList"></div>
   </div>
   <script>
-    function getPages(){ return JSON.parse(localStorage.getItem('pagesList')||'[]'); }
-    function renderPages(){
-      const pages=getPages();
-      let html='';
-      if(pages.length===0){
-        html='<div style="text-align:center;color:#888;margin:25px 0;">Nenhuma página disponível.</div>';
-      } else {
-        pages.forEach(p=>{
-          html+=`
-            <div class="page-link">
-              <a href="?pg=${p.id}">${p.name}</a>
-            </div>
-          `;
-        });
-      }
-      document.getElementById('pagesList').innerHTML=html;
-    }
-    // Se for link ?pg=xxx, abre a página individual
-    function openPage(){
-      const params=new URLSearchParams(location.search);
-      const pgId=params.get('pg');
+    // Configuração do Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAr-qpOVl3aooDY56W9fHHLmmIxfms1P5I",
+      authDomain: "presta-9f617.firebaseapp.com",
+      projectId: "presta-9f617",
+      storageBucket: "presta-9f617.appspot.com",
+      messagingSenderId: "933441693460",
+      appId: "1:933441693460:web:d1685236428060f700c401",
+      measurementId: "G-G4BNHYSYM6"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Se abrir com ?pg=, mostra página individual
+    async function openPage(){
+      const params = new URLSearchParams(location.search);
+      const pgId = params.get('pg');
       if(pgId){
-        const p=getPages().find(pg=>pg.id===pgId);
-        if(p){
-          document.body.innerHTML=p.html;
-          document.title=p.name;
+        const doc = await db.collection('pages').doc(pgId).get();
+        if(doc.exists){
+          const p = doc.data();
+          document.body.innerHTML = p.html;
+          document.title = p.name;
         }else{
           document.body.innerHTML='<h2 style="color:red;text-align:center;">Página não encontrada!</h2>';
         }
@@ -58,7 +54,24 @@
       }
       return false;
     }
-    if(!openPage()) renderPages();
+
+    // Lista todas páginas se não for ?pg
+    async function renderPages(){
+      const list = document.getElementById('pagesList');
+      const snap = await db.collection('pages').orderBy('created', 'desc').get();
+      let html = '';
+      snap.forEach(doc=>{
+        const p = doc.data();
+        html += `
+          <div class="page-link">
+            <a href="?pg=${doc.id}">${p.name}</a>
+          </div>
+        `;
+      });
+      list.innerHTML = html || '<div style="text-align:center;color:#888;margin:25px 0;">Nenhuma página disponível.</div>';
+    }
+
+    if(!await openPage()) renderPages();
   </script>
 </body>
 </html>
