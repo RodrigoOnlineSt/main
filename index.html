@@ -3,195 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meu Portal de Páginas</title>
+  <title>Portal de Páginas</title>
   <style>
-    body {
-      background: #0e2331;
-      margin: 0;
-      min-height: 100vh;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .container {
-      width: 100%;
-      max-width: 420px;
-      background: #fff;
-      margin: 36px auto 0;
-      border-radius: 18px;
-      box-shadow: 0 4px 20px #0005;
-      padding: 0 0 16px 0;
-      color: #111;
-    }
-    .header {
-      padding: 26px 10px 18px 10px;
-      background: linear-gradient(120deg,#23a8e6 70%,#146290);
-      border-radius: 18px 18px 0 0;
-      text-align: center;
-      font-size: 1.5em;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      color: #fff;
-      box-shadow: 0 2px 10px #0002;
-      margin-bottom: 10px;
-    }
-    .list {
-      margin: 18px 0 0 0;
-      padding: 0 12px;
-    }
-    .page-link {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #e7f3fb;
-      border-radius: 10px;
-      padding: 12px 18px;
-      margin-bottom: 13px;
-      font-size: 1.15em;
-      box-shadow: 0 2px 7px #0014;
-    }
-    .page-link a {
-      color: #146290;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .page-link button {
-      background: #23a8e6;
-      color: #fff;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 7px;
-      font-size: 0.93em;
-      cursor: pointer;
-    }
-    .add-form {
-      padding: 10px 18px;
-      margin-top: 6px;
-    }
-    .add-form input, .add-form textarea {
-      width: 100%;
-      font-size: 1.07em;
-      margin: 5px 0 10px 0;
-      padding: 8px;
-      border-radius: 7px;
-      border: 1px solid #bbb;
-      box-sizing: border-box;
-    }
-    .add-form textarea {
-      height: 90px;
-      resize: vertical;
-      font-family: monospace;
-    }
-    .add-form button {
-      width: 100%;
-      background: linear-gradient(90deg, #23a8e6, #146290);
-      color: #fff;
-      border: none;
-      padding: 12px 0;
-      font-size: 1.13em;
-      border-radius: 9px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 5px;
-      box-shadow: 0 1px 5px #1576b23d;
-      transition: background 0.2s;
-    }
-    .add-form button:hover {
-      background: linear-gradient(90deg, #146290, #23a8e6);
-    }
-    @media (max-width: 550px) {
-      .container { max-width: 99vw; }
-      .header { font-size: 1.16em;}
-      .add-form textarea { height: 70px;}
+    body { background: #f8fafc; margin:0; font-family:'Segoe UI',Arial,sans-serif; color:#222;}
+    .container { max-width: 430px; margin:38px auto 0; background:#fff; border-radius:17px; box-shadow:0 4px 18px #0002; }
+    .header { padding:24px 8px 12px 8px; background:linear-gradient(100deg,#21a2ee 70%,#144a6b); border-radius:17px 17px 0 0; text-align:center; font-size:1.25em; font-weight:600; color:#fff;}
+    .list { margin:16px 0 0 0; padding:0 14px 12px 14px; }
+    .page-link { display:flex;align-items:center;justify-content:space-between; background:#e7f3fb; border-radius:10px; padding:13px 18px; margin-bottom:12px; font-size:1.1em; box-shadow:0 2px 7px #0012;}
+    .page-link a { color:#144a6b; text-decoration:none; font-weight:600;}
+    @media (max-width: 560px){
+      .container{max-width:99vw;}
+      .header{font-size:1.09em;}
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      🌟 Portal de Páginas Personalizadas
-      <div style="font-size:0.93em; color:#d1f6ff; font-weight:400; margin-top:5px;">
-        Cole seu HTML e acesse pelo link!<br>
-      </div>
+      Portal de Páginas <span style="font-size:0.9em;font-weight:400;">(visualização)</span>
     </div>
-    <form class="add-form" onsubmit="return addPage()">
-      <label><b>Nome da Página</b>:</label>
-      <input type="text" id="pageName" maxlength="50" required placeholder="Ex: Recibo do Bicho">
-      <label><b>HTML Completo</b>:</label>
-      <textarea id="pageHtml" required placeholder="Cole aqui o código HTML, JS e CSS"></textarea>
-      <button type="submit">Adicionar Página</button>
-    </form>
     <div class="list" id="pagesList"></div>
   </div>
-
   <script>
-    // Salva e carrega as páginas no localStorage
-    function getPages() {
-      return JSON.parse(localStorage.getItem('pagesList') || '[]');
-    }
-    function setPages(pgs) {
-      localStorage.setItem('pagesList', JSON.stringify(pgs));
-    }
-    function addPage() {
-      const name = document.getElementById('pageName').value.trim();
-      const html = document.getElementById('pageHtml').value.trim();
-      if (name && html) {
-        const id = Date.now().toString(36);
-        const pages = getPages();
-        pages.push({ id, name, html });
-        setPages(pages);
-        document.getElementById('pageName').value = '';
-        document.getElementById('pageHtml').value = '';
-        renderPages();
-      }
-      return false;
-    }
-    function deletePage(id) {
-      if (confirm('Apagar esta página?')) {
-        let pages = getPages();
-        pages = pages.filter(p => p.id !== id);
-        setPages(pages);
-        renderPages();
-      }
-    }
-    function renderPages() {
-      const pages = getPages();
-      let html = '';
-      if (pages.length === 0) {
-        html = `<div style="text-align:center; color:#888; margin:26px 0;">Nenhuma página adicionada ainda.</div>`;
+    function getPages(){ return JSON.parse(localStorage.getItem('pagesList')||'[]'); }
+    function renderPages(){
+      const pages=getPages();
+      let html='';
+      if(pages.length===0){
+        html='<div style="text-align:center;color:#888;margin:25px 0;">Nenhuma página disponível.</div>';
       } else {
-        pages.forEach(p => {
-          html += `
+        pages.forEach(p=>{
+          html+=`
             <div class="page-link">
-              <a href="?pg=${p.id}" target="_blank">${p.name}</a>
-              <button onclick="deletePage('${p.id}')">🗑️</button>
+              <a href="?pg=${p.id}">${p.name}</a>
             </div>
           `;
         });
       }
-      document.getElementById('pagesList').innerHTML = html;
+      document.getElementById('pagesList').innerHTML=html;
     }
-
-    // Ao abrir pelo link, exibe a página
-    function openPage() {
-      const params = new URLSearchParams(location.search);
-      const pgId = params.get('pg');
-      if (pgId) {
-        const p = getPages().find(pg => pg.id === pgId);
-        if (p) {
-          document.body.innerHTML = p.html;
-          document.title = p.name;
-        } else {
-          document.body.innerHTML = '<h2 style="color:red;text-align:center;">Página não encontrada!</h2>';
+    // Se for link ?pg=xxx, abre a página individual
+    function openPage(){
+      const params=new URLSearchParams(location.search);
+      const pgId=params.get('pg');
+      if(pgId){
+        const p=getPages().find(pg=>pg.id===pgId);
+        if(p){
+          document.body.innerHTML=p.html;
+          document.title=p.name;
+        }else{
+          document.body.innerHTML='<h2 style="color:red;text-align:center;">Página não encontrada!</h2>';
         }
         return true;
       }
       return false;
     }
-
-    if (!openPage()) renderPages();
+    if(!openPage()) renderPages();
   </script>
 </body>
 </html>
