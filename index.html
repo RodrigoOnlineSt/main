@@ -1,169 +1,211 @@
-<style>
-  body, html {
-    font-family: Arial, sans-serif;
-    background: #f7f7f7;
-    padding: 20px;
-    text-align: center;
-    margin: 0;
-  }
-  h1, h2 {
-    color: #19692c; /* verde escuro */
-  }
-  button, input, select {
-    margin-top: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-  }
-
-  /* Botões estilo 3D, sem borda, com relevo nítido */
-  button {
-    background: linear-gradient(145deg, #27ae60, #19692c);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 18px;
-    padding: 12px 28px;
-    box-shadow:
-      inset 3px 3px 5px #1b5e33,
-      inset -3px -3px 5px #4cd964;
-    transition: background-color 0.2s, transform 0.1s;
-  }
-  button:hover {
-    background: linear-gradient(145deg, #32cd68, #1c7c34);
-  }
-  button:active {
-    transform: translateY(2px);
-    box-shadow:
-      inset -3px -3px 5px #1b5e33,
-      inset 3px 3px 5px #4cd964;
-  }
-
-  /* Botão Quantidade de Dezenas com mesmo estilo */
-  #btnQuantidade {
-    background: linear-gradient(145deg, #27ae60, #19692c);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 16px;
-    padding: 10px 24px;
-    box-shadow:
-      inset 3px 3px 5px #1b5e33,
-      inset -3px -3px 5px #4cd964;
-    transition: background-color 0.2s, transform 0.1s;
-  }
-  #btnQuantidade:hover {
-    background: linear-gradient(145deg, #32cd68, #1c7c34);
-  }
-  #btnQuantidade:active {
-    transform: translateY(2px);
-    box-shadow:
-      inset -3px -3px 5px #1b5e33,
-      inset 3px 3px 5px #4cd964;
-  }
-
-  #info, #premio, #contador {
-    font-size: 18px;
-    margin: 10px 0;
-  }
-  #contador {
-    color: white;
-    background: linear-gradient(145deg, #19692c, #145723);
-    padding: 10px 20px;
-    border-radius: 10px;
-    box-shadow: inset 3px 3px 6px #145723, inset -3px -3px 6px #227f33;
-  }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(5, 50px);
-    gap: 8px;
-    justify-content: center;
-    margin: 20px 0;
-  }
-  @media (min-width: 600px) {
-    .grid {
-      grid-template-columns: repeat(8, 50px);
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Simulador Super 6 - Mobile</title>
+  <style>
+    body, html {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      padding: 0;
+      margin: 0;
+      text-align: center;
+      min-height: 100vh;
     }
-  }
-  @media (min-width: 900px) {
-    .grid {
-      grid-template-columns: repeat(12, 50px);
+    h1, h2 {
+      color: #19692c;
+      margin-top: 26px;
+      margin-bottom: 18px;
+      font-size: 2em;
+      font-weight: 800;
+      letter-spacing: 1px;
     }
-  }
-  .grid input[type="checkbox"] {
-    display: none;
-  }
-  .grid label {
-    display: block;
-    width: 50px;
-    height: 50px;
-    line-height: 50px;
-    background-color: transparent;
-    border: 2px solid #19692c; /* verde escuro */
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 18px;
-    transition: 0.3s;
-    user-select: none;
-    color: #19692c; /* texto verde escuro */
-  }
-  .grid input[type="checkbox"]:checked + label {
-    background-color: #27ae60; /* verde claro */
-    color: white;
-    border-color: #145723; /* verde mais escuro */
-  }
-  #recibo {
-    display: none;
-    margin-top: 30px;
-    padding: 20px;
-    background: white;
-    border-radius: 10px;
-    max-width: 420px;
-    margin-left: auto;
-    margin-right: auto;
-    box-shadow: 0 0 10px #ccc;
-    white-space: pre-line;
-    text-align: left;
-  }
-  #dezenasRecibo span {
-    background: #19692c; /* verde escuro */
-    color: white;
-    padding: 6px 10px;
-    border-radius: 8px;
-    margin: 3px;
-    display: inline-block;
-    font-size: 20px;
-  }
-  #preview {
-    max-width: 100%;
-    margin-top: 15px;
-  }
-
-  /* Container do botão e select lado a lado */
-  #quantidade-container {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    margin: 10px auto 20px auto;
-  }
-  #quantidade {
-    padding: 6px 12px;
-    font-size: 14px;
-    border-radius: 6px;
-    margin: 0;
-  }
-</style>
+    button, input, select {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 17px;
+      border-radius: 10px;
+      outline: none;
+      border: none;
+      box-sizing: border-box;
+    }
+    /* Botão 3D */
+    button, #btnQuantidade {
+      background: linear-gradient(145deg, #27ae60, #19692c);
+      color: white;
+      font-weight: bold;
+      box-shadow:
+        2px 2px 8px #1b5e3340,
+        -2px -2px 4px #4cd96450;
+      transition: background 0.2s, transform 0.1s;
+      cursor: pointer;
+      margin-bottom: 4px;
+      width: 90vw;
+      max-width: 340px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    button:hover, #btnQuantidade:hover {
+      background: linear-gradient(145deg, #32cd68, #1c7c34);
+    }
+    button:active, #btnQuantidade:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+    /* Grid de dezenas */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+      justify-content: center;
+      margin: 17px 0 20px 0;
+      padding: 0 5vw;
+    }
+    @media (min-width: 500px) {
+      .grid { grid-template-columns: repeat(8, 1fr); }
+    }
+    @media (min-width: 900px) {
+      .grid { grid-template-columns: repeat(12, 1fr); }
+    }
+    .grid input[type="checkbox"] { display: none; }
+    .grid label {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1/1;
+      background: #fff;
+      border: 2px solid #19692c;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 1.1em;
+      color: #19692c;
+      line-height: 2.6;
+      text-align: center;
+      user-select: none;
+      box-shadow: 0 1px 2px #0002;
+      transition: 0.18s;
+      cursor: pointer;
+    }
+    .grid input[type="checkbox"]:checked + label {
+      background: #27ae60;
+      color: #fff;
+      border-color: #145723;
+      box-shadow: 0 2px 8px #4cd96430;
+    }
+    #recibo {
+      display: none;
+      margin-top: 25px;
+      padding: 14px 10px 10px 10px;
+      background: white;
+      border-radius: 10px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 0 12px #bbb6;
+      white-space: pre-line;
+      text-align: left;
+      font-size: 1.02em;
+    }
+    #dezenasRecibo span {
+      background: #19692c;
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 8px;
+      margin: 2px 2px;
+      display: inline-block;
+      font-size: 1.1em;
+    }
+    #preview {
+      max-width: 100%;
+      margin-top: 15px;
+      display: none;
+    }
+    #quantidade-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 8px auto 18px auto;
+      flex-wrap: wrap;
+    }
+    #quantidade {
+      padding: 6px 10px;
+      font-size: 16px;
+      border-radius: 7px;
+      border: 1px solid #27ae60;
+      margin: 0;
+      background: #f8fff8;
+      color: #19692c;
+      font-weight: bold;
+      min-width: 72px;
+      max-width: 110px;
+    }
+    input[type="number"] {
+      width: 85vw;
+      max-width: 310px;
+      background: #fff;
+      border: 1.5px solid #27ae60;
+      margin-bottom: 0;
+      color: #145723;
+      font-size: 1.09em;
+      padding: 11px 12px;
+    }
+    #info, #premio, #contador {
+      font-size: 17px;
+      margin: 8px 0;
+    }
+    #contador {
+      color: white;
+      background: linear-gradient(145deg, #19692c, #145723);
+      padding: 10px 20px;
+      border-radius: 10px;
+      box-shadow: inset 3px 3px 6px #145723, inset -3px -3px 6px #227f33;
+      margin-bottom: 12px;
+    }
+    .menu-modalidades {
+      margin-top: 40px;
+      margin-bottom: 40px;
+    }
+    .botao {
+      background: linear-gradient(to bottom, #0d6efd, #004aad);
+      color: #fff;
+      border: none;
+      padding: 13px 0;
+      font-size: 1.08em;
+      border-radius: 12px;
+      margin: 10px 0;
+      box-shadow: 0 8px 0 #00347a44;
+      text-decoration: none;
+      width: 90vw;
+      max-width: 320px;
+      display: block;
+      text-align: center;
+      font-weight: bold;
+      transition: 0.14s;
+    }
+    .botao:hover {
+      background: linear-gradient(to bottom, #338fff, #005eff);
+      box-shadow: 0 4px 0 #002f6c;
+      transform: translateY(2px);
+    }
+    .botao:active {
+      box-shadow: none;
+      transform: translateY(8px);
+    }
+    @media (min-width: 480px) {
+      h1, h2 { font-size: 2.3em; }
+    }
+  </style>
+</head>
+<body>
 
 <h1>SIMULADOR SUPER 6</h1>
 
 <div id="quantidade-container">
   <button id="btnQuantidade" type="button">Quantidade de Dezenas</button>
   <select id="quantidade">
-     <option value="13">13</option>
+    <option value="13">13</option>
     <option value="14">14</option>
     <option value="15">15</option>
     <option value="16">16</option>
@@ -190,27 +232,41 @@
 <button id="finalizar">✅ Finalizar Aposta</button>
 
 <div id="recibo">
-  <h5>ESTE RECIBO É APENAS UMA SIMULAÇÃO!</h5>
+  <h5 style="text-align:center;margin-top:0;">ESTE RECIBO É APENAS UMA SIMULAÇÃO!</h5>
   <div id="dezenasRecibo"></div>
   <p id="dadosRecibo"></p>
-  <p><strong>
-    ●●●●●●●●●●●●●●●●●●●●●●●●●●●●
-    ⚠️ Atenção: Recibo Gerado Apenas para Simulação!<br>
-
-    Este comprovante não registra sua aposta automaticamente.
-                                        
-                                        
-    Para garantir sua participação no sorteio, envie o recibo via WhatsApp para o cambista.
-    Somente após a confirmação do pagamento, você receberá o pule oficial, válido para concorrer aos prêmios.<br>
-    (83) 9 9632-3995
-  </strong></p>
+  <p style="font-size:0.96em">
+    <strong>
+      ●●●●●●●●●●●●●●●●●●●●●●●●●●●●<br>
+      ⚠️ Atenção: Recibo Gerado Apenas para Simulação!<br><br>
+      Este comprovante não registra sua aposta automaticamente.<br>
+      Para garantir sua participação no sorteio, envie o recibo via WhatsApp para o cambista.<br>
+      Somente após a confirmação do pagamento, você receberá o pule oficial, válido para concorrer aos prêmios.<br>
+      <b>(83) 9 9632-3995</b>
+    </strong>
+  </p>
   <button onclick="capturarTela()">📸 Capturar e Enviar no WhatsApp</button>
 </div>
 
-<img id="preview" style="display:none;">
+<img id="preview">
 
+<div class="menu-modalidades">
+  <h2>Outras Modalidades</h2>
+  <a href="https://lotconcinfo.blogspot.com/2025/07/body-html-font-family-arial-sans-serif_26.html?m=1" class="botao">Lotinha</a>
+  <a href="https://supinf5.blogspot.com/2025/07/simulador-super-5-quina-body-font.html?m=1" class="botao">Super 5</a>
+  <a href="https://sp6info.blogspot.com/2025/07/simulador-super-6-mega-sena-body-font.html?m=1" class="botao">Super 6</a>
+  <a href="https://spalt5.blogspot.com/2025/07/lotinha-super-5-body-font-family-arial.html?m=1" class="botao">Lotinha / Super 5</a>
+</div>
+
+<!-- Imagem ilustrativa -->
+<div style="padding:1em 0;">
+  <a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhHL3shPFfcrgk78v-6_wEyPLQmrhGApw6HeEovlJHkPra85eKcNLvIIRVtk6GI6JqrXCwdR2ZCQiBqP3oJTNC-CeGoUodfVF_zsVd9g-ArnWIfsNwmPetMKNJ_qaLgGIGgER9xnyaIa3cUj9s8k3DJjx6z9ww67I05Yi0PvwUQjHSG7p3Qo_t-jLkCYxU/s1600/1000360396.png" style="display:block;margin:auto;text-align:center;">
+    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhHL3shPFfcrgk78v-6_wEyPLQmrhGApw6HeEovlJHkPra85eKcNLvIIRVtk6GI6JqrXCwdR2ZCQiBqP3oJTNC-CeGoUodfVF_zsVd9g-ArnWIfsNwmPetMKNJ_qaLgGIGgER9xnyaIa3cUj9s8k3DJjx6z9ww67I05Yi0PvwUQjHSG7p3Qo_t-jLkCYxU/s1600/1000360396.png" alt="Imagem" style="max-width:100%;height:auto;border-radius:12px;">
+  </a>
+</div>
+
+<!-- SCRIPTS -->
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-
 <script>
   const premios = {
     10: 30000.00,
@@ -368,121 +424,5 @@
     });
   }
 </script>
-
-
-
-
-
-<br/><br/>
-
-  </style>
-</head>
-<body>
-<!DOCTYPE html>
-
-<html lang="pt-BR">
-
-<head>
-
-  <meta charset="UTF-8">
-
-  <title>Botões de Modalidade</title>
-
-  <style>
-
-    body {
-
-      background: #f0f4f8;
-
-      font-family: sans-serif;
-
-      display: flex;
-
-      flex-direction: column;
-
-      align-items: center;
-
-      padding: 50px 20px;
-
-    }
-
-    h2 {
-
-      margin-bottom: 20px;
-
-      color: #333;
-
-    }
-
-    .botao {
-
-      background: linear-gradient(to bottom, #0d6efd, #004aad);
-
-      color: #fff;
-
-      border: none;
-
-      padding: 15px 30px;
-
-      font-size: 20px;
-
-      border-radius: 12px;
-
-      margin: 12px 0;
-
-      box-shadow: 0 8px 0 #00347a;
-
-      text-decoration: none;
-
-      display: inline-block;
-
-      transition: all 0.2s ease;
-
-      width: 260px;
-
-      text-align: center;
-
-    }
-
-    .botao:hover {
-
-      background: linear-gradient(to bottom, #338fff, #005eff);
-
-      box-shadow: 0 4px 0 #002f6c;
-
-      transform: translateY(2px);
-
-    }
-
-    .botao:active {
-
-      box-shadow: none;
-
-      transform: translateY(8px);
-
-    }
-
-  </style>
-
-</head>
-
-<body>
-
-  <h2>Escolha a Modalidade</h2>
-
-  <a href="https://lotconcinfo.blogspot.com/2025/07/body-html-font-family-arial-sans-serif_26.html?m=1" class="botao">Lotinha</a>
-
-  <a href="https://supinf5.blogspot.com/2025/07/simulador-super-5-quina-body-font.html?m=1" class="botao">Super 5</a>
-
-  <a href="https://sp6info.blogspot.com/2025/07/simulador-super-6-mega-sena-body-font.html?m=1" class="botao">Super 6</a>
-
-  <a href="https://spalt5.blogspot.com/2025/07/lotinha-super-5-body-font-family-arial.html?m=1" class="botao">Lotinha / Super 5</a>
-
 </body>
-
 </html>
-
-
-  
-  <br/><br/><br/><div class="separator" style="clear: both;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhHL3shPFfcrgk78v-6_wEyPLQmrhGApw6HeEovlJHkPra85eKcNLvIIRVtk6GI6JqrXCwdR2ZCQiBqP3oJTNC-CeGoUodfVF_zsVd9g-ArnWIfsNwmPetMKNJ_qaLgGIGgER9xnyaIa3cUj9s8k3DJjx6z9ww67I05Yi0PvwUQjHSG7p3Qo_t-jLkCYxU/s1600/1000360396.png" style="display: block; padding: 1em 0; text-align: center; "><img alt="" border="0" data-original-height="720" data-original-width="1280" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhHL3shPFfcrgk78v-6_wEyPLQmrhGApw6HeEovlJHkPra85eKcNLvIIRVtk6GI6JqrXCwdR2ZCQiBqP3oJTNC-CeGoUodfVF_zsVd9g-ArnWIfsNwmPetMKNJ_qaLgGIGgER9xnyaIa3cUj9s8k3DJjx6z9ww67I05Yi0PvwUQjHSG7p3Qo_t-jLkCYxU/s1600/1000360396.png"/></a></div>
- 
