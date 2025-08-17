@@ -8,12 +8,13 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <style>
     body { background: #f8fafc; margin:0; font-family:'Segoe UI',Arial,sans-serif; color:#222;}
-    .container { max-width: 430px; margin:38px auto 0; background:#fff; border-radius:17px; box-shadow:0 4px 18px #0002; }
+    .container { max-width: 440px; margin:38px auto 0; background:#fff; border-radius:17px; box-shadow:0 4px 18px #0002; }
     .header { padding:24px 8px 12px 8px; background:linear-gradient(100deg,#21a2ee 70%,#144a6b); border-radius:17px 17px 0 0; text-align:center; font-size:1.25em; font-weight:600; color:#fff;}
     .list { margin:16px 0 0 0; padding:0 14px 12px 14px; }
     .page-link { display:flex;align-items:center;justify-content:space-between; background:#e7f3fb; border-radius:10px; padding:13px 18px; margin-bottom:12px; font-size:1.1em; box-shadow:0 2px 7px #0012;}
     .page-link a { color:#144a6b; text-decoration:none; font-weight:600;}
     @media (max-width: 560px){ .container{max-width:99vw;} .header{font-size:1.09em;} }
+    .anexos-list span { display:block; margin-bottom:2px;font-size:0.98em;}
   </style>
 </head>
 <body>
@@ -37,7 +38,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Se abrir com ?pg=, mostra página individual
+    // Se abrir com ?pg=, mostra página individual + anexos
     async function openPage(){
       const params = new URLSearchParams(location.search);
       const pgId = params.get('pg');
@@ -45,33 +46,13 @@
         const doc = await db.collection('pages').doc(pgId).get();
         if(doc.exists){
           const p = doc.data();
-          document.body.innerHTML = p.html;
-          document.title = p.name;
-        }else{
-          document.body.innerHTML='<h2 style="color:red;text-align:center;">Página não encontrada!</h2>';
-        }
-        return true;
-      }
-      return false;
-    }
-
-    // Lista todas páginas se não for ?pg
-    async function renderPages(){
-      const list = document.getElementById('pagesList');
-      const snap = await db.collection('pages').orderBy('created', 'desc').get();
-      let html = '';
-      snap.forEach(doc=>{
-        const p = doc.data();
-        html += `
-          <div class="page-link">
-            <a href="?pg=${doc.id}">${p.name}</a>
-          </div>
-        `;
-      });
-      list.innerHTML = html || '<div style="text-align:center;color:#888;margin:25px 0;">Nenhuma página disponível.</div>';
-    }
-
-    if(!await openPage()) renderPages();
-  </script>
-</body>
-</html>
+          let anexosHtml = '';
+          if(p.anexos && p.anexos.length){
+            anexosHtml = '<div class="anexos-list" style="margin:16px 0 10px 0;">';
+            p.anexos.forEach(a=>{
+              if(a.type.startsWith("image/")){
+                anexosHtml += `<span>🖼️<br><img src="${a.url}" alt="${a.name}" style="max-width:100%;max-height:220px;display:block;margin:4px auto 10px auto;border-radius:8px;"></span>`;
+              } else if(a.type.startsWith("audio/")){
+                anexosHtml += `<span>🔊<br><audio controls src="${a.url}" style="width:100%;"></audio></span>`;
+              } else if(a.type.startsWith("video/")){
+                anexosHtml += `<span>🎬<br><video controls src="${a.url}" style="width:100%;max-height:240px;border-radius
