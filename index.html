@@ -1,428 +1,197 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Simulador Super 6 - Mobile</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meu Portal de Páginas</title>
   <style>
-    body, html {
-      font-family: Arial, sans-serif;
-      background: #f7f7f7;
-      padding: 0;
+    body {
+      background: #0e2331;
       margin: 0;
-      text-align: center;
       min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    h1, h2 {
-      color: #19692c;
-      margin-top: 26px;
-      margin-bottom: 18px;
-      font-size: 2em;
-      font-weight: 800;
-      letter-spacing: 1px;
-    }
-    button, input, select {
-      margin-top: 10px;
-      padding: 10px 20px;
-      font-size: 17px;
-      border-radius: 10px;
-      outline: none;
-      border: none;
-      box-sizing: border-box;
-    }
-    /* Botão 3D */
-    button, #btnQuantidade {
-      background: linear-gradient(145deg, #27ae60, #19692c);
-      color: white;
-      font-weight: bold;
-      box-shadow:
-        2px 2px 8px #1b5e3340,
-        -2px -2px 4px #4cd96450;
-      transition: background 0.2s, transform 0.1s;
-      cursor: pointer;
-      margin-bottom: 4px;
-      width: 90vw;
-      max-width: 340px;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    button:hover, #btnQuantidade:hover {
-      background: linear-gradient(145deg, #32cd68, #1c7c34);
-    }
-    button:active, #btnQuantidade:active {
-      transform: translateY(1px);
-      box-shadow: none;
-    }
-    /* Grid de dezenas */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 7px;
-      justify-content: center;
-      margin: 17px 0 20px 0;
-      padding: 0 5vw;
-    }
-    @media (min-width: 500px) {
-      .grid { grid-template-columns: repeat(8, 1fr); }
-    }
-    @media (min-width: 900px) {
-      .grid { grid-template-columns: repeat(12, 1fr); }
-    }
-    .grid input[type="checkbox"] { display: none; }
-    .grid label {
-      display: block;
+    .container {
       width: 100%;
-      aspect-ratio: 1/1;
+      max-width: 420px;
       background: #fff;
-      border: 2px solid #19692c;
-      border-radius: 10px;
-      font-weight: bold;
-      font-size: 1.1em;
-      color: #19692c;
-      line-height: 2.6;
+      margin: 36px auto 0;
+      border-radius: 18px;
+      box-shadow: 0 4px 20px #0005;
+      padding: 0 0 16px 0;
+      color: #111;
+    }
+    .header {
+      padding: 26px 10px 18px 10px;
+      background: linear-gradient(120deg,#23a8e6 70%,#146290);
+      border-radius: 18px 18px 0 0;
       text-align: center;
-      user-select: none;
-      box-shadow: 0 1px 2px #0002;
-      transition: 0.18s;
-      cursor: pointer;
-    }
-    .grid input[type="checkbox"]:checked + label {
-      background: #27ae60;
+      font-size: 1.5em;
+      font-weight: 600;
+      letter-spacing: 0.5px;
       color: #fff;
-      border-color: #145723;
-      box-shadow: 0 2px 8px #4cd96430;
+      box-shadow: 0 2px 10px #0002;
+      margin-bottom: 10px;
     }
-    #recibo {
-      display: none;
-      margin-top: 25px;
-      padding: 14px 10px 10px 10px;
-      background: white;
-      border-radius: 10px;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-      box-shadow: 0 0 12px #bbb6;
-      white-space: pre-line;
-      text-align: left;
-      font-size: 1.02em;
+    .list {
+      margin: 18px 0 0 0;
+      padding: 0 12px;
     }
-    #dezenasRecibo span {
-      background: #19692c;
-      color: #fff;
-      padding: 6px 10px;
-      border-radius: 8px;
-      margin: 2px 2px;
-      display: inline-block;
-      font-size: 1.1em;
-    }
-    #preview {
-      max-width: 100%;
-      margin-top: 15px;
-      display: none;
-    }
-    #quantidade-container {
+    .page-link {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin: 8px auto 18px auto;
-      flex-wrap: wrap;
-    }
-    #quantidade {
-      padding: 6px 10px;
-      font-size: 16px;
-      border-radius: 7px;
-      border: 1px solid #27ae60;
-      margin: 0;
-      background: #f8fff8;
-      color: #19692c;
-      font-weight: bold;
-      min-width: 72px;
-      max-width: 110px;
-    }
-    input[type="number"] {
-      width: 85vw;
-      max-width: 310px;
-      background: #fff;
-      border: 1.5px solid #27ae60;
-      margin-bottom: 0;
-      color: #145723;
-      font-size: 1.09em;
-      padding: 11px 12px;
-    }
-    #info, #premio, #contador {
-      font-size: 17px;
-      margin: 8px 0;
-    }
-    #contador {
-      color: white;
-      background: linear-gradient(145deg, #19692c, #145723);
-      padding: 10px 20px;
+      justify-content: space-between;
+      background: #e7f3fb;
       border-radius: 10px;
-      box-shadow: inset 3px 3px 6px #145723, inset -3px -3px 6px #227f33;
-      margin-bottom: 12px;
+      padding: 12px 18px;
+      margin-bottom: 13px;
+      font-size: 1.15em;
+      box-shadow: 0 2px 7px #0014;
     }
-    .menu-modalidades {
-      margin-top: 40px;
-      margin-bottom: 40px;
+    .page-link a {
+      color: #146290;
+      text-decoration: none;
+      font-weight: bold;
     }
-    .botao {
-      background: linear-gradient(to bottom, #0d6efd, #004aad);
+    .page-link button {
+      background: #23a8e6;
       color: #fff;
       border: none;
-      padding: 13px 0;
-      font-size: 1.08em;
-      border-radius: 12px;
-      margin: 10px 0;
-      box-shadow: 0 8px 0 #00347a44;
-      text-decoration: none;
-      width: 90vw;
-      max-width: 320px;
-      display: block;
-      text-align: center;
+      padding: 5px 10px;
+      border-radius: 7px;
+      font-size: 0.93em;
+      cursor: pointer;
+    }
+    .add-form {
+      padding: 10px 18px;
+      margin-top: 6px;
+    }
+    .add-form input, .add-form textarea {
+      width: 100%;
+      font-size: 1.07em;
+      margin: 5px 0 10px 0;
+      padding: 8px;
+      border-radius: 7px;
+      border: 1px solid #bbb;
+      box-sizing: border-box;
+    }
+    .add-form textarea {
+      height: 90px;
+      resize: vertical;
+      font-family: monospace;
+    }
+    .add-form button {
+      width: 100%;
+      background: linear-gradient(90deg, #23a8e6, #146290);
+      color: #fff;
+      border: none;
+      padding: 12px 0;
+      font-size: 1.13em;
+      border-radius: 9px;
       font-weight: bold;
-      transition: 0.14s;
+      cursor: pointer;
+      margin-top: 5px;
+      box-shadow: 0 1px 5px #1576b23d;
+      transition: background 0.2s;
     }
-    .botao:hover {
-      background: linear-gradient(to bottom, #338fff, #005eff);
-      box-shadow: 0 4px 0 #002f6c;
-      transform: translateY(2px);
+    .add-form button:hover {
+      background: linear-gradient(90deg, #146290, #23a8e6);
     }
-    .botao:active {
-      box-shadow: none;
-      transform: translateY(8px);
-    }
-    @media (min-width: 480px) {
-      h1, h2 { font-size: 2.3em; }
+    @media (max-width: 550px) {
+      .container { max-width: 99vw; }
+      .header { font-size: 1.16em;}
+      .add-form textarea { height: 70px;}
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <div class="header">
+      🌟 Portal de Páginas Personalizadas
+      <div style="font-size:0.93em; color:#d1f6ff; font-weight:400; margin-top:5px;">
+        Cole seu HTML e acesse pelo link!<br>
+      </div>
+    </div>
+    <form class="add-form" onsubmit="return addPage()">
+      <label><b>Nome da Página</b>:</label>
+      <input type="text" id="pageName" maxlength="50" required placeholder="Ex: Recibo do Bicho">
+      <label><b>HTML Completo</b>:</label>
+      <textarea id="pageHtml" required placeholder="Cole aqui o código HTML, JS e CSS"></textarea>
+      <button type="submit">Adicionar Página</button>
+    </form>
+    <div class="list" id="pagesList"></div>
+  </div>
 
-<h1>SIMULADOR SUPER 6</h1>
-
-<div id="quantidade-container">
-  <button id="btnQuantidade" type="button">Quantidade de Dezenas</button>
-  <select id="quantidade">
-    <option value="13">13</option>
-    <option value="14">14</option>
-    <option value="15">15</option>
-    <option value="16">16</option>
-    <option value="17">17</option>
-    <option value="18">18</option>
-    <option value="19">19</option>
-    <option value="20">20</option>
-    <option value="25">25</option>
-    <option value="30">30</option>
-    <option value="35">35</option>
-    <option value="40">40</option>
-  </select>
-</div>
-
-<input type="number" id="valor" min="1" step="0.01" placeholder="Valor da aposta (R$)" required="">
-
-<div id="info"></div>
-<div id="premio"></div>
-
-<div class="grid" id="grade"></div>
-
-<button id="btnSurpresinha">🎁 Surpresinha</button>
-<button id="btnLimpar">🧹 Limpar Cartela</button>
-<button id="finalizar">✅ Finalizar Aposta</button>
-
-<div id="recibo">
-  <h5 style="text-align:center;margin-top:0;">ESTE RECIBO É APENAS UMA SIMULAÇÃO!</h5>
-  <div id="dezenasRecibo"></div>
-  <p id="dadosRecibo"></p>
-  <p style="font-size:0.96em">
-    <strong>
-      ●●●●●●●●●●●●●●●●●●●●●●●●●●●●<br>
-      ⚠️ Atenção: Recibo Gerado Apenas para Simulação!<br><br>
-      Este comprovante não registra sua aposta automaticamente.<br>
-      Para garantir sua participação no sorteio, envie o recibo via WhatsApp para o cambista.<br>
-      Somente após a confirmação do pagamento, você receberá o pule oficial, válido para concorrer aos prêmios.<br>
-      <b>(83) 9 9632-3995</b>
-    </strong>
-  </p>
-  <button onclick="capturarTela()">📸 Capturar e Enviar no WhatsApp</button>
-</div>
-
-<img id="preview">
-
-<div class="menu-modalidades">
-  <h2>Outras Modalidades</h2>
-  <a href="https://lotconcinfo.blogspot.com/2025/07/body-html-font-family-arial-sans-serif_26.html?m=1" class="botao">Lotinha</a>
-  <a href="https://supinf5.blogspot.com/2025/07/simulador-super-5-quina-body-font.html?m=1" class="botao">Super 5</a>
-  <a href="https://sp6info.blogspot.com/2025/07/simulador-super-6-mega-sena-body-font.html?m=1" class="botao">Super 6</a>
-  <a href="https://spalt5.blogspot.com/2025/07/lotinha-super-5-body-font-family-arial.html?m=1" class="botao">Lotinha / Super 5</a>
-</div>
-
-<!-- Imagem ilustrativa -->
-<div style="padding:1em 0;">
-  <a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhHL3shPFfcrgk78v-6_wEyPLQmrhGApw6HeEovlJHkPra85eKcNLvIIRVtk6GI6JqrXCwdR2ZCQiBqP3oJTNC-CeGoUodfVF_zsVd9g-ArnWIfsNwmPetMKNJ_qaLgGIGgER9xnyaIa3cUj9s8k3DJjx6z9ww67I05Yi0PvwUQjHSG7p3Qo_t-jLkCYxU/s1600/1000360396.png" style="display:block;margin:auto;text-align:center;">
-    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhHL3shPFfcrgk78v-6_wEyPLQmrhGApw6HeEovlJHkPra85eKcNLvIIRVtk6GI6JqrXCwdR2ZCQiBqP3oJTNC-CeGoUodfVF_zsVd9g-ArnWIfsNwmPetMKNJ_qaLgGIGgER9xnyaIa3cUj9s8k3DJjx6z9ww67I05Yi0PvwUQjHSG7p3Qo_t-jLkCYxU/s1600/1000360396.png" alt="Imagem" style="max-width:100%;height:auto;border-radius:12px;">
-  </a>
-</div>
-
-<!-- SCRIPTS -->
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script>
-  const premios = {
-    10: 30000.00,
-    11: 20000.00,
-    12: 15000.00,
-    13: 10000.00,
-    14: 80000.00,
-    15: 50000.00,
-    16: 2900.00,
-    17: 2000.00,
-    18: 1500.00,
-    19: 1000.00,
-    20: 700.00,
-    25: 150.00,
-    30: 48.00,
-    35: 18.00,
-    40: 8.00,
-  };
-
-  const grade = document.getElementById('grade');
-  const quantidadeSelect = document.getElementById('quantidade');
-  const valorInput = document.getElementById('valor');
-  const infoDiv = document.getElementById('info');
-  const premioDiv = document.getElementById('premio');
-
-  function gerarGrade() {
-    grade.innerHTML = '';
-    for (let i = 1; i <= 60; i++) {
-      const cb = document.createElement('input');
-      cb.type = 'checkbox';
-      cb.id = 'num' + i;
-      cb.value = i;
-      cb.name = 'dezenas';
-
-      const lb = document.createElement('label');
-      lb.htmlFor = cb.id;
-      lb.innerText = i.toString().padStart(2, '0');
-
-      grade.appendChild(cb);
-      grade.appendChild(lb);
+  <script>
+    // Salva e carrega as páginas no localStorage
+    function getPages() {
+      return JSON.parse(localStorage.getItem('pagesList') || '[]');
     }
-  }
-
-  gerarGrade();
-
-  function atualizarInfo() {
-    const qtd = parseInt(quantidadeSelect.value);
-    const valor = parseFloat(valorInput.value);
-
-    infoDiv.innerText = `Escolha exatamente ${qtd} dezenas.`;
-
-    if (!isNaN(valor) && valor >= 1) {
-      let premioBase = premios[qtd] || 0;
-      premioDiv.innerText = `Prêmio possível: R$ ${(premioBase * valor).toFixed(2)}`;
-    } else {
-      premioDiv.innerText = '';
+    function setPages(pgs) {
+      localStorage.setItem('pagesList', JSON.stringify(pgs));
     }
-
-    limitarSelecao(qtd);
-  }
-
-  function limitarSelecao(maxSelecionados) {
-    const checkboxes = document.querySelectorAll('input[name="dezenas"]');
-    checkboxes.forEach(cb => cb.disabled = false);
-
-    const selecionados = [...checkboxes].filter(cb => cb.checked);
-    if (selecionados.length >= maxSelecionados) {
-      checkboxes.forEach(cb => {
-        if (!cb.checked) cb.disabled = true;
-      });
-    }
-  }
-
-  quantidadeSelect.addEventListener('change', () => {
-    document.querySelectorAll('input[name="dezenas"]').forEach(cb => cb.checked = false);
-    valorInput.value = '';
-    document.getElementById('recibo').style.display = 'none';
-    atualizarInfo();
-  });
-
-  valorInput.addEventListener('input', atualizarInfo);
-
-  grade.addEventListener('change', () => {
-    const qtd = parseInt(quantidadeSelect.value);
-    limitarSelecao(qtd);
-  });
-
-  atualizarInfo();
-
-  document.getElementById('btnSurpresinha').onclick = () => {
-    const qtd = parseInt(quantidadeSelect.value);
-    const checkboxes = document.querySelectorAll('input[name="dezenas"]');
-    checkboxes.forEach(cb => cb.checked = false);
-    let nums = [];
-    while (nums.length < qtd) {
-      const n = Math.floor(Math.random() * 60) + 1;
-      if (!nums.includes(n)) nums.push(n);
-    }
-    nums.forEach(n => document.getElementById('num' + n).checked = true);
-    limitarSelecao(qtd);
-  };
-
-  document.getElementById('btnLimpar').onclick = () => {
-    document.querySelectorAll('input[name="dezenas"]').forEach(cb => cb.checked = false);
-    valorInput.value = '';
-    document.getElementById('recibo').style.display = 'none';
-    atualizarInfo();
-  };
-
-  document.getElementById('finalizar').onclick = () => {
-    const qtd = parseInt(quantidadeSelect.value);
-    const valor = parseFloat(valorInput.value);
-    const dezenasSelecionadas = [...document.querySelectorAll('input[name="dezenas"]:checked')].map(cb => cb.value.padStart(2, '0'));
-
-    if (dezenasSelecionadas.length !== qtd) {
-      alert(`Você deve selecionar exatamente ${qtd} dezenas.`);
-      return;
-    }
-    if (isNaN(valor) || valor < 1) {
-      alert('Informe um valor válido para a aposta, mínimo R$ 1,00.');
-      return;
-    }
-
-    document.getElementById('recibo').style.display = 'block';
-    document.getElementById('dezenasRecibo').innerHTML = dezenasSelecionadas.map(d => `<span>${d}</span>`).join(' ');
-    
-    const premioBase = premios[qtd] || 0;
-    const premioCalculado = premioBase * valor;
-
-    document.getElementById('dadosRecibo').innerText = 
-      `Quantidade de dezenas: ${qtd}\nValor apostado: R$ ${valor.toFixed(2)}\nPrêmio possível: R$ ${premioCalculado.toFixed(2)}`;
-  };
-
-  function capturarTela() {
-    html2canvas(document.querySelector("#recibo")).then(canvas => {
-      const imagemCapturada = canvas.toDataURL("image/png");
-      const preview = document.getElementById("preview");
-      preview.src = imagemCapturada;
-      preview.style.display = 'block';
-
-      if (navigator.share) {
-        fetch(imagemCapturada)
-          .then(res => res.blob())
-          .then(blob => {
-            const arquivo = new File([blob], "recibo.png", { type: "image/png" });
-            navigator.share({
-              title: "Recibo de Aposta",
-              text: "Confira minha aposta no simulador:",
-              files: [arquivo]
-            }).catch(err => alert("Compartilhamento cancelado ou não suportado: " + err));
-          });
-      } else {
-        alert("Seu navegador não suporta compartilhamento direto. Segure sobre a imagem para salvar e envie manualmente no WhatsApp.");
+    function addPage() {
+      const name = document.getElementById('pageName').value.trim();
+      const html = document.getElementById('pageHtml').value.trim();
+      if (name && html) {
+        const id = Date.now().toString(36);
+        const pages = getPages();
+        pages.push({ id, name, html });
+        setPages(pages);
+        document.getElementById('pageName').value = '';
+        document.getElementById('pageHtml').value = '';
+        renderPages();
       }
-    });
-  }
-</script>
+      return false;
+    }
+    function deletePage(id) {
+      if (confirm('Apagar esta página?')) {
+        let pages = getPages();
+        pages = pages.filter(p => p.id !== id);
+        setPages(pages);
+        renderPages();
+      }
+    }
+    function renderPages() {
+      const pages = getPages();
+      let html = '';
+      if (pages.length === 0) {
+        html = `<div style="text-align:center; color:#888; margin:26px 0;">Nenhuma página adicionada ainda.</div>`;
+      } else {
+        pages.forEach(p => {
+          html += `
+            <div class="page-link">
+              <a href="?pg=${p.id}" target="_blank">${p.name}</a>
+              <button onclick="deletePage('${p.id}')">🗑️</button>
+            </div>
+          `;
+        });
+      }
+      document.getElementById('pagesList').innerHTML = html;
+    }
+
+    // Ao abrir pelo link, exibe a página
+    function openPage() {
+      const params = new URLSearchParams(location.search);
+      const pgId = params.get('pg');
+      if (pgId) {
+        const p = getPages().find(pg => pg.id === pgId);
+        if (p) {
+          document.body.innerHTML = p.html;
+          document.title = p.name;
+        } else {
+          document.body.innerHTML = '<h2 style="color:red;text-align:center;">Página não encontrada!</h2>';
+        }
+        return true;
+      }
+      return false;
+    }
+
+    if (!openPage()) renderPages();
+  </script>
 </body>
 </html>
