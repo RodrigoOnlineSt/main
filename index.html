@@ -1,7 +1,53 @@
-<meta content="2; URL='https://rodrigon-cambista.my.canva.site/rodrigo-cambista/'" http-equiv="refresh"></meta>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Mural de Avisos</title>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background: #d5e6f7; margin:0; }
+    .container { max-width: 480px; margin: 32px auto 0; background: #fff; color: #222; border-radius: 16px; box-shadow: 0 6px 32px #0002;}
+    h2 { text-align: center; margin-top: 0; padding: 24px 0 8px 0; color: #1877f2;}
+    .post { background:#f4faff; border-radius:11px; margin:15px 0; padding:12px 15px; }
+    .post .data { font-size:12px; color:#666; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Mural de Avisos</h2>
+    <div id="avisos"></div>
+  </div>
+  <script>
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAr-qpOVl3aooDY56W9fHHLmmIxfms1P5I",
+      authDomain: "presta-9f617.firebaseapp.com",
+      projectId: "presta-9f617",
+      storageBucket: "presta-9f617.firebasestorage.app",
+      messagingSenderId: "933441693460",
+      appId: "1:933441693460:web:d1685236428060f700c401",
+      measurementId: "G-G4BNHYSYM6"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-
-
-
-
-<p></p><div class="separator" style="clear: both; text-align: center;"><div class="separator" style="clear: both; text-align: center;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhj0876Dzed_66ycFyqo5vJSFdsZtaU-NeAia5xywjITAlBJhcbvweC5T2p3hweQvWuaRjCY1FZOL95-1W2H_Jlm3zQeiynZRGsTikpvCobZuiowWMFhJqpedLRCOqrRLjVN0-MbxShYz2jncVXFbkX6iB7dBaRqXaOVYFx2r-z38wldpqNZqEwVcQDLnw0/s512/1000076470.gif" imageanchor="0" style="margin-left: 0em; margin-right: 0em;"><img border="0" data-original-height="512" data-original-width="512" height="320" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhj0876Dzed_66ycFyqo5vJSFdsZtaU-NeAia5xywjITAlBJhcbvweC5T2p3hweQvWuaRjCY1FZOL95-1W2H_Jlm3zQeiynZRGsTikpvCobZuiowWMFhJqpedLRCOqrRLjVN0-MbxShYz2jncVXFbkX6iB7dBaRqXaOVYFx2r-z38wldpqNZqEwVcQDLnw0/s320/1000076470.gif" width="320" /></a></div><br /><br /></div><br />&nbsp;<p></p>
+    // Lista avisos (tempo real)
+    db.collection('avisos').orderBy('data','desc').onSnapshot(snapshot => {
+      let html = '';
+      snapshot.forEach(doc => {
+        const { titulo, mensagem, imagem, data } = doc.data();
+        html += `<div class="post">
+          ${titulo ? `<b>${titulo}</b><br>` : ''}
+          ${mensagem ? `<div>${mensagem.replace(/\n/g,"<br>")}</div>` : ''}
+          ${imagem ? `<img src="${imagem}" style="width:100%;margin:9px 0;border-radius:8px;"/>` : ''}
+          <div class="data">${new Date(data).toLocaleString()}</div>
+        </div>`;
+      });
+      document.getElementById('avisos').innerHTML = html;
+    });
+  </script>
+</body>
+</html>
