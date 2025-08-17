@@ -1,58 +1,37 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Portal de Páginas</title>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <style>
-    body { background: #f8fafc; margin:0; font-family:'Segoe UI',Arial,sans-serif; color:#222;}
-    .container { max-width: 440px; margin:38px auto 0; background:#fff; border-radius:17px; box-shadow:0 4px 18px #0002; }
-    .header { padding:24px 8px 12px 8px; background:linear-gradient(100deg,#21a2ee 70%,#144a6b); border-radius:17px 17px 0 0; text-align:center; font-size:1.25em; font-weight:600; color:#fff;}
-    .list { margin:16px 0 0 0; padding:0 14px 12px 14px; }
-    .page-link { display:flex;align-items:center;justify-content:space-between; background:#e7f3fb; border-radius:10px; padding:13px 18px; margin-bottom:12px; font-size:1.1em; box-shadow:0 2px 7px #0012;}
-    .page-link a { color:#144a6b; text-decoration:none; font-weight:600;}
-    @media (max-width: 560px){ .container{max-width:99vw;} .header{font-size:1.09em;} }
-    .anexos-list span { display:block; margin-bottom:2px;font-size:0.98em;}
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      Portal de Páginas <span style="font-size:0.9em;font-weight:400;">(visualização)</span>
-    </div>
-    <div class="list" id="pagesList"></div>
-  </div>
-  <script>
-    // Configuração do Firebase
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Visualização em tempo real</title>
+  <!-- Import Firebase (ESM) via CDN -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    // Configuração do seu Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyAr-qpOVl3aooDY56W9fHHLmmIxfms1P5I",
       authDomain: "presta-9f617.firebaseapp.com",
       projectId: "presta-9f617",
-      storageBucket: "presta-9f617.appspot.com",
+      storageBucket: "presta-9f617.firebasestorage.app",
       messagingSenderId: "933441693460",
       appId: "1:933441693460:web:d1685236428060f700c401",
       measurementId: "G-G4BNHYSYM6"
     };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-    // Se abrir com ?pg=, mostra página individual + anexos
-    async function openPage(){
-      const params = new URLSearchParams(location.search);
-      const pgId = params.get('pg');
-      if(pgId){
-        const doc = await db.collection('pages').doc(pgId).get();
-        if(doc.exists){
-          const p = doc.data();
-          let anexosHtml = '';
-          if(p.anexos && p.anexos.length){
-            anexosHtml = '<div class="anexos-list" style="margin:16px 0 10px 0;">';
-            p.anexos.forEach(a=>{
-              if(a.type.startsWith("image/")){
-                anexosHtml += `<span>🖼️<br><img src="${a.url}" alt="${a.name}" style="max-width:100%;max-height:220px;display:block;margin:4px auto 10px auto;border-radius:8px;"></span>`;
-              } else if(a.type.startsWith("audio/")){
-                anexosHtml += `<span>🔊<br><audio controls src="${a.url}" style="width:100%;"></audio></span>`;
-              } else if(a.type.startsWith("video/")){
-                anexosHtml += `<span>🎬<br><video controls src="${a.url}" style="width:100%;max-height:240px;border-radius
+    window.addEventListener('DOMContentLoaded', () => {
+      const div = document.getElementById('texto-recebido');
+      const textoRef = ref(db, 'mensagem/texto');
+      onValue(textoRef, (snap) => {
+        div.innerText = snap.val() || '';
+      });
+    });
+  </script>
+</head>
+<body style="background:#091a1f; color:#3ff; text-align:center; padding:30px;">
+  <h1>Texto Recebido</h1>
+  <div id="texto-recebido" style="margin-top:40px;white-space:pre-wrap;font-size:2em;border:2px dashed #17c;padding:28px;border-radius:15px;max-width:600px;margin:auto;"></div>
+</body>
+</html>
