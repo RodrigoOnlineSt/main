@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Visualização em tempo real</title>
-  <!-- Import Firebase (ESM) via CDN -->
+  <title>Visualização do Cliente</title>
+  <!-- Firebase Modular ESM via CDN -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
@@ -29,9 +29,39 @@
       });
     });
   </script>
+  <style>
+    body {
+      background: #091a1f;
+      color: #3ff;
+      text-align: center;
+      padding: 30px;
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    h1 {
+      font-size: 2.1em;
+      letter-spacing: 1px;
+      margin-bottom: 32px;
+    }
+    #texto-recebido {
+      margin-top: 10px;
+      white-space: pre-wrap;
+      font-size: 2em;
+      border: 2px dashed #17c;
+      padding: 28px;
+      border-radius: 15px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      background: #00161d;
+      color: #55f6ff;
+      box-shadow: 0 2px 32px #00ffff22;
+      min-height: 80px;
+    }
+  </style>
 </head>
-<body style="background:#091a1f; color:#3ff; text-align:center; padding:30px;">
-  <h1>Texto Recebido</h1>
-  <div id="texto-recebido" style="margin-top:40px;white-space:pre-wrap;font-size:2em;border:2px dashed #17c;padding:28px;border-radius:15px;max-width:600px;margin:auto;"></div>
+<body>
+  <h1>O que foi digitado aparece aqui:</h1>
+  <div id="texto-recebido"></div>
 </body>
 </html>
