@@ -24,8 +24,6 @@
     .card:hover { box-shadow: 0 16px 44px #3bc2a255; transform: scale(1.022);}
     .card-titulo { font-size: 1.15em; color: #077cc3; font-weight: bold; margin-bottom: 7px;}
     .capa-img { border-radius:12px;max-width:100%;max-height:108px; margin-bottom:8px; }
-    .thumbs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 7px;}
-    .thumbs img, .thumbs video { border-radius: 8px; max-width: 60px; max-height: 60px; border: 1.5px solid #d8ecfa;}
     .card-data { color: #aaa; font-size: .91em; position: absolute; bottom: 11px; right: 15px;}
     .share-btn { position:absolute; top:13px; right:13px; background:#30d5c8; color:#fff; border:none; border-radius:7px; padding:6px 11px; font-size:.98em; cursor:pointer;}
     .card-empty {color:#b1bfd2; text-align:center; font-size:1.05em; padding:46px 0;}
@@ -46,4 +44,181 @@
     @media (max-width: 750px) {
       .modal { width: 99vw; padding: 18px 4vw;}
     }
-    @keyframes popup { from { transform: scale(.8); opacity:
+    @keyframes popup { from { transform: scale(.8); opacity:0;} to { transform: scale(1); opacity:1;} }
+    .close-btn {
+      position: absolute; top: 12px; right: 16px; font-size: 2.2em;
+      color: #077cc3; background: none; border: none; cursor: pointer;
+      transition: .17s; z-index: 20;
+    }
+    .close-btn:hover { color: #005e9b;}
+    .modal-titulo { font-weight: bold; font-size: 1.22em; margin-bottom: 16px;}
+    .galeria { display:flex; gap:14px; flex-wrap: wrap; justify-content: center; margin:10px 0 22px 0;}
+    .galeria img, .galeria video { border-radius:11px; max-width:170px; max-height:170px; border:1.5px solid #d8ecfa;}
+    /* TELA CHEIA HTML */
+    .fullscreen-bg {
+      position:fixed; top:0; left:0; width:100vw; height:100vh; background:#000; display:none; z-index:1000;
+      justify-content:center; align-items:center;
+    }
+    .fullscreen-iframe {
+      width:100vw; height:100vh; border:none; background:#fff; display:block;
+    }
+    .fs-close-btn {
+      position:absolute; top:18px; right:24px; font-size:2.8em; color:#fff; background:#003c6c77; border:none; border-radius:20px;
+      z-index:1100; cursor:pointer; padding:0 16px 2px 16px; font-weight:bold; transition:.18s;
+    }
+    .fs-close-btn:hover { color:#3ad3ef; background:#000a;}
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <div class="header">
+    Loterias A Sorte — Portal do Cliente
+  </div>
+  <div class="cards" id="cards"></div>
+  <!-- Modal para imagens/vídeos -->
+  <div class="modal-bg" id="modalBg" onclick="fecharModal(event)">
+    <div class="modal" id="modal">
+      <button class="close-btn" onclick="fecharModal(event)">&times;</button>
+      <div class="modal-titulo" id="modalTitulo"></div>
+      <div class="galeria" id="modalGaleria"></div>
+    </div>
+  </div>
+  <!-- TELA CHEIA HTML -->
+  <div class="fullscreen-bg" id="fullscreenBg">
+    <button class="fs-close-btn" onclick="fecharFullHtml()">&times;</button>
+    <iframe id="fullHtmlIframe" class="fullscreen-iframe"></iframe>
+  </div>
+  <script>
+    // SEU firebaseConfig do concursosuper-29c5b
+    const firebaseConfig = {
+      apiKey: "SUA_API_KEY_AQUI",
+      authDomain: "concursosuper-29c5b.firebaseapp.com",
+      projectId: "concursosuper-29c5b",
+      storageBucket: "concursosuper-29c5b.appspot.com",
+      messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+      appId: "SEU_APP_ID",
+      measurementId: "SEU_MEASUREMENT_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Util para pegar querystring (id do conteúdo)
+    function getQueryParam(k){
+      let p = new URLSearchParams(window.location.search);
+      return p.get(k);
+    }
+
+    // Carrega individual, se acessar por ?id=
+    let carregouUnico = false;
+    const idQuery = getQueryParam('id');
+    if(idQuery){
+      db.collection("conteudos").doc(idQuery).get().then(doc=>{
+        if(doc.exists){
+          const d = doc.data();
+          document.title = d.titulo || "Página";
+          abrirCard(d, idQuery, true);
+        } else {
+          document.getElementById('cards').innerHTML = "<div class='card-empty'>Conteúdo não encontrado.</div>";
+        }
+      });
+      carregouUnico = true;
+    }
+
+    // Carregar todos os conteúdos (se não for por id)
+    if(!carregouUnico){
+      db.collection("conteudos").orderBy("data","desc").onSnapshot(snapshot=>{
+        const cards = document.getElementById('cards');
+        cards.innerHTML = "";
+        if(snapshot.empty){
+          cards.innerHTML = `<div class="card-empty">Nenhum conteúdo publicado ainda.</div>`;
+          return;
+        }
+        snapshot.forEach(doc=>{
+          const d = doc.data();
+          const data = d.data ? new Date(d.data.seconds*1000).toLocaleDateString() : '';
+          const card = document.createElement('div');
+          card.className = 'card';
+          // Adiciona foto de capa se tiver
+          let capa = d.capa ? `<img src="${d.capa}" class="capa-img">` : "";
+          card.innerHTML = `
+            ${capa}
+            <div class="card-titulo">${d.titulo||''}</div>
+            <div class="card-data">${data}</div>
+            <button class="share-btn" onclick="event.stopPropagation(); compartilhar('${doc.id}','${encodeURIComponent(d.titulo||'Conteúdo')}');">Compartilhar</button>
+          `;
+          card.onclick = ()=>abrirCard(d, doc.id, false);
+          cards.appendChild(card);
+        });
+      });
+    }
+
+    // Compartilhar conteúdo (WhatsApp, copiar, etc)
+    window.compartilhar = function(id, titulo){
+      const url = window.location.origin + window.location.pathname + "?id=" + id;
+      if(navigator.share){
+        navigator.share({title: decodeURIComponent(titulo), url: url});
+      } else {
+        const wpp = `https://wa.me/?text=${decodeURIComponent(titulo)}%20${encodeURIComponent(url)}`;
+        if(confirm("Deseja compartilhar pelo WhatsApp?")) window.open(wpp);
+        else {
+          prompt("Link dessa página (copie):", url);
+        }
+      }
+    }
+
+    // Abrir conteúdo (modal ou tela cheia)
+    function abrirCard(d, id, fullForce){
+      // Se for HTML, abre em tela cheia
+      if(d.html && d.html.trim()){
+        abrirFullHtml(d.html, d.titulo||'', id);
+      } else {
+        // Modal galeria para fotos/vídeos
+        document.getElementById('modalTitulo').textContent = d.titulo || '';
+        const galeria = document.getElementById('modalGaleria');
+        galeria.innerHTML = "";
+        if(d.capa) galeria.innerHTML += `<img src="${d.capa}" loading="lazy" style="max-width:220px;max-height:110px;margin-bottom:12px;">`;
+        if(d.fotos && d.fotos.length)
+          galeria.innerHTML += d.fotos.map(url=>`<img src="${url}" loading="lazy">`).join('');
+        if(d.videos && d.videos.length)
+          galeria.innerHTML += d.videos.map(url=>`<video src="${url}" controls></video>`).join('');
+        document.getElementById('modalBg').style.display = "flex";
+      }
+    }
+
+    // Tela cheia para HTML
+    function abrirFullHtml(html, titulo, id){
+      document.body.style.overflow = 'hidden';
+      document.getElementById('fullscreenBg').style.display = 'flex';
+      document.title = titulo;
+      // Garante DOCTYPE e título para máxima compatibilidade visual
+      const fullHtml = `
+        <!DOCTYPE html>
+        <html lang="pt-BR"><head>
+        <meta charset="UTF-8"><title>${titulo||'Página'}</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <style>body{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}</style>
+        </head><body>
+        ${html}
+        </body></html>`;
+      document.getElementById('fullHtmlIframe').srcdoc = fullHtml;
+      // Atualiza o link na barra de endereços sem recarregar
+      if(id) history.replaceState({}, "", "?id=" + id);
+    }
+    function fecharFullHtml(){
+      document.getElementById('fullscreenBg').style.display = "none";
+      document.getElementById('fullHtmlIframe').srcdoc = "";
+      document.body.style.overflow = '';
+      document.title = "Portal do Cliente";
+      // Volta para lista se veio por ?id=
+      if(getQueryParam('id')) window.location.href = window.location.pathname;
+    }
+
+    // Fechar modal (galeria imagens/vídeos)
+    function fecharModal(e){
+      if(e.target.className.includes('modal-bg')||e.target.className==='close-btn')
+        document.getElementById('modalBg').style.display = "none";
+    }
+  </script>
+</body>
+</html>
