@@ -24,270 +24,300 @@
       margin-bottom: 18px;
       border-bottom-left-radius: 32px;
       border-bottom-right-radius: 32px;
-      box-shadow: 0 8px 32px #0e214950;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      box-shadow: 0 8px 32px #0e2a4a21;
     }
     .header img {
-      height: 48px;
-      margin-right: 13px;
-      border-radius: 14px;
-      box-shadow: 0 0 8px #15407844;
+      max-height: 44px;
+      margin-right: 12px;
+      border-radius: 7px;
     }
     .header span {
-      font-size: 1.38em;
+      color: #1966c4;
       font-weight: bold;
-      color: #163a74;
-      letter-spacing: 2px;
-      text-shadow: 0 3px 18px #1966c466;
+      font-size: 1.28em;
+      letter-spacing: 1px;
     }
-    .container {
-      max-width: 510px;
-      margin: 0 auto;
-      padding: 7px 8px 40px 8px;
+    .main {
+      max-width: 540px;
+      margin: 0 auto 30px auto;
+      background: #1a2771cc;
+      border-radius: 16px;
+      padding: 20px 9px 30px 9px;
+      box-shadow: 0 12px 38px #0007;
     }
-    .item {
-      background: #fff;
-      border-radius: 14px;
-      margin-bottom: 21px;
-      box-shadow: 0 2px 22px #23417a25;
-      padding: 12px 12px 10px 12px;
-      position: relative;
-      overflow: hidden;
-      transition: box-shadow .21s;
-      border: 2px solid #fff;
-    }
-    .item:hover { box-shadow: 0 6px 32px #2b5cb644; border:2px solid #3ce1d8;}
-    .item-title {
-      font-size: 1.22em;
-      font-weight: bold;
-      color: #1d3573;
-      margin-bottom: 6px;
-      text-shadow: 0 2px 18px #bde1ff22;
-      cursor: pointer;
-    }
-    .capa {
-      width: 98%; max-width: 330px; height: auto; margin: 6px auto 14px auto; display: block; border-radius: 10px; box-shadow: 0 4px 24px #1288ff13;
-      cursor: pointer;
-      transition: box-shadow .19s;
-    }
-    .media-list img, .media-list video {
-      width: 54px; height: 54px; object-fit: cover;
-      border-radius: 7px;
-      margin: 2px 6px 2px 0;
-      border: 2px solid #1966c433;
-      vertical-align: middle;
-    }
-    .media-list {
-      margin-bottom: 9px;
-      margin-top: 6px;
-    }
-    .share-link {
-      margin-top: 10px;
+    .conteudos {
       display: flex;
-      gap: 9px;
-      align-items: center;
-      font-size: .97em;
-      color: #1771d9;
-    }
-    .share-link input {
-      width: 65%;
-      padding: 5px;
-      border-radius: 7px;
-      border: 1px solid #1966c433;
-      font-size: .95em;
-      background: #f6faff;
-      color: #13396d;
-    }
-    .share-btn {
-      background: #30d5c8;
-      color: #1e293b;
-      border: none;
-      border-radius: 6px;
-      padding: 6px 10px;
-      font-size: .97em;
-      cursor: pointer;
-      box-shadow: 0 2px 7px #1966c440;
-    }
-    .open-html {
-      display: inline-block;
-      background: #2b4cff;
-      color: #fff;
-      border-radius: 7px;
-      padding: 7px 13px;
-      font-weight: bold;
-      font-size: 1em;
-      margin: 7px 0 0 0;
-      box-shadow: 0 3px 12px #3a8eea44;
-      border: none;
-      cursor: pointer;
-    }
-    @media (max-width:600px) {
-      .container { max-width: 100vw; padding: 3px 2vw 40px 2vw;}
-      .item { padding: 9px 4vw 7px 4vw;}
-    }
-    /* Modal tela cheia para HTML */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background: #172236ee;
-      z-index: 99;
+      flex-wrap: wrap;
+      gap: 18px;
       justify-content: center;
-      align-items: center;
     }
-    .modal-content {
+    .card-btn {
       background: #fff;
-      border-radius: 18px;
+      color: #222;
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 5px 24px #1966c477;
+      margin: 0;
       padding: 0;
-      max-width: 98vw;
-      max-height: 98vh;
-      overflow: auto;
-      box-shadow: 0 8px 48px #0009;
-      color: #121d38;
-      position: relative;
-      min-width: 340px;
-      min-height: 90vh;
-      width: 98vw;
-      height: 98vh;
+      cursor: pointer;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
+      align-items: center;
+      min-width: 110px;
+      max-width: 140px;
+      min-height: 95px;
+      transition: transform .12s;
+      outline: none;
+      position: relative;
     }
-    .modal-close {
+    .card-btn:hover, .card-btn:active {
+      transform: scale(1.035);
+    }
+    .card-capa {
+      width: 100%;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 13px 13px 0 0;
+      background: #d6e6fa;
+      margin-bottom: 3px;
+    }
+    .card-titulo {
+      font-weight: bold;
+      font-size: 1.08em;
+      color: #1966c4;
+      padding: 7px 5px 6px 5px;
+      text-align: center;
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    /* Modal conteúdo */
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      background: #0a1729bb;
+      display: none;
+      z-index: 50;
+      align-items: center;
+      justify-content: center;
+      animation: fadeInBg .2s;
+    }
+    .modal {
+      background: #fff;
+      border-radius: 16px;
+      max-width: 98vw;
+      width: 400px;
+      max-height: 97vh;
+      overflow-y: auto;
+      padding: 0 0 12px 0;
+      position: relative;
+      box-shadow: 0 10px 40px #162a4a99;
+      animation: popIn .21s;
+    }
+    .modal .fechar {
       position: absolute;
-      top: 14px; right: 22px;
+      right: 17px; top: 16px;
       background: none;
       border: none;
-      font-size: 2.2em;
-      color: #366ad6;
+      font-size: 1.45em;
+      color: #1966c4;
       cursor: pointer;
-      font-weight: bold;
-      z-index: 2;
+      z-index: 5;
     }
-    .modal-iframe {
-      border: 0;
+    .modal .conteudo-capa {
       width: 100%;
-      height: 100%;
-      flex: 1;
-      background: #fff;
-      border-radius: 0 0 18px 18px;
+      border-radius: 16px 16px 0 0;
+      object-fit: cover;
+      max-height: 160px;
+      min-height: 70px;
+      background: #d6e6fa;
       display: block;
     }
+    .modal-titulo {
+      color: #1966c4;
+      font-weight: bold;
+      font-size: 1.23em;
+      text-align: center;
+      margin: 13px 0 5px 0;
+      word-break: break-word;
+    }
+    .modal-html {
+      color: #333;
+      background: #f7f8fc;
+      padding: 13px 11px;
+      border-radius: 11px;
+      margin: 10px 11px;
+      font-size: 1.06em;
+      min-height: 32px;
+      word-break: break-word;
+      overflow-x: auto;
+    }
+    .modal-fotos {
+      display: flex;
+      overflow-x: auto;
+      gap: 11px;
+      padding: 10px 7px 6px 14px;
+      margin-bottom: 7px;
+    }
+    .modal-fotos img, .modal-fotos video {
+      max-width: 80px;
+      max-height: 90px;
+      border-radius: 8px;
+      border: 1.5px solid #1966c4;
+      background: #f4f8ff;
+      box-shadow: 0 2px 9px #1966c455;
+      object-fit: cover;
+    }
+    .modal-share {
+      text-align: center;
+      margin: 9px 0 2px 0;
+    }
+    .modal-share-btn {
+      background: #3ce1d8;
+      color: #154d7c;
+      border: none;
+      border-radius: 7px;
+      font-weight: bold;
+      font-size: 1em;
+      padding: 8px 18px;
+      cursor: pointer;
+      margin: 0 5px 10px 5px;
+      box-shadow: 0 2px 12px #3ce1d833;
+    }
+    @media (max-width:700px) {
+      .main { max-width: 99vw; }
+      .modal { width: 97vw; }
+      .modal-fotos img, .modal-fotos video { max-width: 68px; max-height: 80px; }
+      .card-btn { max-width: 99vw; min-width: 45vw;}
+    }
+    @keyframes fadeInBg { from {opacity:0} to {opacity:1} }
+    @keyframes popIn { from{transform:scale(.95);} to{transform:scale(1);} }
   </style>
 </head>
 <body>
   <div class="header">
+    <!-- Substitua pelo link da sua logo -->
     <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNxmA6mH86GQSOc7AKewTETB-55O3iY3QTCytGXS696o25IKkQTU2yQedvgeDo17i_EEYbJoy_eM9t7yN0vpEApNXt19M9Qj8Dh-IIHEi6o3AWTuVZXRtS2rvAT9lY3hAQ4riW3ftOonmBBBTzACHzZJ1pa1EC2joR90I9kH2noEZnCrQTgJOXjVunKjw/s1600/1000123334.png" alt="Logo">
-    <span>Portal do Cliente</span>
+    <span>Portal de Conteúdos</span>
   </div>
-  <div class="container" id="container"></div>
-
-  <!-- Modal para exibir HTML em tela cheia -->
-  <div class="modal" id="modalHtml">
-    <div class="modal-content" id="modalContent">
-      <button class="modal-close" onclick="fecharModal()">&times;</button>
-      <iframe id="modalIframe" class="modal-iframe" srcdoc=""></iframe>
+  <div class="main">
+    <div class="conteudos" id="conteudos"></div>
+  </div>
+  
+  <!-- Modal para visualizar conteúdo -->
+  <div class="modal-bg" id="modalBg">
+    <div class="modal" id="modal">
+      <button class="fechar" onclick="fecharModal()">&times;</button>
+      <img id="modalCapa" class="conteudo-capa" src="" alt="Capa">
+      <div class="modal-titulo" id="modalTitulo"></div>
+      <div class="modal-fotos" id="modalFotos"></div>
+      <div class="modal-html" id="modalHtml"></div>
+      <div class="modal-share">
+        <button class="modal-share-btn" onclick="compartilharModal()">Compartilhar</button>
+      </div>
     </div>
   </div>
 
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
   <script>
-    // Firebase config (mesmo projeto do ADM)
+    // TROQUE PELO SEU FIREBASE!
     const firebaseConfig = {
       apiKey: "SUA_API_KEY_AQUI",
       authDomain: "concursosuper-29c5b.firebaseapp.com",
       projectId: "concursosuper-29c5b",
-      storageBucket: "concursosuper-29c5b.appspot.com",
-      messagingSenderId: "SEU_MESSAGING_SENDER_ID",
-      appId: "SEU_APP_ID",
-      measurementId: "SEU_MEASUREMENT_ID"
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Pega parâmetro ?id= para abrir post específico (mas nunca abre HTML automático)
-    function getParam(name) {
-      const url = new URL(window.location);
-      return url.searchParams.get(name);
-    }
+    const conteudosDiv = document.getElementById('conteudos');
 
-    // Modal abrir/fechar para HTML
-    window.abrirModal = function(html) {
-      document.getElementById('modalHtml').style.display = 'flex';
-      document.getElementById('modalIframe').setAttribute("srcdoc", html);
-      document.body.style.overflow = "hidden";
-    }
-    window.fecharModal = function() {
-      document.getElementById('modalHtml').style.display = 'none';
-      document.getElementById('modalIframe').setAttribute("srcdoc", "");
-      document.body.style.overflow = "";
-    }
-    window.onclick = function(event) {
-      if(event.target === document.getElementById('modalHtml')) fecharModal();
-    }
-
-    // Função para criar um card visual bonito e funcional
-    function criarItem(doc, dados) {
-      let id = doc.id;
-      let capa = dados.capa ? `<img class="capa" src="${dados.capa}" onclick="abrirModal(\`${dados.html ? dados.html.replace(/`/g,"\\`").replace(/\\/g,"\\\\") : ''}\`)"${dados.html?' style="cursor:pointer;"':''}>` : "";
-      let fotos = (dados.fotos||[]).map(url=>`<img src="${url}">`).join('');
-      let videos = (dados.videos||[]).map(url=>`<video src="${url}" muted controls></video>`).join('');
-      let midia = (fotos||videos) ? `<div class="media-list">${fotos}${videos}</div>` : "";
-      // Link compartilhável
-      let shareLink = `${window.location.origin + window.location.pathname}?id=${id}`;
-      // Botões de compartilhar/copy
-      let shareDiv = `
-        <div class="share-link">
-          <input value="${shareLink}" onclick="this.select()" readonly>
-          <button class="share-btn" onclick="window.open('https://wa.me/?text='+encodeURIComponent('${dados.titulo} - ${shareLink}'))">WhatsApp</button>
-          <button class="share-btn" onclick="navigator.clipboard.writeText('${shareLink}');this.textContent='Copiado!';setTimeout(()=>this.textContent='Copiar',1300)">Copiar</button>
-        </div>
-      `;
-      // Botão para abrir HTML se existir
-      let btnHtml = dados.html ? `<button class="open-html" onclick="abrirModal(\`${dados.html.replace(/`/g,"\\`").replace(/\\/g,"\\\\")}\`)">Abrir Conteúdo</button>` : "";
-      // Título vira botão se tiver HTML
-      let titulo = dados.html
-        ? `<div class="item-title" onclick="abrirModal(\`${dados.html.replace(/`/g,"\\`").replace(/\\/g,"\\\\")}\`)">${dados.titulo||""}</div>`
-        : `<div class="item-title">${dados.titulo||""}</div>`;
-      // Monta o card completo
-      return `
-        <div class="item">
-          ${titulo}
-          ${capa}
-          ${midia}
-          ${btnHtml}
-          ${shareDiv}
-        </div>
-      `;
-    }
-
-    // Carregar um post específico (mas nunca abrir HTML de cara)
-    async function carregarPorId(id) {
-      let container = document.getElementById('container');
-      let doc = await db.collection("conteudos").doc(id).get();
-      if(!doc.exists) { container.innerHTML = "<div style='color:#fff;font-size:1.3em;text-align:center;margin-top:40px;'>Conteúdo não encontrado!</div>"; return; }
-      let d = doc.data();
-      container.innerHTML = criarItem(doc, d);
-      // NÃO abre HTML automático!
-    }
-
-    // Carregar lista de conteúdos se não tiver id específico
-    function carregarTodos() {
+    // Função para exibir todos os conteúdos (Home)
+    function mostrarConteudos(){
       db.collection("conteudos").orderBy("data","desc").onSnapshot(snapshot=>{
-        let container = document.getElementById('container');
-        let html = "";
+        conteudosDiv.innerHTML = "";
         snapshot.forEach(doc=>{
-          html += criarItem(doc, doc.data());
+          const d = doc.data();
+          // Botão tipo card
+          let btn = document.createElement('button');
+          btn.className = 'card-btn';
+          btn.onclick = ()=>abrirModal(doc.id, d);
+
+          // Foto de capa ou primeira foto (ou cor de fundo)
+          let capa = d.capa || (d.fotos && d.fotos[0]) || "";
+          btn.innerHTML = `
+            ${capa ? `<img class="card-capa" src="${capa}">` : `<div class="card-capa" style="background:#d6e6fa"></div>`}
+            <div class="card-titulo">${d.titulo||""}</div>
+          `;
+          conteudosDiv.appendChild(btn);
         });
-        container.innerHTML = html || "<div style='color:#fff;font-size:1.12em;text-align:center;margin-top:40px;'>Nenhuma publicação ainda.</div>";
       });
     }
 
-    // Detecta se deve exibir um post único ou todos
-    let id = getParam("id");
-    if(id) carregarPorId(id);
-    else carregarTodos();
+    // Abrir conteúdo em modal
+    function abrirModal(id, d){
+      document.getElementById('modalBg').style.display = 'flex';
+      history.replaceState(null, '', '/?id='+id);
+      document.getElementById('modalCapa').src = d.capa || (d.fotos && d.fotos[0]) || "";
+      document.getElementById('modalTitulo').textContent = d.titulo||"";
+      
+      // Fotos e vídeos (slide horizontal)
+      let fotosHtml = "";
+      (d.fotos||[]).forEach(url=>{
+        fotosHtml += `<img src="${url}" loading="lazy">`;
+      });
+      (d.videos||[]).forEach(url=>{
+        fotosHtml += `<video src="${url}" controls preload="none"></video>`;
+      });
+      document.getElementById('modalFotos').innerHTML = fotosHtml;
+
+      // HTML publicado (com segurança)
+      let modalHtml = d.html||"";
+      if(modalHtml.trim().length > 0){
+        document.getElementById('modalHtml').innerHTML = modalHtml;
+        document.getElementById('modalHtml').style.display = "";
+      } else {
+        document.getElementById('modalHtml').style.display = "none";
+      }
+
+      // Compartilhar individual
+      window._modalId = id;
+      window._modalTitulo = d.titulo || "";
+    }
+    function fecharModal(){
+      document.getElementById('modalBg').style.display = 'none';
+      history.replaceState(null, '', '/');
+    }
+    function compartilharModal(){
+      const id = window._modalId;
+      const titulo = window._modalTitulo;
+      const url = location.origin + "/?id=" + id;
+      if(navigator.share){
+        navigator.share({ title: titulo, url });
+      } else {
+        window.open('https://wa.me/?text='+encodeURIComponent(titulo+" - "+url));
+      }
+    }
+
+    // Se acessar via link direto /?id=...
+    function abrirDireto(){
+      const id = (new URL(location.href)).searchParams.get("id");
+      if(id){
+        db.collection("conteudos").doc(id).get().then(doc=>{
+          if(doc.exists){
+            abrirModal(id, doc.data());
+          }
+        });
+      }
+    }
+
+    // Iniciar
+    mostrarConteudos();
+    abrirDireto();
+    // Ao fechar modal pelo fundo
+    document.getElementById('modalBg').onclick = function(e){
+      if(e.target===this) fecharModal();
+    };
   </script>
 </body>
 </html>
