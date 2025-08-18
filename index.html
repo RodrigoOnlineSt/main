@@ -2,96 +2,118 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Portal do Cliente - Cassino</title>
+  <title>Portal do Cliente</title>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
   <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@0.318.0/font/lucide.css" />
   <style>
     body {
-      margin:0; font-family:'Montserrat',sans-serif;
-      background: linear-gradient(120deg, #0d1b2a 0%, #122d42 80%, #4a148c 100%);
-      color:#f6f6f6; min-height:100vh;
+      margin:0; font-family:'Montserrat',Arial,sans-serif;
+      background: linear-gradient(150deg, #0e3789 0%, #1362c8 100%);
+      color:#fff; min-height:100vh;
     }
     .topbar {
-      background: rgba(20,24,44,0.96);
-      box-shadow: 0 3px 22px #16044f80;
-      padding:10px 0 8px 0;
+      background: #03245c;
+      box-shadow: 0 3px 22px #0005;
+      padding:13px 0 10px 0;
       display:flex;align-items:center;justify-content:center;
-      border-bottom:2px solid #3f0e84;
-      margin-bottom:22px;
-      position:sticky;top:0;z-index:20;
+      border-bottom:3px solid #1e6fff;
+      position:sticky;top:0;z-index:10;
     }
-    .topbar img { height:44px; filter:drop-shadow(0 2px 7px #9a66ff88);}
-    .content { max-width:420px; margin:0 auto; padding:2px 0 44px 0;}
-    .post-card {
-      background: rgba(26,30,54,0.87);
-      border-radius:17px;
-      box-shadow: 0 6px 34px #4611b455, 0 1.5px 0 #3f0e8459;
-      margin-bottom: 24px;
-      padding:15px 12px 13px 12px;
-      position:relative;
-      overflow:hidden;
-      border:1.7px solid #31146566;
-      backdrop-filter:blur(3.5px);
-      transition:.2s;
-      display: flex;
-      align-items: flex-start;
+    .topbar img { height:40px; filter:drop-shadow(0 2px 7px #8ec5ff80);}
+    .content {
+      max-width:600px;
+      margin:0 auto;
+      padding:22px 0 92px 0;
     }
-    .post-card:hover { box-shadow:0 8px 36px #7f36d855, 0 2px 8px #7b42f9;}
-    .post-info { flex:1; cursor:pointer;}
-    .post-titulo {
-      font-size:1.13em;
-      color:#e0afff;
+    .titulo {
+      font-size:2em;
+      color:#fff;
       font-weight:700;
-      margin-bottom:8px;
+      text-align:center;
+      margin-bottom:25px;
+      text-shadow: 0 4px 28px #1580e4a8, 0 1px 0 #222;
+      letter-spacing:0.03em;
+    }
+    .cards-grid {
+      display:grid;
+      grid-template-columns:repeat(2, 1fr);
+      gap:18px 15px;
+      max-width:95vw;
+      margin:0 auto;
+    }
+    .card {
+      background: #fff;
+      color: #1a2980;
+      border-radius: 16px;
+      box-shadow: 0 4px 28px #142a5d13, 0 1.5px 0 #eaf2fc33;
+      cursor: pointer;
+      transition: .14s;
+      position: relative;
+      overflow: hidden;
+      display:flex;flex-direction:column;align-items:center;
+      padding:7px 6px 11px 6px;
+      border: 2px solid #0e37890a;
+      min-height:132px;
+    }
+    .card:hover {
+      box-shadow: 0 8px 38px #217df855, 0 2px 8px #eaf2fc99;
+      border:2.5px solid #1e6fff;
+      transform:scale(1.025);
+    }
+    .card-img {
+      border-radius: 10px;
+      width: 100%;
+      max-width: 175px;
+      max-height: 56px;
+      object-fit:cover;
+      margin:7px 0 9px 0;
+      box-shadow: 0 2px 12px #9bbbe6b0;
+      background: #dde8fa;
+      border:1.5px solid #1080e022;
+      display:block;
+    }
+    .card-titulo {
+      font-size: 1.13em;
+      font-weight: bold;
+      color: #0e3789;
       letter-spacing:0.02em;
-      text-shadow:0 2px 7px #36007930, 0 1px 0 #fff3;
+      text-shadow: 0 2px 7px #5cb3f3a0, 0 1px 0 #fff3;
+      text-align:center;
+      margin:0;
+      margin-top:3px;
+      margin-bottom:4px;
+      width:100%;
     }
-    .post-data {font-size:.95em;color:#bbadf7;position:absolute;top:12px;right:55px;}
-    .share-btn {
-      background:#25D366;color:#fff;border:none;border-radius:7px;padding:9px 15px;font-size:1.1em;cursor:pointer;font-weight:700;
-      box-shadow:0 1.5px 7px #25d36650;letter-spacing:.02em;transition:.16s;margin-left:7px; margin-top:3px;
-      height:38px; display:flex;align-items:center;justify-content:center;
+    /* Rodapé fixo com ícones */
+    .footer {
+      position:fixed;left:0;bottom:0;width:100vw;z-index:19;
+      background: #f7fafd;
+      border-top:3px solid #0e3789;
+      box-shadow: 0 -5px 18px #142a5d19;
+      display:flex;justify-content:space-around;align-items:center;
+      height:66px;
+      padding:0 0 4px 0;
     }
-    .share-btn:active { background:#1aa958;}
-    /* Slide/Carrossel */
-    .slide-wrapper { width:100%; position:relative; margin-bottom:15px; }
-    .slide-img, .slide-media { width:100%; max-height:210px; border-radius:13px; box-shadow:0 2px 19px #7c4bff55; object-fit:cover; background:#111; }
-    .slide-arrows { position:absolute; top:45%; left:0; width:100%; display:flex; justify-content:space-between; pointer-events:none;}
-    .slide-arrow {
-      background:rgba(20,14,50,.84); color:#fff; border:none; border-radius:50%; width:38px; height:38px; font-size:1.6em; cursor:pointer; box-shadow:0 2px 9px #0007;
-      display:flex;align-items:center;justify-content:center; pointer-events:auto;
-      transition:.14s;
+    .footer-btn {
+      flex:1; text-align:center; color:#217df8;
+      font-size:13px;font-weight:700;
+      text-decoration:none;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      border:none;background:none;outline:none;
     }
-    .slide-arrow:active { background:#350b4a;}
-    .slide-dots { text-align:center; margin-top:4px; }
-    .slide-dot {
-      display:inline-block; width:9px; height:9px; margin:0 2px; border-radius:50%; background:#bfa3ee; opacity:.5; transition:.13s; cursor:pointer;
+    .footer-btn .lucide {font-size:28px;margin-bottom:0;}
+    .footer-btn.active { color:#1e6fff;}
+    .footer-btn:active { color:#0e3789;}
+    .footer-btn.whatsapp { color:#1ebe5c;}
+    /* Responsivo */
+    @media (max-width:640px) {
+      .content { max-width:99vw;}
+      .cards-grid { grid-template-columns:1fr 1fr; gap:14px 7px;}
+      .topbar img { max-width:85vw;}
     }
-    .slide-dot.active { background:#fff; opacity:1;}
-    /* Botão de voltar */
-    .back-btn {
-      position:fixed;top:17px;left:11px;z-index:99;background:rgba(30,10,40,0.89);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:2em;cursor:pointer;
-      box-shadow:0 2px 7px #13024c60;transition:.15s;display:flex;align-items:center;justify-content:center;
-    }
-    .back-btn:active{background:#4a148c;}
-    .post-media img, .post-media video {
-      width:97%;border-radius:10px;margin:11px auto 10px auto;display:block;box-shadow:0 2px 19px #7c4bff55;
-      background:#1a144b;
-    }
-    .post-media audio { width:97%; margin:9px 0;}
-    .post-media iframe {width:97%;min-height:165px;border-radius:10px;margin:11px 0;background:#100a32;}
-    .post-html-btn {
-      background:linear-gradient(90deg,#7e51ff,#19e2ea 90%);
-      color:#2a0037; border:none; border-radius:9px; padding:9px 21px; font-size:1em; font-weight:700;
-      margin:13px 0 2px 0; cursor:pointer; box-shadow:0 3px 18px #2b028f35; letter-spacing:.01em;
-      transition:.13s;
-      display: block; margin-left: auto; margin-right: auto;
-    }
-    .post-html-btn:hover { background:linear-gradient(92deg,#1f76ff,#7e51ff 85%); color:#fff;}
-    @media (max-width:600px) {
-      .content { max-width:98vw;}
-      .topbar img { max-width:87vw;}
-      .post-card { padding:11px 4vw 11px 4vw;}
+    @media (max-width:430px) {
+      .card-img { max-width:98vw; }
     }
   </style>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -101,8 +123,29 @@
   <div class="topbar">
     <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNxmA6mH86GQSOc7AKewTETB-55O3iY3QTCytGXS696o25IKkQTU2yQedvgeDo17i_EEYbJoy_eM9t7yN0vpEApNXt19M9Qj8Dh-IIHEi6o3AWTuVZXRtS2rvAT9lY3hAQ4riW3ftOonmBBBTzACHzZJ1pa1EC2joR90I9kH2noEZnCrQTgJOXjVunKjw/s1600/1000123334.png" alt="Logo">
   </div>
-  <button class="back-btn" id="backBtn" style="display:none;" onclick="location.href=location.pathname" title="Voltar">&times;</button>
-  <div class="content" id="posts"></div>
+  <div class="content">
+    <div class="titulo">Modalidades</div>
+    <div class="cards-grid" id="cards"></div>
+  </div>
+  <!-- Rodapé fixo -->
+  <div class="footer">
+    <a class="footer-btn active" href="#">
+      <i class="lucide lucide-home"></i>
+      Início
+    </a>
+    <a class="footer-btn" href="#">
+      <i class="lucide lucide-clipboard-list"></i>
+      Resultados
+    </a>
+    <a class="footer-btn" href="#">
+      <i class="lucide lucide-dices"></i>
+      Apostar
+    </a>
+    <a class="footer-btn whatsapp" href="#">
+      <i class="lucide lucide-message-circle"></i>
+      Suporte
+    </a>
+  </div>
   <script>
     // Firebase config
     const firebaseConfig = {
@@ -121,148 +164,57 @@
       let p = new URLSearchParams(window.location.search);
       return p.get(k);
     }
-    function youtubeID(url){
-      let m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([\w-]{11})/);
-      return m ? m[1] : '';
-    }
 
-    // --- SLIDE DE FOTOS/VÍDEOS ---
-    function renderSlide(fotos, videos, id) {
-      let midias = [
-        ...(fotos || []),
-        ...(videos || [])
-      ];
-      if(!midias.length) return '';
-      let slideId = 'slide_'+id;
-      let items = midias.map((m,i)=>{
-        if(m.match(/\.(mp4|webm|ogg)$/i)) {
-          return `<video class="slide-img slide-media" src="${m}" controls style="display:${i==0?'block':'none'};"></video>`;
-        } else if(m.includes("youtube.com") || m.includes("youtu.be")) {
-          return `<iframe class="slide-img slide-media" src="https://www.youtube.com/embed/${youtubeID(m)}" frameborder="0" allowfullscreen style="display:${i==0?'block':'none'};"></iframe>`;
-        } else {
-          return `<img class="slide-img slide-media" src="${m}" style="display:${i==0?'block':'none'};">`;
-        }
-      }).join('');
-      let dots = midias.map((m,i)=>`<span class="slide-dot${i==0?' active':''}" data-idx="${i}" data-slide="${slideId}"></span>`).join('');
-      return `
-        <div class="slide-wrapper" id="${slideId}">
-          ${items}
-          <div class="slide-arrows">
-            <button class="slide-arrow" data-slide="${slideId}" data-dir="prev">&#8678;</button>
-            <button class="slide-arrow" data-slide="${slideId}" data-dir="next">&#8680;</button>
-          </div>
-          <div class="slide-dots">${dots}</div>
-        </div>
-      `;
-    }
-    function activateAllSlides() {
-      document.querySelectorAll('.slide-wrapper').forEach(function(slideWrap){
-        let items = slideWrap.querySelectorAll('.slide-media');
-        let dots = slideWrap.querySelectorAll('.slide-dot');
-        let idx = 0;
-        function show(i){
-          items.forEach((img,j)=>img.style.display=(j===i?'block':'none'));
-          dots.forEach((dot,j)=>dot.classList.toggle('active',j===i));
-          idx=i;
-        }
-        // Arrows
-        slideWrap.querySelectorAll('.slide-arrow').forEach(btn=>{
-          btn.onclick = function(e){
-            e.stopPropagation();
-            if(btn.dataset.dir==='prev') show((idx-1+items.length)%items.length);
-            else show((idx+1)%items.length);
-          }
-        });
-        // Dots
-        dots.forEach(dot=>{
-          dot.onclick = function(e){
-            e.stopPropagation();
-            show(Number(dot.dataset.idx));
-          }
-        });
-      });
-    }
-
-    function share(id){
-      const url = `${location.origin}${location.pathname}?id=${id}`;
-      if(navigator.share){
-        navigator.share({title:'Veja isso!', url});
-      } else {
-        prompt('Link:', url);
-      }
-    }
-
-    // CARD = CLICOU, ABRE DIRETO O HTML/PÁGINA
-    function renderPostList(d, id){
-      return `
-      <div class="post-card">
-        <div class="post-info" onclick="abrirPagina('${id}')">
-          ${renderSlide(d.slide||[], d.videos||[], id)}
-          <div class="post-titulo">${d.titulo || ''}</div>
-          <div class="post-data">${d.data && d.data.seconds ? new Date(d.data.seconds*1000).toLocaleString() : ''}</div>
-        </div>
-        <button class="share-btn" onclick="event.stopPropagation();share('${id}')" title="Compartilhar página">&#x1F517;</button>
-      </div>`;
-    }
-
-    function renderPostFull(d, id) {
-      return `
-      <div class="post-card" style="margin-top:16px;">
-        ${renderSlide(d.slide||[], d.videos||[], id)}
-        <div class="post-titulo">${d.titulo || ''}</div>
-        <div class="post-data">${d.data && d.data.seconds ? new Date(d.data.seconds*1000).toLocaleString() : ''}</div>
-        <div class="post-media">
-          ${d.texto ? `<div style="margin-bottom:8px;color:#e2d6ff;">${d.texto}</div>` : ''}
-          ${(d.fotos||[]).map(f=>`<img src="${f}" alt="">`).join('')}
-          ${(d.videos||[]).map(v=>v.includes('youtu')?`<iframe src="https://www.youtube.com/embed/${youtubeID(v)}" frameborder="0" allowfullscreen></iframe>`:`<video src="${v}" controls></video>`).join('')}
-          ${(d.audios||[]).map(a=>`<audio src="${a}" controls></audio>`).join('')}
-        </div>
-        ${d.html ? `<button class="post-html-btn" onclick="abrirHtml('${btoa(unescape(encodeURIComponent(d.html)))}')">Abrir HTML especial</button>` : ''}
-      </div>`;
-    }
-
-    function abrirHtml(base64){
-      let html = decodeURIComponent(escape(atob(base64)));
-      let w = window.open();
-      w.document.write(`
-        <html><head><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
-        <title>Visualização HTML</title>
-        <style>
-          body{margin:0;padding:8px 2vw;font-family:Arial,sans-serif;background:#16142e;color:#f6f6f6;max-width:100vw;}
-          img,video,iframe{max-width:100%!important;height:auto!important;display:block;margin:0 auto 14px auto;border-radius:8px;}
-        </style>
-        </head><body>${html}</body></html>
-      `);
-    }
-
+    // Ao clicar, abre a página HTML da modalidade
     function abrirPagina(id){
       location.href = `${location.pathname}?id=${id}`;
     }
 
+    // Renderização dos cards
+    function renderCard(d, id){
+      // d.img = URL da imagem do card
+      // d.titulo = nome da modalidade
+      return `
+      <div class="card" onclick="abrirPagina('${id}')">
+        <img class="card-img" src="${d.img || 'https://placehold.co/280x60/1e6fff/fff?text=Modalidade'}" alt="">
+        <div class="card-titulo">${d.titulo || ''}</div>
+      </div>`;
+    }
+
     function carregar(){
       const id = getQueryParam('id');
-      const postsDiv = document.getElementById('posts');
-      const backBtn = document.getElementById('backBtn');
+      const cardsDiv = document.getElementById('cards');
       if(id){
-        backBtn.style.display = '';
+        // Carregar a página HTML individual dessa modalidade
         db.collection("conteudos").doc(id).get().then(doc=>{
           if(doc.exists){
-            // Se for só HTML especial, já abre ao carregar!
             let d = doc.data();
-            postsDiv.innerHTML = renderPostFull(d, id);
-            setTimeout(activateAllSlides,50);
-            if(d.html && (!d.slide || d.slide.length == 0) && (!d.videos || d.videos.length == 0)) {
-              abrirHtml(btoa(unescape(encodeURIComponent(d.html))));
+            // Se tiver campo 'html', exibe!
+            if(d.html){
+              document.body.innerHTML = `
+                <div class="topbar">
+                  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNxmA6mH86GQSOc7AKewTETB-55O3iY3QTCytGXS696o25IKkQTU2yQedvgeDo17i_EEYbJoy_eM9t7yN0vpEApNXt19M9Qj8Dh-IIHEi6o3AWTuVZXRtS2rvAT9lY3hAQ4riW3ftOonmBBBTzACHzZJ1pa1EC2joR90I9kH2noEZnCrQTgJOXjVunKjw/s1600/1000123334.png" alt="Logo">
+                  <button style="float:right; margin-top:4px; margin-left:8px; background:#1e6fff; color:#fff; border:none; border-radius:15px; padding:5px 18px; font-size:1.5em; cursor:pointer;" onclick="location.href='${location.pathname}'">&times;</button>
+                </div>
+                <div style="max-width:680px;margin:0 auto;background:#fff;color:#0e3789;padding:25px 4vw 70px 4vw;min-height:60vh;font-size:1.12em;border-radius:0 0 22px 22px;box-shadow:0 4px 34px #0e378944;">
+                  ${d.html}
+                </div>
+              `;
+            } else {
+              document.body.innerHTML = `
+                <div style="color:#0e3789;text-align:center;padding:50px 0;font-size:1.2em;">Página sem conteúdo.</div>
+                <div style="text-align:center;">
+                  <button onclick="location.href='${location.pathname}'" style="background:#1e6fff; color:#fff; border:none; border-radius:15px; padding:9px 34px; font-size:1.4em; cursor:pointer;">Voltar</button>
+                </div>
+              `;
             }
-          }else{
-            postsDiv.innerHTML = `<div style="color:#fff;text-align:center;padding:32px 0;">Publicação não encontrada.</div>`;
+          } else {
+            document.body.innerHTML = `<div style="color:#fff;text-align:center;padding:32px 0;">Página não encontrada.<br><br><button onclick="location.href='${location.pathname}'" style="background:#1e6fff; color:#fff; border:none; border-radius:15px; padding:9px 34px; font-size:1.3em; cursor:pointer;">Voltar</button></div>`;
           }
         });
-      }else{
-        backBtn.style.display = 'none';
-        db.collection("conteudos").orderBy("data","desc").onSnapshot(ss=>{
-          postsDiv.innerHTML = ss.docs.map(doc=>renderPostList(doc.data(), doc.id)).join('') || '<p style="color:#ccc;">Nenhum post ainda.</p>';
-          setTimeout(activateAllSlides,50);
+      } else {
+        db.collection("conteudos").orderBy("ordem","asc").onSnapshot(ss=>{
+          cardsDiv.innerHTML = ss.docs.map(doc=>renderCard(doc.data(), doc.id)).join('');
         });
       }
     }
