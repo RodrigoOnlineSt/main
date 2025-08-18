@@ -2,42 +2,56 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Portal do Cliente</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-  <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
+  <title>Portal do Cliente - Estilo Aky</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
   <style>
-    body { margin:0; font-family:'Montserrat',Arial,sans-serif; background:#e7f1fd; color:#222; min-height:100vh;}
-    .header { background: #fff; display: flex; justify-content: center; align-items: center; height: 60px; margin-bottom: 12px; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; box-shadow: 0 4px 22px #10172816;}
-    .header img { max-height: 48px; max-width: 92vw;}
-    .posts { max-width: 480px; margin: 0 auto; padding: 4px;}
-    .post-card { background:#fff; border-radius:15px; box-shadow:0 1.5px 8px #654ea322; padding:14px 11px 9px 11px; margin-bottom:18px; position:relative;}
-    .post-titulo { font-size:1.13em; color:#654ea3; font-weight:700; margin-bottom:8px; }
-    .post-data { font-size:.98em; color:#89a2c7; position:absolute;top:12px;right:14px;}
-    .post-media img {max-width:99vw;max-height:190px;border-radius:10px;margin:6px 0;display:block;}
-    .post-media video {max-width:99vw;border-radius:10px;margin:7px 0;}
-    .post-media audio { width:97%; margin:8px 0;}
-    .post-media iframe { width:99%; min-height:140px; border-radius:10px;margin:7px 0;}
-    .post-html-btn { background:linear-gradient(90deg,#1966c4,#654ea3 85%);color:#fff; border:none; border-radius:8px; padding:9px 20px; font-size:1em; font-weight:700; margin:12px 0; cursor:pointer; }
-    .compartilhar { background:#25D366;color:#fff;font-weight:700;border:none;border-radius:7px;padding:8px 20px;box-shadow:0 1.5px 7px #25d36650;cursor:pointer;font-size:1em;margin:10px 0 8px 0;}
+    body { margin:0; font-family:'Montserrat', sans-serif; background:#f0f2f5; color:#333; }
+    .topbar { background:#fff; box-shadow:0 2px 4px rgba(0,0,0,0.1); padding:8px 16px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+    .menu { display:flex; gap:14px; }
+    .menu-item { position:relative; cursor:pointer; padding:8px 10px; border-radius:6px; transition:.2s; }
+    .menu-item:hover { background:#eef2f5; }
+    .submenu { position:absolute; top:100%; left:0; background:#fff; border:1px solid #ddd; border-radius:6px; box-shadow:0 4px 8px rgba(0,0,0,0.1); display:none; z-index:50;}
+    .menu-item:hover .submenu { display:block; }
+    .submenu div { padding:8px 12px; white-space:nowrap; }
+    .submenu div:hover { background:#f3f5f8; }
+    .content { max-width:480px; margin:20px auto; padding:0 12px; }
+    .post-card { background:#fff; border-radius:10px; box-shadow:0 1px 6px rgba(0,0,0,0.1); margin-bottom:18px; padding:16px; }
+    .post-title { font-size:1.1em; color:#2863d6; margin-bottom:8px; font-weight:700; }
+    .post-media img, .post-media video { width:100%; border-radius:8px; margin:12px 0; }
+    .share-btn { background:#25D366;color:#fff;border:none;border-radius:6px;padding:8px 16px;font-size:1em;cursor:pointer;margin-top:8px; }
     @media (max-width:600px) {
-      .posts { max-width:98vw;}
-      .header img { max-width:97vw;}
+      .menu { display:none; }
+      .menu-open { display:flex; flex-direction:column; background:#fff; position:absolute; top:48px; left:0; right:0; padding:10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); }
     }
   </style>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 </head>
 <body>
-  <!-- Logo/capa -->
-  <div class="header">
-    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNxmA6mH86GQSOc7AKewTETB-55O3iY3QTCytGXS696o25IKkQTU2yQedvgeDo17i_EEYbJoy_eM9t7yN0vpEApNXt19M9Qj8Dh-IIHEi6o3AWTuVZXRtS2rvAT9lY3hAQ4riW3ftOonmBBBTzACHzZJ1pa1EC2joR90I9kH2noEZnCrQTgJOXjVunKjw/s1600/1000123334.png" alt="Logo">
+  <div class="topbar">
+    <div><img src="SUA_LOGO.png" alt="Logo" style="height:40px;"></div>
+    <div class="menu">
+      <div class="menu-item">Futebol
+        <div class="submenu">
+          <div>Opção 1</div>
+          <div>Opção 2</div>
+        </div>
+      </div>
+      <div class="menu-item">Site
+        <div class="submenu"><div>Pix</div><div>Mais</div></div>
+      </div>
+      <div class="menu-item">Outros
+        <div class="submenu"><div>Cassino</div><div>Promoções</div></div>
+      </div>
+    </div>
+    <div><button class="share-btn">Compartilhar</button></div>
   </div>
 
-  <!-- Lista de publicações -->
-  <div class="posts" id="posts"></div>
+  <div class="content" id="posts"></div>
 
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script>
-    // Firebase config (ajuste para seu projeto)
+    // Firebase config (cole aqui)
     const firebaseConfig = {
       apiKey: "SUA_API_KEY_AQUI",
       authDomain: "concursosuper-29c5b.firebaseapp.com",
@@ -50,74 +64,37 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Função para extrair ID do Youtube
     function youtubeID(url){
-      let match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/);
-      return match ? match[1] : '';
+      let m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([\w-]{11})/);
+      return m ? m[1] : '';
     }
 
-    // Renderizar publicação (1 post)
     function renderPost(d, id){
-      let data = d.data && d.data.seconds ? new Date(d.data.seconds*1000).toLocaleString() : "";
-      let html = `<div class="post-card">
-        <div class="post-titulo">${d.titulo||''}</div>
-        <div class="post-data">${data}</div>
-        <div class="post-media">`;
-      if(d.texto) html += `<div style="margin-bottom:8px;">${d.texto}</div>`;
-      if(d.fotos && d.fotos.length)
-        html += d.fotos.map(f=>`<img src="${f}" loading="lazy">`).join('');
-      if(d.videos && d.videos.length)
-        html += d.videos.map(v=>v.includes('youtu') ?
-          `<iframe src="https://www.youtube.com/embed/${youtubeID(v)}" frameborder="0" allowfullscreen></iframe>`
-          : `<video src="${v}" controls></video>`).join('');
-      if(d.audios && d.audios.length)
-        html += d.audios.map(a=>`<audio src="${a}" controls></audio>`).join('');
-      if(d.html)
-        html += `<button class="post-html-btn" onclick="abrirHtml('${btoa(unescape(encodeURIComponent(d.html)))}')">Abrir conteúdo HTML em tela cheia</button>`;
-      html += `</div>
-        <button class="compartilhar" onclick="compartilhar('${id}','${encodeURIComponent(d.titulo||"Publicação")}')">Compartilhar</button>
+      let date = d.data && d.data.seconds ? new Date(d.data.seconds*1000).toLocaleString() : '';
+      return `
+      <div class="post-card">
+        <div class="post-title">${d.titulo || ''}</div>
+        <div class="post-media">
+          ${d.fotos?.map(f=>`<img src="${f}" alt="">`).join('')}
+          ${d.videos?.map(v=>v.includes('youtu')?`<iframe width="100%" height="180" src="https://www.youtube.com/embed/${youtubeID(v)}" frameborder="0" allowfullscreen></iframe>`:`<video src="${v}" controls></video>`).join('')}
+        </div>
+        <button class="share-btn" onclick="share('${id}')">Compartilhar</button>
       </div>`;
-      return html;
     }
 
-    // Carregar posts do Firebase
-    function carregarPosts(){
-      db.collection("conteudos").orderBy("data","desc").onSnapshot(snap=>{
-        let html = "";
-        snap.forEach(doc=>{
-          html += renderPost(doc.data(), doc.id);
-        });
-        document.getElementById('posts').innerHTML = html || "<div style='color:#777;padding:18px;'>Nenhuma publicação ainda.</div>";
-      });
-    }
-    carregarPosts();
-
-    // Compartilhar publicação
-    function compartilhar(id, titulo){
-      const url = location.origin + location.pathname + "?id=" + id;
+    function share(id){
+      const url = `${location.origin}${location.pathname}?id=${id}`;
       if(navigator.share){
-        navigator.share({title: decodeURIComponent(titulo), url: url});
+        navigator.share({title:'Veja isso!', url});
       } else {
-        const wpp = `https://wa.me/?text=${decodeURIComponent(titulo)}%20${encodeURIComponent(url)}`;
-        if(confirm("Deseja compartilhar pelo WhatsApp?")) window.open(wpp);
-        else { prompt("Link da publicação (copie):", url);}
+        prompt('Link:', url);
       }
     }
 
-    // Abrir HTML em tela cheia
-    function abrirHtml(base64){
-      let html = decodeURIComponent(escape(atob(base64)));
-      let w = window.open();
-      w.document.write(`
-        <html><head><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
-        <title>Visualização HTML</title>
-        <style>
-          body{margin:0;padding:8px 2vw;font-family:Arial,sans-serif;background:#fff;color:#222;max-width:100vw;}
-          img,video,iframe{max-width:100%!important;height:auto!important;display:block;margin:0 auto 14px auto;border-radius:8px;}
-        </style>
-        </head><body>${html}</body></html>
-      `);
-    }
+    db.collection("conteudos").orderBy("data","desc").onSnapshot(ss=>{
+      const container = document.getElementById('posts');
+      container.innerHTML = ss.docs.map(doc=>renderPost(doc.data(), doc.id)).join('') || '<p>Nenhum post ainda.</p>';
+    });
   </script>
 </body>
 </html>
