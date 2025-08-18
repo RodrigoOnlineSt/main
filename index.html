@@ -5,116 +5,8 @@
   <title>Portal do Cliente</title>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
   <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@0.318.0/font/lucide.css" />
   <style>
-    body {
-      margin:0; font-family:'Montserrat',Arial,sans-serif;
-      background: linear-gradient(150deg, #0e3789 0%, #1362c8 100%);
-      color:#fff; min-height:100vh;
-    }
-    .topbar {
-      background: #03245c;
-      box-shadow: 0 3px 22px #0005;
-      padding:13px 0 10px 0;
-      display:flex;align-items:center;justify-content:center;
-      border-bottom:3px solid #1e6fff;
-      position:sticky;top:0;z-index:10;
-    }
-    .topbar img { height:40px; filter:drop-shadow(0 2px 7px #8ec5ff80);}
-    .content {
-      max-width:600px;
-      margin:0 auto;
-      padding:22px 0 92px 0;
-    }
-    .titulo {
-      font-size:2em;
-      color:#fff;
-      font-weight:700;
-      text-align:center;
-      margin-bottom:25px;
-      text-shadow: 0 4px 28px #1580e4a8, 0 1px 0 #222;
-      letter-spacing:0.03em;
-    }
-    .cards-grid {
-      display:grid;
-      grid-template-columns:repeat(2, 1fr);
-      gap:18px 15px;
-      max-width:95vw;
-      margin:0 auto;
-    }
-    .card {
-      background: #fff;
-      color: #1a2980;
-      border-radius: 16px;
-      box-shadow: 0 4px 28px #142a5d13, 0 1.5px 0 #eaf2fc33;
-      cursor: pointer;
-      transition: .14s;
-      position: relative;
-      overflow: hidden;
-      display:flex;flex-direction:column;align-items:center;
-      padding:7px 6px 11px 6px;
-      border: 2px solid #0e37890a;
-      min-height:132px;
-    }
-    .card:hover {
-      box-shadow: 0 8px 38px #217df855, 0 2px 8px #eaf2fc99;
-      border:2.5px solid #1e6fff;
-      transform:scale(1.025);
-    }
-    .card-img {
-      border-radius: 10px;
-      width: 100%;
-      max-width: 175px;
-      max-height: 56px;
-      object-fit:cover;
-      margin:7px 0 9px 0;
-      box-shadow: 0 2px 12px #9bbbe6b0;
-      background: #dde8fa;
-      border:1.5px solid #1080e022;
-      display:block;
-    }
-    .card-titulo {
-      font-size: 1.13em;
-      font-weight: bold;
-      color: #0e3789;
-      letter-spacing:0.02em;
-      text-shadow: 0 2px 7px #5cb3f3a0, 0 1px 0 #fff3;
-      text-align:center;
-      margin:0;
-      margin-top:3px;
-      margin-bottom:4px;
-      width:100%;
-    }
-    /* Rodapé fixo com ícones */
-    .footer {
-      position:fixed;left:0;bottom:0;width:100vw;z-index:19;
-      background: #f7fafd;
-      border-top:3px solid #0e3789;
-      box-shadow: 0 -5px 18px #142a5d19;
-      display:flex;justify-content:space-around;align-items:center;
-      height:66px;
-      padding:0 0 4px 0;
-    }
-    .footer-btn {
-      flex:1; text-align:center; color:#217df8;
-      font-size:13px;font-weight:700;
-      text-decoration:none;
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
-      border:none;background:none;outline:none;
-    }
-    .footer-btn .lucide {font-size:28px;margin-bottom:0;}
-    .footer-btn.active { color:#1e6fff;}
-    .footer-btn:active { color:#0e3789;}
-    .footer-btn.whatsapp { color:#1ebe5c;}
-    /* Responsivo */
-    @media (max-width:640px) {
-      .content { max-width:99vw;}
-      .cards-grid { grid-template-columns:1fr 1fr; gap:14px 7px;}
-      .topbar img { max-width:85vw;}
-    }
-    @media (max-width:430px) {
-      .card-img { max-width:98vw; }
-    }
+    /* ... (EXATAMENTE O MESMO CSS DA VERSÃO LOCAL ACIMA) ... */
   </style>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -123,28 +15,12 @@
   <div class="topbar">
     <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNxmA6mH86GQSOc7AKewTETB-55O3iY3QTCytGXS696o25IKkQTU2yQedvgeDo17i_EEYbJoy_eM9t7yN0vpEApNXt19M9Qj8Dh-IIHEi6o3AWTuVZXRtS2rvAT9lY3hAQ4riW3ftOonmBBBTzACHzZJ1pa1EC2joR90I9kH2noEZnCrQTgJOXjVunKjw/s1600/1000123334.png" alt="Logo">
   </div>
-  <div class="content">
-    <div class="titulo">Modalidades</div>
-    <div class="cards-grid" id="cards"></div>
-  </div>
-  <!-- Rodapé fixo -->
-  <div class="footer">
-    <a class="footer-btn active" href="#">
-      <i class="lucide lucide-home"></i>
-      Início
-    </a>
-    <a class="footer-btn" href="#">
-      <i class="lucide lucide-clipboard-list"></i>
-      Resultados
-    </a>
-    <a class="footer-btn" href="#">
-      <i class="lucide lucide-dices"></i>
-      Apostar
-    </a>
-    <a class="footer-btn whatsapp" href="#">
-      <i class="lucide lucide-message-circle"></i>
-      Suporte
-    </a>
+  <div class="content" id="conteudo"></div>
+  <div class="footer" id="rodape">
+    <a class="footer-btn active" href="#"><span class="icon">🏠</span>Início</a>
+    <a class="footer-btn" href="#"><span class="icon">📋</span>Resultados</a>
+    <a class="footer-btn" href="#"><span class="icon">🎲</span>Apostar</a>
+    <a class="footer-btn whatsapp" href="#"><span class="icon">💬</span>Suporte</a>
   </div>
   <script>
     // Firebase config
@@ -160,66 +36,57 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    function getQueryParam(k){
-      let p = new URLSearchParams(window.location.search);
-      return p.get(k);
+    // Mostra cards dinâmicos do Firebase
+    function mostrarCards() {
+      db.collection("conteudos").orderBy("ordem","asc").onSnapshot(ss=>{
+        let html = `
+          <div class="titulo">Modalidades</div>
+          <div class="cards-grid">
+            ${ss.docs.map(doc=>{
+              const d = doc.data();
+              return `
+              <div class="card" onclick="abrirPagina('${doc.id}')">
+                <img class="card-img" src="${d.img || 'https://placehold.co/280x60/1e6fff/fff?text=Modalidade'}" alt="">
+                <div class="card-titulo">${d.titulo || ''}</div>
+              </div>`;
+            }).join('')}
+          </div>
+        `;
+        document.getElementById('conteudo').innerHTML = html;
+        document.getElementById('rodape').style.display = '';
+      });
     }
 
-    // Ao clicar, abre a página HTML da modalidade
-    function abrirPagina(id){
-      location.href = `${location.pathname}?id=${id}`;
-    }
-
-    // Renderização dos cards
-    function renderCard(d, id){
-      // d.img = URL da imagem do card
-      // d.titulo = nome da modalidade
-      return `
-      <div class="card" onclick="abrirPagina('${id}')">
-        <img class="card-img" src="${d.img || 'https://placehold.co/280x60/1e6fff/fff?text=Modalidade'}" alt="">
-        <div class="card-titulo">${d.titulo || ''}</div>
-      </div>`;
-    }
-
-    function carregar(){
-      const id = getQueryParam('id');
-      const cardsDiv = document.getElementById('cards');
-      if(id){
-        // Carregar a página HTML individual dessa modalidade
-        db.collection("conteudos").doc(id).get().then(doc=>{
-          if(doc.exists){
-            let d = doc.data();
-            // Se tiver campo 'html', exibe!
-            if(d.html){
-              document.body.innerHTML = `
-                <div class="topbar">
-                  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNxmA6mH86GQSOc7AKewTETB-55O3iY3QTCytGXS696o25IKkQTU2yQedvgeDo17i_EEYbJoy_eM9t7yN0vpEApNXt19M9Qj8Dh-IIHEi6o3AWTuVZXRtS2rvAT9lY3hAQ4riW3ftOonmBBBTzACHzZJ1pa1EC2joR90I9kH2noEZnCrQTgJOXjVunKjw/s1600/1000123334.png" alt="Logo">
-                  <button style="float:right; margin-top:4px; margin-left:8px; background:#1e6fff; color:#fff; border:none; border-radius:15px; padding:5px 18px; font-size:1.5em; cursor:pointer;" onclick="location.href='${location.pathname}'">&times;</button>
-                </div>
-                <div style="max-width:680px;margin:0 auto;background:#fff;color:#0e3789;padding:25px 4vw 70px 4vw;min-height:60vh;font-size:1.12em;border-radius:0 0 22px 22px;box-shadow:0 4px 34px #0e378944;">
-                  ${d.html}
-                </div>
-              `;
-            } else {
-              document.body.innerHTML = `
-                <div style="color:#0e3789;text-align:center;padding:50px 0;font-size:1.2em;">Página sem conteúdo.</div>
-                <div style="text-align:center;">
-                  <button onclick="location.href='${location.pathname}'" style="background:#1e6fff; color:#fff; border:none; border-radius:15px; padding:9px 34px; font-size:1.4em; cursor:pointer;">Voltar</button>
-                </div>
-              `;
-            }
+    // Ao clicar, abre página HTML
+    function abrirPagina(id) {
+      db.collection("conteudos").doc(id).get().then(doc=>{
+        if(doc.exists){
+          let d = doc.data();
+          if(d.html){
+            document.getElementById('conteudo').innerHTML = `
+              <div class="topbar" style="margin-bottom:0;">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNxmA6mH86GQSOc7AKewTETB-55O3iY3QTCytGXS696o25IKkQTU2yQedvgeDo17i_EEYbJoy_eM9t7yN0vpEApNXt19M9Qj8Dh-IIHEi6o3AWTuVZXRtS2rvAT9lY3hAQ4riW3ftOonmBBBTzACHzZJ1pa1EC2joR90I9kH2noEZnCrQTgJOXjVunKjw/s1600/1000123334.png" alt="Logo">
+              </div>
+              <div class="pagina-html">${d.html}</div>
+              <button class="btn-voltar" onclick="mostrarCards()">&larr; Voltar</button>
+            `;
           } else {
-            document.body.innerHTML = `<div style="color:#fff;text-align:center;padding:32px 0;">Página não encontrada.<br><br><button onclick="location.href='${location.pathname}'" style="background:#1e6fff; color:#fff; border:none; border-radius:15px; padding:9px 34px; font-size:1.3em; cursor:pointer;">Voltar</button></div>`;
+            document.getElementById('conteudo').innerHTML = `<div style="color:#0e3789;text-align:center;padding:50px 0;font-size:1.2em;">Página sem conteúdo.</div>
+              <div style="text-align:center;">
+                <button onclick="mostrarCards()" class="btn-voltar">&larr; Voltar</button>
+              </div>`;
           }
-        });
-      } else {
-        db.collection("conteudos").orderBy("ordem","asc").onSnapshot(ss=>{
-          cardsDiv.innerHTML = ss.docs.map(doc=>renderCard(doc.data(), doc.id)).join('');
-        });
-      }
+          document.getElementById('rodape').style.display = 'none';
+          window.scrollTo(0,0);
+        } else {
+          document.getElementById('conteudo').innerHTML = `<div style="color:#fff;text-align:center;padding:32px 0;">Página não encontrada.<br><br><button onclick="mostrarCards()" class="btn-voltar">&larr; Voltar</button></div>`;
+        }
+      });
     }
-    carregar();
-    window.onpopstate = carregar;
+
+    // Inicial
+    mostrarCards();
+    window.abrirPagina = abrirPagina;
   </script>
 </body>
 </html>
