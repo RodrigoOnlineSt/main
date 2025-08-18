@@ -33,8 +33,11 @@
       border:1.7px solid #31146566;
       backdrop-filter:blur(3.5px);
       transition:.2s;
+      display: flex;
+      align-items: flex-start;
     }
     .post-card:hover { box-shadow:0 8px 36px #7f36d855, 0 2px 8px #7b42f9;}
+    .post-info { flex:1; cursor:pointer;}
     .post-titulo {
       font-size:1.13em;
       color:#e0afff;
@@ -43,29 +46,16 @@
       letter-spacing:0.02em;
       text-shadow:0 2px 7px #36007930, 0 1px 0 #fff3;
     }
-    .post-data {font-size:.95em;color:#bbadf7;position:absolute;top:12px;right:15px;}
-    .post-media img, .post-media video {
-      width:97%;border-radius:10px;margin:11px auto 10px auto;display:block;box-shadow:0 2px 19px #7c4bff55;
-      background:#1a144b;
-    }
-    .post-media audio { width:97%; margin:9px 0;}
-    .post-media iframe {width:97%;min-height:165px;border-radius:10px;margin:11px 0;background:#100a32;}
-    .post-html-btn {
-      background:linear-gradient(90deg,#7e51ff,#19e2ea 90%);
-      color:#2a0037; border:none; border-radius:9px; padding:9px 21px; font-size:1em; font-weight:700;
-      margin:13px 0 2px 0; cursor:pointer; box-shadow:0 3px 18px #2b028f35; letter-spacing:.01em;
-      transition:.13s;
-    }
-    .post-html-btn:hover { background:linear-gradient(92deg,#1f76ff,#7e51ff 85%); color:#fff;}
+    .post-data {font-size:.95em;color:#bbadf7;position:absolute;top:12px;right:55px;}
     .share-btn {
-      background:#25D366;color:#fff;border:none;border-radius:7px;padding:8px 22px;font-size:1em;cursor:pointer;font-weight:700;
-      box-shadow:0 1.5px 7px #25d36650;letter-spacing:.02em;transition:.16s;
-      margin-top:7px;
+      background:#25D366;color:#fff;border:none;border-radius:7px;padding:9px 15px;font-size:1.1em;cursor:pointer;font-weight:700;
+      box-shadow:0 1.5px 7px #25d36650;letter-spacing:.02em;transition:.16s;margin-left:7px; margin-top:3px;
+      height:38px; display:flex;align-items:center;justify-content:center;
     }
     .share-btn:active { background:#1aa958;}
     /* Slide/Carrossel */
     .slide-wrapper { width:100%; position:relative; margin-bottom:15px; }
-    .slide-img { width:100%; max-height:210px; border-radius:13px; box-shadow:0 2px 19px #7c4bff55; object-fit:cover; background:#111; }
+    .slide-img, .slide-media { width:100%; max-height:210px; border-radius:13px; box-shadow:0 2px 19px #7c4bff55; object-fit:cover; background:#111; }
     .slide-arrows { position:absolute; top:45%; left:0; width:100%; display:flex; justify-content:space-between; pointer-events:none;}
     .slide-arrow {
       background:rgba(20,14,50,.84); color:#fff; border:none; border-radius:50%; width:38px; height:38px; font-size:1.6em; cursor:pointer; box-shadow:0 2px 9px #0007;
@@ -84,6 +74,20 @@
       box-shadow:0 2px 7px #13024c60;transition:.15s;display:flex;align-items:center;justify-content:center;
     }
     .back-btn:active{background:#4a148c;}
+    .post-media img, .post-media video {
+      width:97%;border-radius:10px;margin:11px auto 10px auto;display:block;box-shadow:0 2px 19px #7c4bff55;
+      background:#1a144b;
+    }
+    .post-media audio { width:97%; margin:9px 0;}
+    .post-media iframe {width:97%;min-height:165px;border-radius:10px;margin:11px 0;background:#100a32;}
+    .post-html-btn {
+      background:linear-gradient(90deg,#7e51ff,#19e2ea 90%);
+      color:#2a0037; border:none; border-radius:9px; padding:9px 21px; font-size:1em; font-weight:700;
+      margin:13px 0 2px 0; cursor:pointer; box-shadow:0 3px 18px #2b028f35; letter-spacing:.01em;
+      transition:.13s;
+      display: block; margin-left: auto; margin-right: auto;
+    }
+    .post-html-btn:hover { background:linear-gradient(92deg,#1f76ff,#7e51ff 85%); color:#fff;}
     @media (max-width:600px) {
       .content { max-width:98vw;}
       .topbar img { max-width:87vw;}
@@ -117,21 +121,32 @@
       let p = new URLSearchParams(window.location.search);
       return p.get(k);
     }
-
     function youtubeID(url){
       let m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([\w-]{11})/);
       return m ? m[1] : '';
     }
 
-    // --- SLIDE DINÂMICO SEGURO ---
-    function renderSlide(fotos, id) {
-      if(!fotos||!fotos.length) return '';
+    // --- SLIDE DE FOTOS/VÍDEOS ---
+    function renderSlide(fotos, videos, id) {
+      let midias = [
+        ...(fotos || []),
+        ...(videos || [])
+      ];
+      if(!midias.length) return '';
       let slideId = 'slide_'+id;
-      let imgs = fotos.map((f,i)=>`<img class="slide-img" src="${f}" style="display:${i==0?'block':'none'};">`).join('');
-      let dots = fotos.map((f,i)=>`<span class="slide-dot${i==0?' active':''}" data-idx="${i}" data-slide="${slideId}"></span>`).join('');
+      let items = midias.map((m,i)=>{
+        if(m.match(/\.(mp4|webm|ogg)$/i)) {
+          return `<video class="slide-img slide-media" src="${m}" controls style="display:${i==0?'block':'none'};"></video>`;
+        } else if(m.includes("youtube.com") || m.includes("youtu.be")) {
+          return `<iframe class="slide-img slide-media" src="https://www.youtube.com/embed/${youtubeID(m)}" frameborder="0" allowfullscreen style="display:${i==0?'block':'none'};"></iframe>`;
+        } else {
+          return `<img class="slide-img slide-media" src="${m}" style="display:${i==0?'block':'none'};">`;
+        }
+      }).join('');
+      let dots = midias.map((m,i)=>`<span class="slide-dot${i==0?' active':''}" data-idx="${i}" data-slide="${slideId}"></span>`).join('');
       return `
         <div class="slide-wrapper" id="${slideId}">
-          ${imgs}
+          ${items}
           <div class="slide-arrows">
             <button class="slide-arrow" data-slide="${slideId}" data-dir="prev">&#8678;</button>
             <button class="slide-arrow" data-slide="${slideId}" data-dir="next">&#8680;</button>
@@ -140,14 +155,13 @@
         </div>
       `;
     }
-
     function activateAllSlides() {
       document.querySelectorAll('.slide-wrapper').forEach(function(slideWrap){
-        let imgs = slideWrap.querySelectorAll('.slide-img');
+        let items = slideWrap.querySelectorAll('.slide-media');
         let dots = slideWrap.querySelectorAll('.slide-dot');
         let idx = 0;
         function show(i){
-          imgs.forEach((img,j)=>img.style.display=(j===i?'block':'none'));
+          items.forEach((img,j)=>img.style.display=(j===i?'block':'none'));
           dots.forEach((dot,j)=>dot.classList.toggle('active',j===i));
           idx=i;
         }
@@ -155,8 +169,8 @@
         slideWrap.querySelectorAll('.slide-arrow').forEach(btn=>{
           btn.onclick = function(e){
             e.stopPropagation();
-            if(btn.dataset.dir==='prev') show((idx-1+imgs.length)%imgs.length);
-            else show((idx+1)%imgs.length);
+            if(btn.dataset.dir==='prev') show((idx-1+items.length)%items.length);
+            else show((idx+1)%items.length);
           }
         });
         // Dots
@@ -169,41 +183,6 @@
       });
     }
 
-    function renderPostFull(d, id) {
-      return `
-      <div class="post-card" style="margin-top:16px;">
-        ${renderSlide(d.slide||[], id)}
-        <div class="post-titulo">${d.titulo || ''}</div>
-        <div class="post-data">${d.data && d.data.seconds ? new Date(d.data.seconds*1000).toLocaleString() : ''}</div>
-        <div class="post-media">
-          ${d.texto ? `<div style="margin-bottom:8px;color:#e2d6ff;">${d.texto}</div>` : ''}
-          ${(d.fotos||[]).map(f=>`<img src="${f}" alt="">`).join('')}
-          ${(d.videos||[]).map(v=>v.includes('youtu')?`<iframe src="https://www.youtube.com/embed/${youtubeID(v)}" frameborder="0" allowfullscreen></iframe>`:`<video src="${v}" controls></video>`).join('')}
-          ${(d.audios||[]).map(a=>`<audio src="${a}" controls></audio>`).join('')}
-        </div>
-        ${d.html ? `<button class="post-html-btn" onclick="abrirHtml('${btoa(unescape(encodeURIComponent(d.html)))}')">Abrir HTML especial</button>` : ''}
-        <button class="share-btn" onclick="share('${id}')">Compartilhar</button>
-      </div>`;
-    }
-
-    function renderPostList(d, id){
-      return `
-      <div class="post-card">
-        ${renderSlide(d.slide||[], id)}
-        <div class="post-titulo">${d.titulo || ''}</div>
-        <div class="post-data">${d.data && d.data.seconds ? new Date(d.data.seconds*1000).toLocaleString() : ''}</div>
-        <div class="post-media">
-          ${d.texto ? `<div style="margin-bottom:8px;color:#e2d6ff;">${d.texto}</div>` : ''}
-          ${(d.fotos||[]).map(f=>`<img src="${f}" alt="">`).join('')}
-          ${(d.videos||[]).map(v=>v.includes('youtu')?`<iframe src="https://www.youtube.com/embed/${youtubeID(v)}" frameborder="0" allowfullscreen></iframe>`:`<video src="${v}" controls></video>`).join('')}
-          ${(d.audios||[]).map(a=>`<audio src="${a}" controls></audio>`).join('')}
-        </div>
-        ${d.html ? `<button class="post-html-btn" onclick="abrirHtml('${btoa(unescape(encodeURIComponent(d.html)))}')">Abrir HTML especial</button>` : ''}
-        <button class="share-btn" onclick="share('${id}')">Compartilhar</button>
-        <button onclick="abrirPagina('${id}')" class="share-btn" style="background:#6937ff;margin-left:7px;">Abrir Página</button>
-      </div>`;
-    }
-
     function share(id){
       const url = `${location.origin}${location.pathname}?id=${id}`;
       if(navigator.share){
@@ -211,6 +190,35 @@
       } else {
         prompt('Link:', url);
       }
+    }
+
+    // CARD = CLICOU, ABRE DIRETO O HTML/PÁGINA
+    function renderPostList(d, id){
+      return `
+      <div class="post-card">
+        <div class="post-info" onclick="abrirPagina('${id}')">
+          ${renderSlide(d.slide||[], d.videos||[], id)}
+          <div class="post-titulo">${d.titulo || ''}</div>
+          <div class="post-data">${d.data && d.data.seconds ? new Date(d.data.seconds*1000).toLocaleString() : ''}</div>
+        </div>
+        <button class="share-btn" onclick="event.stopPropagation();share('${id}')" title="Compartilhar página">&#x1F517;</button>
+      </div>`;
+    }
+
+    function renderPostFull(d, id) {
+      return `
+      <div class="post-card" style="margin-top:16px;">
+        ${renderSlide(d.slide||[], d.videos||[], id)}
+        <div class="post-titulo">${d.titulo || ''}</div>
+        <div class="post-data">${d.data && d.data.seconds ? new Date(d.data.seconds*1000).toLocaleString() : ''}</div>
+        <div class="post-media">
+          ${d.texto ? `<div style="margin-bottom:8px;color:#e2d6ff;">${d.texto}</div>` : ''}
+          ${(d.fotos||[]).map(f=>`<img src="${f}" alt="">`).join('')}
+          ${(d.videos||[]).map(v=>v.includes('youtu')?`<iframe src="https://www.youtube.com/embed/${youtubeID(v)}" frameborder="0" allowfullscreen></iframe>`:`<video src="${v}" controls></video>`).join('')}
+          ${(d.audios||[]).map(a=>`<audio src="${a}" controls></audio>`).join('')}
+        </div>
+        ${d.html ? `<button class="post-html-btn" onclick="abrirHtml('${btoa(unescape(encodeURIComponent(d.html)))}')">Abrir HTML especial</button>` : ''}
+      </div>`;
     }
 
     function abrirHtml(base64){
@@ -239,8 +247,13 @@
         backBtn.style.display = '';
         db.collection("conteudos").doc(id).get().then(doc=>{
           if(doc.exists){
-            postsDiv.innerHTML = renderPostFull(doc.data(), id);
+            // Se for só HTML especial, já abre ao carregar!
+            let d = doc.data();
+            postsDiv.innerHTML = renderPostFull(d, id);
             setTimeout(activateAllSlides,50);
+            if(d.html && (!d.slide || d.slide.length == 0) && (!d.videos || d.videos.length == 0)) {
+              abrirHtml(btoa(unescape(encodeURIComponent(d.html))));
+            }
           }else{
             postsDiv.innerHTML = `<div style="color:#fff;text-align:center;padding:32px 0;">Publicação não encontrada.</div>`;
           }
