@@ -143,6 +143,7 @@
       margin: 13px 0 5px 0;
       word-break: break-word;
     }
+    /* --- Ajuste para HTML responsivo dentro do modal --- */
     .modal-html {
       color: #333;
       background: #f7f8fc;
@@ -153,6 +154,34 @@
       min-height: 32px;
       word-break: break-word;
       overflow-x: auto;
+      max-width: 100%;
+    }
+    .modal-html table {
+      width: 100% !important;
+      max-width: 100% !important;
+      border-collapse: collapse;
+      margin-bottom: 1em;
+      background: #fff;
+    }
+    .modal-html th, .modal-html td {
+      padding: 6px 5px;
+      border: 1px solid #b1b6cc;
+      text-align: left;
+      font-size: 1em;
+    }
+    .modal-html img {
+      max-width: 100% !important;
+      height: auto !important;
+      display: block;
+      margin: 0.5em auto;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px #0001;
+    }
+    /* Reset em tudo que está dentro do modal-html */
+    .modal-html * {
+      box-sizing: border-box !important;
+      max-width: 100% !important;
+      word-break: break-word;
     }
     .modal-fotos {
       display: flex;
@@ -188,7 +217,7 @@
     }
     @media (max-width:700px) {
       .main { max-width: 99vw; }
-      .modal { width: 97vw; }
+      .modal { width: 98vw; }
       .modal-fotos img, .modal-fotos video { max-width: 68px; max-height: 80px; }
       .card-btn { max-width: 99vw; min-width: 45vw;}
     }
@@ -198,7 +227,6 @@
 </head>
 <body>
   <div class="header">
-    <!-- Substitua pelo link da sua logo -->
     <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNxmA6mH86GQSOc7AKewTETB-55O3iY3QTCytGXS696o25IKkQTU2yQedvgeDo17i_EEYbJoy_eM9t7yN0vpEApNXt19M9Qj8Dh-IIHEi6o3AWTuVZXRtS2rvAT9lY3hAQ4riW3ftOonmBBBTzACHzZJ1pa1EC2joR90I9kH2noEZnCrQTgJOXjVunKjw/s1600/1000123334.png" alt="Logo">
     <span>Portal de Conteúdos</span>
   </div>
@@ -221,7 +249,7 @@
   </div>
 
   <script>
-    // TROQUE PELO SEU FIREBASE!
+    // --- TROQUE PELO SEU FIREBASE ---
     const firebaseConfig = {
       apiKey: "SUA_API_KEY_AQUI",
       authDomain: "concursosuper-29c5b.firebaseapp.com",
@@ -275,6 +303,23 @@
       let modalHtml = d.html||"";
       if(modalHtml.trim().length > 0){
         document.getElementById('modalHtml').innerHTML = modalHtml;
+
+        // --- Adaptação extra: força imagens a serem responsivas mesmo se vierem com width/height errados ---
+        const imgs = document.querySelectorAll('#modalHtml img');
+        imgs.forEach(img => {
+          img.style.maxWidth = "100%";
+          img.style.height = "auto";
+          img.style.display = "block";
+        });
+
+        // --- Adaptação extra para tabelas largas: rolagem horizontal se necessário ---
+        const tables = document.querySelectorAll('#modalHtml table');
+        tables.forEach(tb => {
+          tb.style.width = "100%";
+          tb.style.maxWidth = "100%";
+          tb.style.overflowX = "auto";
+        });
+
         document.getElementById('modalHtml').style.display = "";
       } else {
         document.getElementById('modalHtml').style.display = "none";
