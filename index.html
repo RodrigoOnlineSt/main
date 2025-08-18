@@ -2,178 +2,122 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Rodrigo Cambista Online</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+  <title>Portal do Cliente</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
   <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
   <style>
-    body {
-      margin: 0;
-      font-family: 'Montserrat', Arial, sans-serif;
-      background: #222;
-      background-image: url('https://img.freepik.com/vetores-gratis/estadio-fundo-verde-ilustracao_1284-41512.jpg?w=900'); /* Troque pelo seu fundo */
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      min-height: 100vh;
-    }
-    .header {
-      width: 100%;
-      background: rgba(0,0,0,0.6);
-      padding: 24px 0 12px 0;
-      text-align: center;
-    }
-    .header img {
-      max-height: 66px;
-      width: auto;
-      margin: auto;
-      border-radius: 10px;
-      box-shadow: 0 3px 16px #0008;
-    }
-    .menu-blocos {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 22px;
-      margin: 24px 8px 10px 8px;
-    }
-    .bloco-menu {
-      background: #fff;
-      border-radius: 18px;
-      box-shadow: 0 4px 18px #2225, 0 1.5px 0 #eaf2fc55;
-      padding: 12px 12px 8px 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-width: 120px;
-      width: 132px;
-      transition: .15s;
-      cursor: pointer;
-      position: relative;
-    }
-    .bloco-menu img {
-      border-radius: 11px;
-      width: 72px; height: 72px; object-fit: cover;
-      margin-bottom: 8px;
-      box-shadow: 0 2px 8px #9bbbe6a0;
-      background: #dde8fa;
-    }
-    .bloco-menu span {
-      color: #282e40;
-      font-weight: bold;
-      text-align: center;
-      font-size: 1.07em;
-      letter-spacing: 0.01em;
-      margin-bottom: 2px;
-    }
-    .bloco-menu:hover {
-      box-shadow: 0 12px 36px #1966c444, 0 2px 8px #eaf2fc77;
-      transform: scale(1.035);
-      border: 2.5px solid #1966c4;
-    }
-    .linhas-apostas {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 16px;
-      margin: 20px 0 10px 0;
-      flex-wrap: wrap;
-    }
-    .aposta-btn {
-      font-size: 2em;
-      font-weight: 900;
-      padding: 3px 20px;
-      border-radius: 9px;
-      border: none;
-      background: none;
-      margin: 0 2px;
-      text-shadow: 2px 3px 0 #0007, 0 1px 12px #fff6;
-      cursor: pointer;
-      outline: none;
-      transition: .16s;
-      color: #fff;
-    }
-    .super5 { color: #ff1111; }
-    .super6 { color: #1da532; }
-    .lotinha { color: #ffea00; background: #111; }
-    .lotinha2 { color: #13c03b; font-weight: 900; }
-    .zap-ico {
-      font-size: 2.4em;
-      color: #13dc44;
-      background: #fff;
-      border-radius: 50%;
-      padding: 4px 10px;
-      box-shadow: 0 3px 12px #13dc4488;
-      margin-left: 7px;
-      vertical-align: middle;
-      transition: .12s;
-      border: none;
-    }
-    .zap-ico:active { background: #dffbe2; }
-    .destaque-banner {
-      width: 97vw; max-width: 440px;
-      margin: 18px auto 0 auto;
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 4px 16px #0005;
-      background: #fff;
-      display: block;
-    }
-    @media (max-width: 650px) {
-      .menu-blocos { gap: 12px; }
-      .bloco-menu { width: 43vw; min-width: 105px; max-width: 180px;}
-      .header img { max-width: 95vw; }
-    }
-    @media (max-width: 520px) {
-      .header { padding: 18px 0 9px 0;}
-      .menu-blocos { gap: 6px;}
-      .bloco-menu { width: 46vw; min-width: 97px;}
-      .aposta-btn { font-size: 1.17em; padding: 2px 7px;}
-      .destaque-banner { max-width: 99vw; }
+    body { margin:0; font-family:'Montserrat',Arial,sans-serif; background:#e7f1fd; color:#222; min-height:100vh;}
+    .header { background: #fff; display: flex; justify-content: center; align-items: center; height: 60px; margin-bottom: 12px; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; box-shadow: 0 4px 22px #10172816;}
+    .header img { max-height: 48px; max-width: 92vw;}
+    .posts { max-width: 480px; margin: 0 auto; padding: 4px;}
+    .post-card { background:#fff; border-radius:15px; box-shadow:0 1.5px 8px #654ea322; padding:14px 11px 9px 11px; margin-bottom:18px; position:relative;}
+    .post-titulo { font-size:1.13em; color:#654ea3; font-weight:700; margin-bottom:8px; }
+    .post-data { font-size:.98em; color:#89a2c7; position:absolute;top:12px;right:14px;}
+    .post-media img {max-width:99vw;max-height:190px;border-radius:10px;margin:6px 0;display:block;}
+    .post-media video {max-width:99vw;border-radius:10px;margin:7px 0;}
+    .post-media audio { width:97%; margin:8px 0;}
+    .post-media iframe { width:99%; min-height:140px; border-radius:10px;margin:7px 0;}
+    .post-html-btn { background:linear-gradient(90deg,#1966c4,#654ea3 85%);color:#fff; border:none; border-radius:8px; padding:9px 20px; font-size:1em; font-weight:700; margin:12px 0; cursor:pointer; }
+    .compartilhar { background:#25D366;color:#fff;font-weight:700;border:none;border-radius:7px;padding:8px 20px;box-shadow:0 1.5px 7px #25d36650;cursor:pointer;font-size:1em;margin:10px 0 8px 0;}
+    @media (max-width:600px) {
+      .posts { max-width:98vw;}
+      .header img { max-width:97vw;}
     }
   </style>
-  <!-- Ícone WhatsApp SVG inline -->
-  <script>
-    function abrirZap() {
-      window.open('https://wa.me/SEUNUMEROAQUI', '_blank');
-    }
-  </script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 </head>
 <body>
+  <!-- Logo/capa -->
   <div class="header">
-    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNxmA6mH86GQSOc7AKewTETB-55O3iY3QTCytGXS696o25IKkQTU2yQedvgeDo17i_EEYbJoy_eM9t7yN0vpEApNXt19M9Qj8Dh-IIHEi6o3AWTuVZXRtS2rvAT9lY3hAQ4riW3ftOonmBBBTzACHzZJ1pa1EC2joR90I9kH2noEZnCrQTgJOXjVunKjw/s1600/1000123334.png" alt="Rodrigo Cambista Online">
+    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNxmA6mH86GQSOc7AKewTETB-55O3iY3QTCytGXS696o25IKkQTU2yQedvgeDo17i_EEYbJoy_eM9t7yN0vpEApNXt19M9Qj8Dh-IIHEi6o3AWTuVZXRtS2rvAT9lY3hAQ4riW3ftOonmBBBTzACHzZJ1pa1EC2joR90I9kH2noEZnCrQTgJOXjVunKjw/s1600/1000123334.png" alt="Logo">
   </div>
 
-  <!-- BLOCOS DE MENUS PRINCIPAIS -->
-  <div class="menu-blocos">
-    <div class="bloco-menu" onclick="window.open('https://wa.me/SEUNUMEROAQUI', '_blank')">
-      <img src="https://i.imgur.com/yOBp6Cy.png" alt="Apostas WhatsApp"> <!-- Troque a imagem -->
-      <span>FUTEBOL</span>
-    </div>
-    <div class="bloco-menu" onclick="window.open('https://seusite.com/pix', '_blank')">
-      <img src="https://i.imgur.com/SbwtjKg.png" alt="Apostas Pix">
-      <span>FUTEBOL/ SITE</span>
-    </div>
-    <div class="bloco-menu" onclick="window.open('https://seusite.com/cassino', '_blank')">
-      <img src="https://i.imgur.com/AFZPE6E.png" alt="Cassino Online">
-      <span>OUTROS</span>
-    </div>
-  </div>
+  <!-- Lista de publicações -->
+  <div class="posts" id="posts"></div>
 
-  <!-- APOSTAS DESTAQUE -->
-  <div class="linhas-apostas">
-    <button class="aposta-btn super5" onclick="window.open('https://seusite.com/super5','_blank')">Super5</button>
-    <button class="aposta-btn super6" onclick="window.open('https://seusite.com/super6','_blank')">Super6</button>
-    <button class="aposta-btn lotinha2" onclick="window.open('https://seusite.com/lotinha','_blank')">lotinha</button>
-    <button class="aposta-btn lotinha" onclick="window.open('https://seusite.com/lotinhadasorte','_blank')">LOTINHA da Sorte</button>
-    <button class="zap-ico" onclick="abrirZap()" title="WhatsApp">
-      <!-- SVG WhatsApp -->
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#25D366"/><path d="M25 20.1c-.3.9-1.3 1.6-2.1 1.8-.5.1-1 .1-1.5-.1-.4-.1-.7-.2-1.4-.5-3.6-1.5-5.9-5.3-5.7-7.1.1-.8.4-1.2 1-1.3.4-.1.6-.1.8.1.3.3 1.1 1.3 1.2 1.5.2.3.2.5.1.7-.1.2-.3.5-.6.8-.1.1-.2.2-.1.4.1.3.6 1.1 1.4 1.8 1 .9 1.7 1.1 2 .9.2-.1.4-.2.7-.1.3.1 1.8.9 2.1 1.1.2.1.3.1.3.2.1.1.1.5 0 .7z" fill="#fff"/></svg>
-    </button>
-  </div>
+  <script>
+    // Firebase config (ajuste para seu projeto)
+    const firebaseConfig = {
+      apiKey: "SUA_API_KEY_AQUI",
+      authDomain: "concursosuper-29c5b.firebaseapp.com",
+      projectId: "concursosuper-29c5b",
+      storageBucket: "concursosuper-29c5b.appspot.com",
+      messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+      appId: "SEU_APP_ID",
+      measurementId: "SEU_MEASUREMENT_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-  <!-- BANNER DESTAQUE -->
-  <img class="destaque-banner" src="/mnt/data/1000365892.jpg" alt="Banner Grupo R$5 paga 100"> <!-- Troque pela sua imagem ou coloque URL online -->
+    // Função para extrair ID do Youtube
+    function youtubeID(url){
+      let match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([\w-]{11})/);
+      return match ? match[1] : '';
+    }
 
-  <div style="height:32px"></div> <!-- Espaço final -->
+    // Renderizar publicação (1 post)
+    function renderPost(d, id){
+      let data = d.data && d.data.seconds ? new Date(d.data.seconds*1000).toLocaleString() : "";
+      let html = `<div class="post-card">
+        <div class="post-titulo">${d.titulo||''}</div>
+        <div class="post-data">${data}</div>
+        <div class="post-media">`;
+      if(d.texto) html += `<div style="margin-bottom:8px;">${d.texto}</div>`;
+      if(d.fotos && d.fotos.length)
+        html += d.fotos.map(f=>`<img src="${f}" loading="lazy">`).join('');
+      if(d.videos && d.videos.length)
+        html += d.videos.map(v=>v.includes('youtu') ?
+          `<iframe src="https://www.youtube.com/embed/${youtubeID(v)}" frameborder="0" allowfullscreen></iframe>`
+          : `<video src="${v}" controls></video>`).join('');
+      if(d.audios && d.audios.length)
+        html += d.audios.map(a=>`<audio src="${a}" controls></audio>`).join('');
+      if(d.html)
+        html += `<button class="post-html-btn" onclick="abrirHtml('${btoa(unescape(encodeURIComponent(d.html)))}')">Abrir conteúdo HTML em tela cheia</button>`;
+      html += `</div>
+        <button class="compartilhar" onclick="compartilhar('${id}','${encodeURIComponent(d.titulo||"Publicação")}')">Compartilhar</button>
+      </div>`;
+      return html;
+    }
+
+    // Carregar posts do Firebase
+    function carregarPosts(){
+      db.collection("conteudos").orderBy("data","desc").onSnapshot(snap=>{
+        let html = "";
+        snap.forEach(doc=>{
+          html += renderPost(doc.data(), doc.id);
+        });
+        document.getElementById('posts').innerHTML = html || "<div style='color:#777;padding:18px;'>Nenhuma publicação ainda.</div>";
+      });
+    }
+    carregarPosts();
+
+    // Compartilhar publicação
+    function compartilhar(id, titulo){
+      const url = location.origin + location.pathname + "?id=" + id;
+      if(navigator.share){
+        navigator.share({title: decodeURIComponent(titulo), url: url});
+      } else {
+        const wpp = `https://wa.me/?text=${decodeURIComponent(titulo)}%20${encodeURIComponent(url)}`;
+        if(confirm("Deseja compartilhar pelo WhatsApp?")) window.open(wpp);
+        else { prompt("Link da publicação (copie):", url);}
+      }
+    }
+
+    // Abrir HTML em tela cheia
+    function abrirHtml(base64){
+      let html = decodeURIComponent(escape(atob(base64)));
+      let w = window.open();
+      w.document.write(`
+        <html><head><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+        <title>Visualização HTML</title>
+        <style>
+          body{margin:0;padding:8px 2vw;font-family:Arial,sans-serif;background:#fff;color:#222;max-width:100vw;}
+          img,video,iframe{max-width:100%!important;height:auto!important;display:block;margin:0 auto 14px auto;border-radius:8px;}
+        </style>
+        </head><body>${html}</body></html>
+      `);
+    }
+  </script>
 </body>
 </html>
