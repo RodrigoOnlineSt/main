@@ -112,45 +112,18 @@
     .btn-voltar:hover {
       background: #154d7c;
     }
-    /* --- Ajuste para HTML responsivo dentro do conteúdo --- */
     .conteudo-html {
+      /* O HTML interativo publicado será injetado aqui */
       color: #333;
       background: #f7f8fc;
-      padding: 13px 11px;
+      padding: 0;
       border-radius: 11px;
-      margin: 10px 0 10px 0;
+      margin: 0;
       font-size: 1.06em;
       min-height: 32px;
       word-break: break-word;
       overflow-x: auto;
       max-width: 100%;
-    }
-    .conteudo-html table {
-      width: 100% !important;
-      max-width: 100% !important;
-      border-collapse: collapse;
-      margin-bottom: 1em;
-      background: #fff;
-    }
-    .conteudo-html th, .conteudo-html td {
-      padding: 6px 5px;
-      border: 1px solid #b1b6cc;
-      text-align: left;
-      font-size: 1em;
-    }
-    .conteudo-html img {
-      max-width: 100% !important;
-      height: auto !important;
-      display: block;
-      margin: 0.5em auto;
-      border-radius: 6px;
-      box-shadow: 0 2px 6px #0001;
-    }
-    /* Reset em tudo que está dentro do conteudo-html */
-    .conteudo-html * {
-      box-sizing: border-box !important;
-      max-width: 100% !important;
-      word-break: break-word;
     }
     .conteudo-fotos {
       display: flex;
@@ -203,12 +176,10 @@
     }
     @media (max-width:700px) {
       .main { max-width: 99vw; }
-      .conteudo-html { font-size: 1em; padding: 8px 2vw; }
+      .conteudo-html { font-size: 1em; padding: 0; }
       .conteudo-fotos img, .conteudo-fotos video { max-width: 68px; max-height: 80px; }
       .card-btn { max-width: 99vw; min-width: 45vw;}
     }
-    @keyframes fadeInBg { from {opacity:0} to {opacity:1} }
-    @keyframes popIn { from{transform:scale(.95);} to{transform:scale(1);} }
   </style>
 </head>
 <body>
@@ -217,10 +188,8 @@
     <span>Portal de Conteúdos</span>
   </div>
   <div class="main" id="main">
-
     <!-- Lista dos conteúdos, só aparece se não tiver ?id=... -->
     <div class="conteudos" id="conteudos"></div>
-    
     <!-- Conteúdo completo, aparece se tiver ?id=... -->
     <div id="conteudoCompleto" style="display:none;">
       <button class="btn-voltar" onclick="voltarHome()">
@@ -237,6 +206,19 @@
   </div>
 
   <script>
+    // Função que injeta o HTML publicado E EXECUTA scripts internos e externos (garante simuladores funcionando!)
+    function setHtmlWithScripts(container, html) {
+      container.innerHTML = html;
+      const scripts = container.querySelectorAll('script');
+      scripts.forEach(oldScript => {
+        const newScript = document.createElement('script');
+        if (oldScript.src) newScript.src = oldScript.src;
+        if (oldScript.type) newScript.type = oldScript.type;
+        newScript.innerHTML = oldScript.innerHTML;
+        oldScript.parentNode.replaceChild(newScript, oldScript);
+      });
+    }
+
     // TROQUE PELO SEU FIREBASE!
     const firebaseConfig = {
       apiKey: "SUA_API_KEY_AQUI",
@@ -247,7 +229,6 @@
     const db = firebase.firestore();
 
     const conteudosDiv = document.getElementById('conteudos');
-    const mainDiv = document.getElementById('main');
     const conteudoCompletoDiv = document.getElementById('conteudoCompleto');
 
     // Home: lista de conteúdos
@@ -281,7 +262,7 @@
         const d = doc.data();
         document.getElementById('conteudoCapa').src = d.capa || (d.fotos && d.fotos[0]) || "";
         document.getElementById('conteudoTitulo').textContent = d.titulo||"";
-        
+
         // Fotos e vídeos (slide horizontal)
         let fotosHtml = "";
         (d.fotos||[]).forEach(url=>{
@@ -292,26 +273,10 @@
         });
         document.getElementById('conteudoFotos').innerHTML = fotosHtml;
 
-        // HTML publicado (com segurança)
+        // HTML publicado (com suporte a scripts)
         let htmlPublicado = d.html||"";
         if(htmlPublicado.trim().length > 0){
-          document.getElementById('conteudoHtml').innerHTML = htmlPublicado;
-
-          // Adaptação para imagens
-          const imgs = document.querySelectorAll('#conteudoHtml img');
-          imgs.forEach(img => {
-            img.style.maxWidth = "100%";
-            img.style.height = "auto";
-            img.style.display = "block";
-          });
-          // Adaptação para tabelas largas
-          const tables = document.querySelectorAll('#conteudoHtml table');
-          tables.forEach(tb => {
-            tb.style.width = "100%";
-            tb.style.maxWidth = "100%";
-            tb.style.overflowX = "auto";
-          });
-
+          setHtmlWithScripts(document.getElementById('conteudoHtml'), htmlPublicado);
           document.getElementById('conteudoHtml').style.display = "";
         } else {
           document.getElementById('conteudoHtml').style.display = "none";
