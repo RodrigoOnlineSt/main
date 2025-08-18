@@ -1,53 +1,83 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Mural de Avisos</title>
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <meta charset="UTF-8">
+  <title>Portal do Cliente</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
   <style>
-    body { font-family: Arial, sans-serif; background: #d5e6f7; margin:0; }
-    .container { max-width: 480px; margin: 32px auto 0; background: #fff; color: #222; border-radius: 16px; box-shadow: 0 6px 32px #0002;}
-    h2 { text-align: center; margin-top: 0; padding: 24px 0 8px 0; color: #1877f2;}
-    .post { background:#f4faff; border-radius:11px; margin:15px 0; padding:12px 15px; }
-    .post .data { font-size:12px; color:#666; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h2>Mural de Avisos</h2>
-    <div id="avisos"></div>
-  </div>
-  <script>
-    // Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyAr-qpOVl3aooDY56W9fHHLmmIxfms1P5I",
-      authDomain: "presta-9f617.firebaseapp.com",
-      projectId: "presta-9f617",
-      storageBucket: "presta-9f617.firebasestorage.app",
-      messagingSenderId: "933441693460",
-      appId: "1:933441693460:web:d1685236428060f700c401",
-      measurementId: "G-G4BNHYSYM6"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    body { background: #e7f2ff; margin: 0; font-family: 'Montserrat', Arial, sans-serif; }
+    .header {
+      background: linear-gradient(90deg, #34b6ef 0%, #003c6c 100%);
+      color: #fff; font-size: 2.2em; padding: 36px 0 24px 0;
+      text-align: center; font-weight: bold; letter-spacing: 1px;
+      border-bottom-left-radius: 38px; border-bottom-right-radius: 38px;
+      box-shadow: 0 8px 32px #002c4a33;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .nav { text-align: center; margin-top: 8px;}
+    .nav a {
+      color: #fff; margin: 0 18px; text-decoration: none; font-size: 1.1em; opacity: .85;
+      transition: .2s;
+    }
+    .nav a:hover { opacity: 1; border-bottom: 2px solid #fff; }
 
-    // Lista avisos (tempo real)
-    db.collection('avisos').orderBy('data','desc').onSnapshot(snapshot => {
-      let html = '';
-      snapshot.forEach(doc => {
-        const { titulo, mensagem, imagem, data } = doc.data();
-        html += `<div class="post">
-          ${titulo ? `<b>${titulo}</b><br>` : ''}
-          ${mensagem ? `<div>${mensagem.replace(/\n/g,"<br>")}</div>` : ''}
-          ${imagem ? `<img src="${imagem}" style="width:100%;margin:9px 0;border-radius:8px;"/>` : ''}
-          <div class="data">${new Date(data).toLocaleString()}</div>
-        </div>`;
-      });
-      document.getElementById('avisos').innerHTML = html;
-    });
-  </script>
-</body>
-</html>
+    .slide-container { max-width: 500px; margin: 32px auto 18px auto; }
+    .slide {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 4px 22px #1ab0e022;
+      padding: 18px 20px;
+      font-size: 1.12em;
+      color: #0074c2;
+      margin-bottom: 10px;
+      animation: fadein 1s;
+    }
+    @keyframes fadein { from{ opacity: 0;} to {opacity: 1;} }
+
+    .cards {
+      max-width: 820px;
+      margin: 36px auto 34px auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 28px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 6px 26px #3bc2a225;
+      padding: 26px 24px 21px 24px;
+      cursor: pointer;
+      transition: .17s;
+      display: flex; flex-direction: column; align-items: flex-start;
+      min-height: 140px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card:hover { box-shadow: 0 14px 36px #3bc2a250; transform: translateY(-5px) scale(1.02);}
+    .card-titulo { font-size: 1.22em; color: #077cc3; font-weight: bold; margin-bottom: 10px;}
+    .card-tipo { color: #32b7c2; font-size: .95em; margin-bottom: 12px;}
+    .card-data { color: #aaa; font-size: .91em; position: absolute; bottom: 13px; right: 20px;}
+
+    .modal-bg {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: #003c6ce6;
+      display: none; align-items: center; justify-content: center; z-index: 100;
+      animation: fadein .4s;
+    }
+    .modal {
+      background: #fff; border-radius: 17px; max-width: 96vw; max-height: 96vh;
+      width: 640px; padding: 44px 38px 28px 38px; box-shadow: 0 16px 58px #0a2458cc;
+      color: #203650; overflow-y: auto; position: relative;
+      animation: popup .25s;
+    }
+    @media (max-width: 750px) {
+      .modal { width: 96vw; padding: 22px 8px 22px 8px;}
+    }
+    @keyframes popup { from { transform: scale(.8); opacity:0;} to { transform: scale(1); opacity:1;} }
+    .close-btn {
+      position: absolute; top: 12px; right: 18px; font-size: 2.4em;
+      color: #077cc3; background: none; border: none; cursor: pointer;
+      transition: .17s; z-index: 20;
+    }
+    .close-btn:h
