@@ -3,17 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <title>Portal de Conteúdos</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
   <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <style>
-    body {
+    html, body {
       margin: 0;
-      background: linear-gradient(120deg, #1966c4 0%, #654ea3 100%);
+      padding: 0;
+      width: 100vw;
       min-height: 100vh;
+      overflow-x: hidden !important;
       font-family: 'Montserrat', Arial, sans-serif;
+      background: linear-gradient(120deg, #1966c4 0%, #654ea3 100%);
       background-attachment: fixed;
+    }
+    body {
+      box-sizing: border-box;
     }
     .header {
       background: #fff;
@@ -25,6 +31,9 @@
       border-bottom-left-radius: 32px;
       border-bottom-right-radius: 32px;
       box-shadow: 0 8px 32px #0e2a4a21;
+      width: 100vw;
+      max-width: 100vw;
+      overflow: hidden;
     }
     .header img {
       max-height: 44px;
@@ -38,18 +47,22 @@
       letter-spacing: 1px;
     }
     .main {
-      max-width: 540px;
+      max-width: 100vw;
+      width: 100vw;
       margin: 0 auto 30px auto;
       background: #1a2771cc;
       border-radius: 16px;
-      padding: 20px 9px 30px 9px;
+      padding: 0;
       box-shadow: 0 12px 38px #0007;
+      box-sizing: border-box;
     }
     .conteudos {
       display: flex;
       flex-wrap: wrap;
       gap: 18px;
       justify-content: center;
+      padding: 12px;
+      box-sizing: border-box;
     }
     .card-btn {
       background: #fff;
@@ -113,17 +126,18 @@
       background: #154d7c;
     }
     .conteudo-html {
-      /* O HTML interativo publicado será injetado aqui */
       color: #333;
       background: #f7f8fc;
-      padding: 0;
+      padding: 0 !important;
       border-radius: 11px;
       margin: 0;
       font-size: 1.06em;
       min-height: 32px;
       word-break: break-word;
       overflow-x: auto;
-      max-width: 100%;
+      width: 100vw !important;
+      max-width: 100vw !important;
+      box-sizing: border-box;
     }
     .conteudo-fotos {
       display: flex;
@@ -175,10 +189,11 @@
       box-shadow: 0 2px 12px #3ce1d833;
     }
     @media (max-width:700px) {
-      .main { max-width: 99vw; }
-      .conteudo-html { font-size: 1em; padding: 0; }
+      .main { max-width: 100vw !important; }
+      .conteudo-html { font-size: 1em; padding: 0 !important; max-width: 100vw !important; width: 100vw !important; }
       .conteudo-fotos img, .conteudo-fotos video { max-width: 68px; max-height: 80px; }
       .card-btn { max-width: 99vw; min-width: 45vw;}
+      html, body { max-width: 100vw !important; }
     }
   </style>
 </head>
@@ -188,9 +203,7 @@
     <span>Portal de Conteúdos</span>
   </div>
   <div class="main" id="main">
-    <!-- Lista dos conteúdos, só aparece se não tiver ?id=... -->
     <div class="conteudos" id="conteudos"></div>
-    <!-- Conteúdo completo, aparece se tiver ?id=... -->
     <div id="conteudoCompleto" style="display:none;">
       <button class="btn-voltar" onclick="voltarHome()">
         &#8592; Voltar
@@ -204,9 +217,7 @@
       </div>
     </div>
   </div>
-
   <script>
-    // Função que injeta o HTML publicado E EXECUTA scripts internos e externos (garante simuladores funcionando!)
     function setHtmlWithScripts(container, html) {
       container.innerHTML = html;
       const scripts = container.querySelectorAll('script');
@@ -231,7 +242,6 @@
     const conteudosDiv = document.getElementById('conteudos');
     const conteudoCompletoDiv = document.getElementById('conteudoCompleto');
 
-    // Home: lista de conteúdos
     function mostrarConteudos(){
       db.collection("conteudos").orderBy("data","desc").onSnapshot(snapshot=>{
         conteudosDiv.innerHTML = "";
@@ -250,7 +260,6 @@
       });
     }
 
-    // Mostra conteúdo completo
     function mostrarConteudo(id){
       conteudosDiv.style.display = "none";
       conteudoCompletoDiv.style.display = "";
@@ -263,7 +272,6 @@
         document.getElementById('conteudoCapa').src = d.capa || (d.fotos && d.fotos[0]) || "";
         document.getElementById('conteudoTitulo').textContent = d.titulo||"";
 
-        // Fotos e vídeos (slide horizontal)
         let fotosHtml = "";
         (d.fotos||[]).forEach(url=>{
           fotosHtml += `<img src="${url}" loading="lazy">`;
@@ -273,7 +281,6 @@
         });
         document.getElementById('conteudoFotos').innerHTML = fotosHtml;
 
-        // HTML publicado (com suporte a scripts)
         let htmlPublicado = d.html||"";
         if(htmlPublicado.trim().length > 0){
           setHtmlWithScripts(document.getElementById('conteudoHtml'), htmlPublicado);
@@ -282,18 +289,15 @@
           document.getElementById('conteudoHtml').style.display = "none";
         }
 
-        // Para compartilhar
         window._paginaTitulo = d.titulo || "";
         window._paginaId = id;
       });
     }
 
-    // Voltar para a home (lista)
     function voltarHome(){
       window.location.search = "";
     }
 
-    // Compartilhar a página individual
     function compartilharPagina(){
       const id = window._paginaId;
       const titulo = window._paginaTitulo;
@@ -305,7 +309,6 @@
       }
     }
 
-    // Verifica se está em lista ou em página de conteúdo
     function checarPagina(){
       const id = (new URL(location.href)).searchParams.get("id");
       if(id){
