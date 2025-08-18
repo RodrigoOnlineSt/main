@@ -65,9 +65,12 @@
       color: #1d3573;
       margin-bottom: 6px;
       text-shadow: 0 2px 18px #bde1ff22;
+      cursor: pointer;
     }
     .capa {
       width: 98%; max-width: 330px; height: auto; margin: 6px auto 14px auto; display: block; border-radius: 10px; box-shadow: 0 4px 24px #1288ff13;
+      cursor: pointer;
+      transition: box-shadow .19s;
     }
     .media-list img, .media-list video {
       width: 54px; height: 54px; object-fit: cover;
@@ -137,23 +140,39 @@
     .modal-content {
       background: #fff;
       border-radius: 18px;
-      padding: 20px 4vw;
-      max-width: 500px;
-      max-height: 90vh;
+      padding: 0;
+      max-width: 98vw;
+      max-height: 98vh;
       overflow: auto;
       box-shadow: 0 8px 48px #0009;
       color: #121d38;
       position: relative;
+      min-width: 340px;
+      min-height: 90vh;
+      width: 98vw;
+      height: 98vh;
+      display: flex;
+      flex-direction: column;
     }
     .modal-close {
       position: absolute;
-      top: 12px; right: 18px;
+      top: 14px; right: 22px;
       background: none;
       border: none;
-      font-size: 1.8em;
+      font-size: 2.2em;
       color: #366ad6;
       cursor: pointer;
       font-weight: bold;
+      z-index: 2;
+    }
+    .modal-iframe {
+      border: 0;
+      width: 100%;
+      height: 100%;
+      flex: 1;
+      background: #fff;
+      border-radius: 0 0 18px 18px;
+      display: block;
     }
   </style>
 </head>
@@ -168,7 +187,7 @@
   <div class="modal" id="modalHtml">
     <div class="modal-content" id="modalContent">
       <button class="modal-close" onclick="fecharModal()">&times;</button>
-      <div id="modalHtmlContent"></div>
+      <iframe id="modalIframe" class="modal-iframe" srcdoc=""></iframe>
     </div>
   </div>
 
@@ -187,7 +206,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Pega parâmetro ?id= para abrir post específico
+    // Pega parâmetro ?id= para abrir post específico (mas nunca abre HTML automático)
     function getParam(name) {
       const url = new URL(window.location);
       return url.searchParams.get(name);
@@ -196,11 +215,13 @@
     // Modal abrir/fechar para HTML
     window.abrirModal = function(html) {
       document.getElementById('modalHtml').style.display = 'flex';
-      document.getElementById('modalHtmlContent').innerHTML = html;
+      document.getElementById('modalIframe').setAttribute("srcdoc", html);
+      document.body.style.overflow = "hidden";
     }
     window.fecharModal = function() {
       document.getElementById('modalHtml').style.display = 'none';
-      document.getElementById('modalHtmlContent').innerHTML = '';
+      document.getElementById('modalIframe').setAttribute("srcdoc", "");
+      document.body.style.overflow = "";
     }
     window.onclick = function(event) {
       if(event.target === document.getElementById('modalHtml')) fecharModal();
@@ -209,7 +230,7 @@
     // Função para criar um card visual bonito e funcional
     function criarItem(doc, dados) {
       let id = doc.id;
-      let capa = dados.capa ? `<img class="capa" src="${dados.capa}">` : "";
+      let capa = dados.capa ? `<img class="capa" src="${dados.capa}" onclick="abrirModal(\`${dados.html ? dados.html.replace(/`/g,"\\`").replace(/\\/g,"\\\\") : ''}\`)"${dados.html?' style="cursor:pointer;"':''}>` : "";
       let fotos = (dados.fotos||[]).map(url=>`<img src="${url}">`).join('');
       let videos = (dados.videos||[]).map(url=>`<video src="${url}" muted controls></video>`).join('');
       let midia = (fotos||videos) ? `<div class="media-list">${fotos}${videos}</div>` : "";
@@ -225,10 +246,14 @@
       `;
       // Botão para abrir HTML se existir
       let btnHtml = dados.html ? `<button class="open-html" onclick="abrirModal(\`${dados.html.replace(/`/g,"\\`").replace(/\\/g,"\\\\")}\`)">Abrir Conteúdo</button>` : "";
+      // Título vira botão se tiver HTML
+      let titulo = dados.html
+        ? `<div class="item-title" onclick="abrirModal(\`${dados.html.replace(/`/g,"\\`").replace(/\\/g,"\\\\")}\`)">${dados.titulo||""}</div>`
+        : `<div class="item-title">${dados.titulo||""}</div>`;
       // Monta o card completo
       return `
         <div class="item">
-          <div class="item-title">${dados.titulo||""}</div>
+          ${titulo}
           ${capa}
           ${midia}
           ${btnHtml}
@@ -237,15 +262,14 @@
       `;
     }
 
-    // Carregar um post específico se o link for com ?id= (abrir como página exclusiva)
+    // Carregar um post específico (mas nunca abrir HTML de cara)
     async function carregarPorId(id) {
       let container = document.getElementById('container');
       let doc = await db.collection("conteudos").doc(id).get();
       if(!doc.exists) { container.innerHTML = "<div style='color:#fff;font-size:1.3em;text-align:center;margin-top:40px;'>Conteúdo não encontrado!</div>"; return; }
       let d = doc.data();
       container.innerHTML = criarItem(doc, d);
-      // Se tiver parâmetro ?html=1, já abre o modal
-      if(window.location.search.includes("html=1") && d.html) abrirModal(d.html);
+      // NÃO abre HTML automático!
     }
 
     // Carregar lista de conteúdos se não tiver id específico
