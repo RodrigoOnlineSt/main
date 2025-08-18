@@ -9,8 +9,7 @@
     body {
       margin:0; font-family:'Montserrat',sans-serif;
       background: linear-gradient(120deg, #0d1b2a 0%, #122d42 80%, #4a148c 100%);
-      color:#f6f6f6;
-      min-height:100vh;
+      color:#f6f6f6; min-height:100vh;
     }
     .topbar {
       background: rgba(20,24,44,0.96);
@@ -64,6 +63,27 @@
       margin-top:7px;
     }
     .share-btn:active { background:#1aa958;}
+    /* Slide/Carrossel */
+    .slide-wrapper { width:100%; position:relative; margin-bottom:15px; }
+    .slide-img { width:100%; max-height:210px; border-radius:13px; box-shadow:0 2px 19px #7c4bff55; object-fit:cover; background:#111; }
+    .slide-arrows { position:absolute; top:45%; left:0; width:100%; display:flex; justify-content:space-between; pointer-events:none;}
+    .slide-arrow {
+      background:rgba(20,14,50,.84); color:#fff; border:none; border-radius:50%; width:38px; height:38px; font-size:1.6em; cursor:pointer; box-shadow:0 2px 9px #0007;
+      display:flex;align-items:center;justify-content:center; pointer-events:auto;
+      transition:.14s;
+    }
+    .slide-arrow:active { background:#350b4a;}
+    .slide-dots { text-align:center; margin-top:4px; }
+    .slide-dot {
+      display:inline-block; width:9px; height:9px; margin:0 2px; border-radius:50%; background:#bfa3ee; opacity:.5; transition:.13s; cursor:pointer;
+    }
+    .slide-dot.active { background:#fff; opacity:1;}
+    /* Botão de voltar */
+    .back-btn {
+      position:fixed;top:17px;left:11px;z-index:99;background:rgba(30,10,40,0.89);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:2em;cursor:pointer;
+      box-shadow:0 2px 7px #13024c60;transition:.15s;display:flex;align-items:center;justify-content:center;
+    }
+    .back-btn:active{background:#4a148c;}
     @media (max-width:600px) {
       .content { max-width:98vw;}
       .topbar img { max-width:87vw;}
@@ -74,14 +94,11 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 </head>
 <body>
-  <!-- Barra Superior -->
   <div class="topbar">
     <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNxmA6mH86GQSOc7AKewTETB-55O3iY3QTCytGXS696o25IKkQTU2yQedvgeDo17i_EEYbJoy_eM9t7yN0vpEApNXt19M9Qj8Dh-IIHEi6o3AWTuVZXRtS2rvAT9lY3hAQ4riW3ftOonmBBBTzACHzZJ1pa1EC2joR90I9kH2noEZnCrQTgJOXjVunKjw/s1600/1000123334.png" alt="Logo">
   </div>
-
-  <!-- Lista de publicações -->
+  <button class="back-btn" id="backBtn" style="display:none;" onclick="location.href=location.pathname" title="Voltar">&times;</button>
   <div class="content" id="posts"></div>
-
   <script>
     // Firebase config
     const firebaseConfig = {
@@ -96,17 +113,72 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    // Util: pega parâmetro id
+    function getQueryParam(k){
+      let p = new URLSearchParams(window.location.search);
+      return p.get(k);
+    }
+
     function youtubeID(url){
       let m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([\w-]{11})/);
       return m ? m[1] : '';
     }
 
-    function renderPost(d, id){
-      let date = d.data && d.data.seconds ? new Date(d.data.seconds*1000).toLocaleString() : '';
+    // SLIDE DE FOTOS
+    function renderSlide(fotos) {
+      if(!fotos||!fotos.length) return '';
+      let slideId = 'slide'+Math.floor(Math.random()*1e8);
+      let dots = fotos.map((f,i)=>`<span class="slide-dot${i==0?' active':''}" onclick="slideGo('${slideId}',${i})"></span>`).join('');
       return `
-      <div class="post-card">
+        <div class="slide-wrapper" id="${slideId}">
+          <img class="slide-img" src="${fotos[0]}" style="display:block;">
+          <div class="slide-arrows">
+            <button class="slide-arrow" onclick="slidePrev('${slideId}')">&#8678;</button>
+            <button class="slide-arrow" onclick="slideNext('${slideId}')">&#8680;</button>
+          </div>
+          <div class="slide-dots">${dots}</div>
+        </div>
+        <script>
+        window['${slideId}_idx']=0;
+        window.slideGo=function(id,idx){
+          let wrap=document.getElementById(id);
+          let imgs=[...wrap.querySelectorAll('.slide-img')];
+          let dots=[...wrap.querySelectorAll('.slide-dot')];
+          if(imgs.length>0) imgs[0].src="${fotos[0]}".replace("${fotos[0]}", "${fotos[idx]}");
+          dots.forEach((d,i)=>d.classList.toggle('active',i==idx));
+          window[id+'_idx']=idx;
+        }
+        window.slidePrev=function(id){
+          let wrap=document.getElementById(id);
+          let imgs=[...wrap.querySelectorAll('.slide-img')];
+          let dots=[...wrap.querySelectorAll('.slide-dot')];
+          let idx=window[id+'_idx']||0;
+          idx=idx<=0?${fotos.length-1}:idx-1;
+          if(imgs.length>0) imgs[0].src="${fotos[0]}".replace("${fotos[0]}", "${fotos[idx]}");
+          dots.forEach((d,i)=>d.classList.toggle('active',i==idx));
+          window[id+'_idx']=idx;
+        }
+        window.slideNext=function(id){
+          let wrap=document.getElementById(id);
+          let imgs=[...wrap.querySelectorAll('.slide-img')];
+          let dots=[...wrap.querySelectorAll('.slide-dot')];
+          let idx=window[id+'_idx']||0;
+          idx=idx>=${fotos.length-1}?0:idx+1;
+          if(imgs.length>0) imgs[0].src="${fotos[0]}".replace("${fotos[0]}", "${fotos[idx]}");
+          dots.forEach((d,i)=>d.classList.toggle('active',i==idx));
+          window[id+'_idx']=idx;
+        }
+        </script>
+      `;
+    }
+
+    // Renderização de publicação única
+    function renderPostFull(d, id) {
+      return `
+      <div class="post-card" style="margin-top:16px;">
+        ${renderSlide(d.slide||[])}
         <div class="post-titulo">${d.titulo || ''}</div>
-        <div class="post-data">${date}</div>
+        <div class="post-data">${d.data && d.data.seconds ? new Date(d.data.seconds*1000).toLocaleString() : ''}</div>
         <div class="post-media">
           ${d.texto ? `<div style="margin-bottom:8px;color:#e2d6ff;">${d.texto}</div>` : ''}
           ${(d.fotos||[]).map(f=>`<img src="${f}" alt="">`).join('')}
@@ -115,6 +187,25 @@
         </div>
         ${d.html ? `<button class="post-html-btn" onclick="abrirHtml('${btoa(unescape(encodeURIComponent(d.html)))}')">Abrir HTML especial</button>` : ''}
         <button class="share-btn" onclick="share('${id}')">Compartilhar</button>
+      </div>`;
+    }
+
+    // Renderização de lista
+    function renderPostList(d, id){
+      return `
+      <div class="post-card">
+        ${renderSlide(d.slide||[])}
+        <div class="post-titulo">${d.titulo || ''}</div>
+        <div class="post-data">${d.data && d.data.seconds ? new Date(d.data.seconds*1000).toLocaleString() : ''}</div>
+        <div class="post-media">
+          ${d.texto ? `<div style="margin-bottom:8px;color:#e2d6ff;">${d.texto}</div>` : ''}
+          ${(d.fotos||[]).map(f=>`<img src="${f}" alt="">`).join('')}
+          ${(d.videos||[]).map(v=>v.includes('youtu')?`<iframe src="https://www.youtube.com/embed/${youtubeID(v)}" frameborder="0" allowfullscreen></iframe>`:`<video src="${v}" controls></video>`).join('')}
+          ${(d.audios||[]).map(a=>`<audio src="${a}" controls></audio>`).join('')}
+        </div>
+        ${d.html ? `<button class="post-html-btn" onclick="abrirHtml('${btoa(unescape(encodeURIComponent(d.html)))}')">Abrir HTML especial</button>` : ''}
+        <button class="share-btn" onclick="share('${id}')">Compartilhar</button>
+        <button onclick="abrirPagina('${id}')" class="share-btn" style="background:#6937ff;margin-left:7px;">Abrir Página</button>
       </div>`;
     }
 
@@ -127,7 +218,6 @@
       }
     }
 
-    // HTML em tela cheia
     function abrirHtml(base64){
       let html = decodeURIComponent(escape(atob(base64)));
       let w = window.open();
@@ -142,10 +232,33 @@
       `);
     }
 
-    db.collection("conteudos").orderBy("data","desc").onSnapshot(ss=>{
-      const container = document.getElementById('posts');
-      container.innerHTML = ss.docs.map(doc=>renderPost(doc.data(), doc.id)).join('') || '<p style="color:#ccc;">Nenhum post ainda.</p>';
-    });
+    function abrirPagina(id){
+      location.href = `${location.pathname}?id=${id}`;
+    }
+
+    // Carregamento
+    function carregar(){
+      const id = getQueryParam('id');
+      const postsDiv = document.getElementById('posts');
+      const backBtn = document.getElementById('backBtn');
+      if(id){
+        backBtn.style.display = '';
+        db.collection("conteudos").doc(id).get().then(doc=>{
+          if(doc.exists){
+            postsDiv.innerHTML = renderPostFull(doc.data(), id);
+          }else{
+            postsDiv.innerHTML = `<div style="color:#fff;text-align:center;padding:32px 0;">Publicação não encontrada.</div>`;
+          }
+        });
+      }else{
+        backBtn.style.display = 'none';
+        db.collection("conteudos").orderBy("data","desc").onSnapshot(ss=>{
+          postsDiv.innerHTML = ss.docs.map(doc=>renderPostList(doc.data(), doc.id)).join('') || '<p style="color:#ccc;">Nenhum post ainda.</p>';
+        });
+      }
+    }
+    carregar();
+    window.onpopstate = carregar;
   </script>
 </body>
 </html>
