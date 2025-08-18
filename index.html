@@ -20,18 +20,21 @@
       background-attachment: fixed;
     }
     .header {
-      background: rgba(255,255,255,0.98);
-      color: var(--globo-azul);
-      font-size: 2.1em;
-      padding: 36px 0 18px 0;
-      text-align: center;
-      font-weight: bold;
-      letter-spacing: 1px;
+      background: rgba(255,255,255,0.97);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 72px;
+      margin-bottom: 18px;
       border-bottom-left-radius: 32px;
       border-bottom-right-radius: 32px;
       box-shadow: 0 8px 32px #10172822;
-      margin-bottom: 18px;
-      text-shadow: 0 2px 10px #eaf2fc88;
+    }
+    .header img {
+      max-height: 54px;
+      max-width: 90vw;
+      margin: 0 auto;
+      display: block;
     }
     .cards {
       max-width: 900px;
@@ -111,77 +114,21 @@
       font-weight: bold;
       text-shadow: 0 2px 8px #fff9;
     }
-    /* MODAL */
-    .modal-bg {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: #152958e6; display: none; align-items: center; justify-content: center; z-index: 100;
-      animation: fadein .4s;
-    }
+    /* MODAL e FULLSCREEN igual ao anterior... */
+    .modal-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #152958e6; display: none; align-items: center; justify-content: center; z-index: 100; animation: fadein .4s;}
     @keyframes fadein { from{ opacity: 0;} to {opacity: 1;} }
-    .modal {
-      background: #fff; border-radius: 23px; max-width: 98vw; max-height: 98vh;
-      width: 700px; padding: 40px 36px 30px 36px; box-shadow: 0 18px 64px #1843a1bb;
-      color: #203650; overflow-y: auto; position: relative;
-      animation: popup .23s;
-      display: flex; flex-direction: column; align-items: center;
-    }
-    @media (max-width: 800px) {
-      .modal { width: 99vw; padding: 18px 4vw;}
-    }
+    .modal { background: #fff; border-radius: 23px; max-width: 98vw; max-height: 98vh; width: 700px; padding: 40px 36px 30px 36px; box-shadow: 0 18px 64px #1843a1bb; color: #203650; overflow-y: auto; position: relative; animation: popup .23s; display: flex; flex-direction: column; align-items: center;}
+    @media (max-width: 800px) { .modal { width: 99vw; padding: 18px 4vw;} }
     @keyframes popup { from { transform: scale(.8); opacity:0;} to { transform: scale(1); opacity:1;} }
-    .close-btn {
-      position: absolute; top: 12px; right: 18px; font-size: 2.3em;
-      color: #1966c4; background: none; border: none; cursor: pointer;
-      transition: .17s; z-index: 20; font-weight: bold;
-    }
+    .close-btn { position: absolute; top: 12px; right: 18px; font-size: 2.3em; color: #1966c4; background: none; border: none; cursor: pointer; transition: .17s; z-index: 20; font-weight: bold;}
     .close-btn:hover { color: #654ea3;}
-    .modal-titulo {
-      font-weight: bold;
-      font-size: 1.24em;
-      margin-bottom: 14px;
-      color: var(--globo-roxo);
-      text-align: center;
-    }
-    .cabecalho-personalizado {
-      background: #eaf2fc;
-      padding: 18px 13px;
-      font-size: 1.15em;
-      text-align: center;
-      border-bottom: 2.5px solid #1966c4;
-      margin-bottom: 18px;
-      border-radius: 16px;
-      color: #2675db;
-      box-shadow: 0 2px 12px #b1bfee22;
-      font-weight: bold;
-    }
-    .galeria {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin: 14px 0 25px 0;
-    }
-    .galeria img, .galeria video {
-      border-radius: 13px;
-      max-width: 185px;
-      max-height: 185px;
-      border: 1.5px solid #d8ecfa;
-      background: #eaf2fc;
-      box-shadow: 0 2px 8px #4a7ee555;
-    }
-    /* TELA CHEIA HTML */
-    .fullscreen-bg {
-      position:fixed; top:0; left:0; width:100vw; height:100vh; background:#101728ee; display:none; z-index:1000;
-      justify-content:center; align-items:center;
-    }
-    .fullscreen-iframe {
-      width:100vw; height:100vh; border:none; background:#fff; display:block;
-    }
-    .fs-close-btn {
-      position:absolute; top:18px; right:24px; font-size:2.9em; color:#fff; background:#1966c4cc; border:none; border-radius:22px;
-      z-index:1100; cursor:pointer; padding:0 16px 2px 16px; font-weight:bold; transition:.18s;
-      box-shadow: 0 2px 12px #222c;
-    }
+    .modal-titulo { font-weight: bold; font-size: 1.24em; margin-bottom: 14px; color: var(--globo-roxo); text-align: center;}
+    .cabecalho-personalizado { background: #eaf2fc; padding: 18px 13px; font-size: 1.15em; text-align: center; border-bottom: 2.5px solid #1966c4; margin-bottom: 18px; border-radius: 16px; color: #2675db; box-shadow: 0 2px 12px #b1bfee22; font-weight: bold;}
+    .galeria { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin: 14px 0 25px 0;}
+    .galeria img, .galeria video { border-radius: 13px; max-width: 185px; max-height: 185px; border: 1.5px solid #d8ecfa; background: #eaf2fc; box-shadow: 0 2px 8px #4a7ee555;}
+    .fullscreen-bg { position:fixed; top:0; left:0; width:100vw; height:100vh; background:#101728ee; display:none; z-index:1000; justify-content:center; align-items:center;}
+    .fullscreen-iframe { width:100vw; height:100vh; border:none; background:#fff; display:block;}
+    .fs-close-btn { position:absolute; top:18px; right:24px; font-size:2.9em; color:#fff; background:#1966c4cc; border:none; border-radius:22px; z-index:1100; cursor:pointer; padding:0 16px 2px 16px; font-weight:bold; transition:.18s; box-shadow: 0 2px 12px #222c;}
     .fs-close-btn:hover { color:#dbe6ff; background:#001a57;}
   </style>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -189,7 +136,7 @@
 </head>
 <body>
   <div class="header">
-    Loterias A Sorte — Portal do Cliente
+    <img src="SUA_URL_DA_LOGO_AQUI" alt="Logo">
   </div>
   <div class="cards" id="cards"></div>
   <!-- Modal para imagens/vídeos -->
@@ -208,9 +155,9 @@
   </div>
   <script>
     // Troque pela sua URL de logomarca padrão!
-    const LOGO_PADRAO = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNxmA6mH86GQSOc7AKewTETB-55O3iY3QTCytGXS696o25IKkQTU2yQedvgeDo17i_EEYbJoy_eM9t7yN0vpEApNXt19M9Qj8Dh-IIHEi6o3AWTuVZXRtS2rvAT9lY3hAQ4riW3ftOonmBBBTzACHzZJ1pa1EC2joR90I9kH2noEZnCrQTgJOXjVunKjw/s1600/1000123334.png";
-
-    // Config concursosuper-29c5b
+    const LOGO_PADRAO = "SUA_URL_DA_LOGO_AQUI";
+    const LOGO_SITE = "SUA_URL_DA_LOGO_AQUI";
+    // Firebase config concursosuper-29c5b
     const firebaseConfig = {
       apiKey: "SUA_API_KEY_AQUI",
       authDomain: "concursosuper-29c5b.firebaseapp.com",
