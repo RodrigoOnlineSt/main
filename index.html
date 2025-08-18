@@ -18,9 +18,6 @@
       background: linear-gradient(120deg, #1966c4 0%, #654ea3 100%);
       background-attachment: fixed;
     }
-    body {
-      box-sizing: border-box;
-    }
     .header {
       background: #fff;
       display: flex;
@@ -106,118 +103,25 @@
       white-space: nowrap;
       text-overflow: ellipsis;
     }
-    .btn-voltar {
-      display: flex;
-      align-items: center;
-      background: #1966c4;
-      color: #fff;
-      border: none;
-      border-radius: 7px;
-      font-size: 1em;
-      font-weight: bold;
-      padding: 8px 20px 8px 14px;
-      margin: 18px 0 10px 0;
-      box-shadow: 0 4px 14px #1966c455;
-      cursor: pointer;
-      transition: background .12s;
-      gap: 7px;
-    }
-    .btn-voltar:hover {
-      background: #154d7c;
-    }
-    .conteudo-html {
-      color: #333;
-      background: #f7f8fc;
-      padding: 0 !important;
-      border-radius: 11px;
-      margin: 0;
-      font-size: 1.06em;
-      min-height: 32px;
-      word-break: break-word;
-      overflow-x: auto;
-      width: 100vw !important;
-      max-width: 100vw !important;
-      box-sizing: border-box;
-    }
-    .conteudo-fotos {
-      display: flex;
-      overflow-x: auto;
-      gap: 11px;
-      padding: 10px 7px 6px 7px;
-      margin-bottom: 7px;
-    }
-    .conteudo-fotos img, .conteudo-fotos video {
-      max-width: 80px;
-      max-height: 90px;
-      border-radius: 8px;
-      border: 1.5px solid #1966c4;
-      background: #f4f8ff;
-      box-shadow: 0 2px 9px #1966c455;
-      object-fit: cover;
-    }
-    .conteudo-capa {
-      width: 100%;
-      border-radius: 16px 16px 0 0;
-      object-fit: cover;
-      max-height: 160px;
-      min-height: 70px;
-      background: #d6e6fa;
-      display: block;
-    }
-    .conteudo-titulo {
-      color: #1966c4;
-      font-weight: bold;
-      font-size: 1.23em;
-      text-align: center;
-      margin: 13px 0 5px 0;
-      word-break: break-word;
-    }
-    .conteudo-share {
-      text-align: center;
-      margin: 9px 0 15px 0;
-    }
-    .conteudo-share-btn {
-      background: #3ce1d8;
-      color: #154d7c;
-      border: none;
-      border-radius: 7px;
-      font-weight: bold;
-      font-size: 1em;
-      padding: 8px 18px;
-      cursor: pointer;
-      margin: 0 5px 0 5px;
-      box-shadow: 0 2px 12px #3ce1d833;
-    }
     @media (max-width:700px) {
       .main { max-width: 100vw !important; }
-      .conteudo-html { font-size: 1em; padding: 0 !important; max-width: 100vw !important; width: 100vw !important; }
-      .conteudo-fotos img, .conteudo-fotos video { max-width: 68px; max-height: 80px; }
       .card-btn { max-width: 99vw; min-width: 45vw;}
       html, body { max-width: 100vw !important; }
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNxmA6mH86GQSOc7AKewTETB-55O3iY3QTCytGXS696o25IKkQTU2yQedvgeDo17i_EEYbJoy_eM9t7yN0vpEApNXt19M9Qj8Dh-IIHEi6o3AWTuVZXRtS2rvAT9lY3hAQ4riW3ftOonmBBBTzACHzZJ1pa1EC2joR90I9kH2noEZnCrQTgJOXjVunKjw/s1600/1000123334.png" alt="Logo">
-    <span>Portal de Conteúdos</span>
-  </div>
-  <div class="main" id="main">
-    <div class="conteudos" id="conteudos"></div>
-    <div id="conteudoCompleto" style="display:none;">
-      <button class="btn-voltar" onclick="voltarHome()">
-        &#8592; Voltar
-      </button>
-      <img id="conteudoCapa" class="conteudo-capa" src="" alt="Capa">
-      <div class="conteudo-titulo" id="conteudoTitulo"></div>
-      <div class="conteudo-fotos" id="conteudoFotos"></div>
-      <div class="conteudo-html" id="conteudoHtml"></div>
-      <div class="conteudo-share">
-        <button class="conteudo-share-btn" onclick="compartilharPagina()">Compartilhar</button>
-      </div>
+  <div id="portal">
+    <div class="header">
+      <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNxmA6mH86GQSOc7AKewTETB-55O3iY3QTCytGXS696o25IKkQTU2yQedvgeDo17i_EEYbJoy_eM9t7yN0vpEApNXt19M9Qj8Dh-IIHEi6o3AWTuVZXRtS2rvAT9lY3hAQ4riW3ftOonmBBBTzACHzZJ1pa1EC2joR90I9kH2noEZnCrQTgJOXjVunKjw/s1600/1000123334.png" alt="Logo">
+      <span>Portal de Conteúdos</span>
+    </div>
+    <div class="main" id="main">
+      <div class="conteudos" id="conteudos"></div>
     </div>
   </div>
   <script>
+    // Função que injeta o HTML publicado E EXECUTA scripts internos e externos
     function setHtmlWithScripts(container, html) {
       container.innerHTML = html;
       const scripts = container.querySelectorAll('script');
@@ -239,8 +143,8 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    const portalDiv = document.getElementById('portal');
     const conteudosDiv = document.getElementById('conteudos');
-    const conteudoCompletoDiv = document.getElementById('conteudoCompleto');
 
     function mostrarConteudos(){
       db.collection("conteudos").orderBy("data","desc").onSnapshot(snapshot=>{
@@ -260,64 +164,38 @@
       });
     }
 
-    function mostrarConteudo(id){
-      conteudosDiv.style.display = "none";
-      conteudoCompletoDiv.style.display = "";
+    function mostrarConteudoTelaInteira(id){
+      // Remove todo o portal, deixa só o HTML do conteúdo
+      portalDiv.parentNode.removeChild(portalDiv);
+
+      // Cria um container para o HTML publicado
+      let htmlDiv = document.createElement("div");
+      htmlDiv.id = "conteudo-html-full";
+      htmlDiv.style.width = "100vw";
+      htmlDiv.style.minHeight = "100vh";
+      htmlDiv.style.background = "#fff"; // Ou transparente, se preferir
+      htmlDiv.style.overflowX = "auto";
+      document.body.appendChild(htmlDiv);
+
       db.collection("conteudos").doc(id).get().then(doc=>{
         if(!doc.exists){
-          conteudoCompletoDiv.innerHTML = "<div style='color:red;text-align:center;margin:40px 0'>Conteúdo não encontrado</div>";
+          htmlDiv.innerHTML = "<div style='color:red;text-align:center;margin:40px 0'>Conteúdo não encontrado</div>";
           return;
         }
-        const d = doc.data();
-        document.getElementById('conteudoCapa').src = d.capa || (d.fotos && d.fotos[0]) || "";
-        document.getElementById('conteudoTitulo').textContent = d.titulo||"";
-
-        let fotosHtml = "";
-        (d.fotos||[]).forEach(url=>{
-          fotosHtml += `<img src="${url}" loading="lazy">`;
-        });
-        (d.videos||[]).forEach(url=>{
-          fotosHtml += `<video src="${url}" controls preload="none"></video>`;
-        });
-        document.getElementById('conteudoFotos').innerHTML = fotosHtml;
-
-        let htmlPublicado = d.html||"";
+        let htmlPublicado = doc.data().html||"";
         if(htmlPublicado.trim().length > 0){
-          setHtmlWithScripts(document.getElementById('conteudoHtml'), htmlPublicado);
-          document.getElementById('conteudoHtml').style.display = "";
+          setHtmlWithScripts(htmlDiv, htmlPublicado);
         } else {
-          document.getElementById('conteudoHtml').style.display = "none";
+          htmlDiv.innerHTML = "<div style='color:red;text-align:center;margin:40px 0'>Nenhum conteúdo HTML publicado.</div>";
         }
-
-        window._paginaTitulo = d.titulo || "";
-        window._paginaId = id;
       });
-    }
-
-    function voltarHome(){
-      window.location.search = "";
-    }
-
-    function compartilharPagina(){
-      const id = window._paginaId;
-      const titulo = window._paginaTitulo;
-      const url = location.origin + "/?id=" + id;
-      if(navigator.share){
-        navigator.share({ title: titulo, url });
-      } else {
-        window.open('https://wa.me/?text='+encodeURIComponent(titulo+" - "+url));
-      }
     }
 
     function checarPagina(){
       const id = (new URL(location.href)).searchParams.get("id");
       if(id){
-        conteudosDiv.style.display = "none";
-        conteudoCompletoDiv.style.display = "";
-        mostrarConteudo(id);
+        mostrarConteudoTelaInteira(id);
       } else {
-        conteudosDiv.style.display = "";
-        conteudoCompletoDiv.style.display = "none";
         mostrarConteudos();
       }
     }
