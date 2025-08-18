@@ -34,6 +34,7 @@
     .thumbs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 7px;}
     .thumbs img, .thumbs video { border-radius: 8px; max-width: 60px; max-height: 60px; border: 1.5px solid #d8ecfa;}
     .card-data { color: #aaa; font-size: .91em; position: absolute; bottom: 11px; right: 15px;}
+    .card-empty {color:#b1bfd2; text-align:center; font-size:1.05em; padding:46px 0;}
 
     /* Modal fullscreen */
     .modal-bg {
@@ -63,7 +64,21 @@
     .modal-html { font-size: 1.03em; margin:18px 0; width:100%;}
     .galeria { display:flex; gap:14px; flex-wrap: wrap; justify-content: center; margin:10px 0 22px 0;}
     .galeria img, .galeria video { border-radius:11px; max-width:170px; max-height:170px; border:1.5px solid #d8ecfa;}
-    .card-empty {color:#b1bfd2; text-align:center; font-size:1.05em; padding:46px 0;}
+
+    /* TELA CHEIA HTML */
+    .fullscreen-bg {
+      position:fixed; top:0; left:0; width:100vw; height:100vh; background:#000; display:none; z-index:1000;
+      justify-content:center; align-items:center;
+    }
+    .fullscreen-iframe {
+      width:100vw; height:100vh; border:none; background:#fff;
+      display:block;
+    }
+    .fs-close-btn {
+      position:absolute; top:18px; right:24px; font-size:2.8em; color:#fff; background:#003c6c77; border:none; border-radius:20px;
+      z-index:1100; cursor:pointer; padding:0 16px 2px 16px; font-weight:bold; transition:.18s;
+    }
+    .fs-close-btn:hover { color:#3ad3ef; background:#000a;}
   </style>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -74,15 +89,19 @@
   </div>
   <div class="cards" id="cards"></div>
 
+  <!-- Modal para imagens/vídeos -->
   <div class="modal-bg" id="modalBg" onclick="fecharModal(event)">
     <div class="modal" id="modal">
       <button class="close-btn" onclick="fecharModal(event)">&times;</button>
       <div class="modal-titulo" id="modalTitulo"></div>
       <div class="galeria" id="modalGaleria"></div>
-      <div class="modal-html" id="modalHtml"></div>
     </div>
   </div>
-
+  <!-- TELA CHEIA HTML -->
+  <div class="fullscreen-bg" id="fullscreenBg">
+    <button class="fs-close-btn" onclick="fecharFullHtml()">&times;</button>
+    <iframe id="fullHtmlIframe" class="fullscreen-iframe"></iframe>
+  </div>
   <script>
     // Seu firebaseConfig do concursosuper-29c5b
     const firebaseConfig = {
@@ -97,7 +116,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Carregar conteúdos recentes
     db.collection("conteudos").orderBy("data","desc").onSnapshot(snapshot=>{
       const cards = document.getElementById('cards');
       cards.innerHTML = "";
@@ -110,7 +128,7 @@
         const data = d.data ? new Date(d.data.seconds*1000).toLocaleDateString() : '';
         const card = document.createElement('div');
         card.className = 'card';
-        card.onclick = ()=>abrirModal(d);
+        card.onclick = ()=>abrirCard(d);
 
         // Miniaturas
         let thumbs = "";
@@ -125,20 +143,47 @@
       });
     });
 
-    // Abrir modal com conteúdo completo (galeria + HTML)
-    function abrirModal(d){
-      document.getElementById('modalTitulo').textContent = d.titulo || '';
-      const galeria = document.getElementById('modalGaleria');
-      galeria.innerHTML = "";
-      if(d.fotos && d.fotos.length)
-        galeria.innerHTML += d.fotos.map(url=>`<img src="${url}" loading="lazy">`).join('');
-      if(d.videos && d.videos.length)
-        galeria.innerHTML += d.videos.map(url=>`<video src="${url}" controls></video>`).join('');
-      // Mostra o HTML, se tiver
-      if(d.html) document.getElementById('modalHtml').innerHTML = `<iframe srcdoc='${d.html.replace(/'/g,"&apos;")}' style="width:100%;min-height:160px;border:none;"></iframe>`;
-      else document.getElementById('modalHtml').innerHTML = '';
-      document.getElementById('modalBg').style.display = "flex";
+    // Abrir card
+    function abrirCard(d){
+      // Se for HTML, abre em tela cheia
+      if(d.html && d.html.trim()){
+        abrirFullHtml(d.html, d.titulo||'');
+      } else {
+        // Modal galeria para fotos/vídeos
+        document.getElementById('modalTitulo').textContent = d.titulo || '';
+        const galeria = document.getElementById('modalGaleria');
+        galeria.innerHTML = "";
+        if(d.fotos && d.fotos.length)
+          galeria.innerHTML += d.fotos.map(url=>`<img src="${url}" loading="lazy">`).join('');
+        if(d.videos && d.videos.length)
+          galeria.innerHTML += d.videos.map(url=>`<video src="${url}" controls></video>`).join('');
+        document.getElementById('modalBg').style.display = "flex";
+      }
     }
+
+    // Tela cheia para HTML
+    function abrirFullHtml(html, titulo){
+      document.body.style.overflow = 'hidden';
+      document.getElementById('fullscreenBg').style.display = 'flex';
+      // Garante DOCTYPE e título para máxima compatibilidade visual
+      const fullHtml = `
+        <!DOCTYPE html>
+        <html lang="pt-BR"><head>
+        <meta charset="UTF-8"><title>${titulo||'Página'}</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <style>body{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}</style>
+        </head><body>
+        ${html}
+        </body></html>`;
+      document.getElementById('fullHtmlIframe').srcdoc = fullHtml;
+    }
+    function fecharFullHtml(){
+      document.getElementById('fullscreenBg').style.display = "none";
+      document.getElementById('fullHtmlIframe').srcdoc = "";
+      document.body.style.overflow = '';
+    }
+
+    // Fechar modal (galeria imagens/vídeos)
     function fecharModal(e){
       if(e.target.className.includes('modal-bg')||e.target.className==='close-btn')
         document.getElementById('modalBg').style.display = "none";
