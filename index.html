@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
   <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
   <style>
+    /* Seu CSS igualzinho ao anterior (sem alterações aqui)... */
+    /* ... */
     body {
       margin:0; font-family:'Montserrat',sans-serif;
       background: linear-gradient(120deg, #0d1b2a 0%, #122d42 80%, #4a148c 100%);
@@ -113,7 +115,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Util: pega parâmetro id
     function getQueryParam(k){
       let p = new URLSearchParams(window.location.search);
       return p.get(k);
@@ -124,59 +125,56 @@
       return m ? m[1] : '';
     }
 
-    // SLIDE DE FOTOS
-    function renderSlide(fotos) {
+    // --- SLIDE DINÂMICO SEGURO ---
+    function renderSlide(fotos, id) {
       if(!fotos||!fotos.length) return '';
-      let slideId = 'slide'+Math.floor(Math.random()*1e8);
-      let dots = fotos.map((f,i)=>`<span class="slide-dot${i==0?' active':''}" onclick="slideGo('${slideId}',${i})"></span>`).join('');
+      let slideId = 'slide_'+id;
+      let imgs = fotos.map((f,i)=>`<img class="slide-img" src="${f}" style="display:${i==0?'block':'none'};">`).join('');
+      let dots = fotos.map((f,i)=>`<span class="slide-dot${i==0?' active':''}" data-idx="${i}" data-slide="${slideId}"></span>`).join('');
       return `
         <div class="slide-wrapper" id="${slideId}">
-          <img class="slide-img" src="${fotos[0]}" style="display:block;">
+          ${imgs}
           <div class="slide-arrows">
-            <button class="slide-arrow" onclick="slidePrev('${slideId}')">&#8678;</button>
-            <button class="slide-arrow" onclick="slideNext('${slideId}')">&#8680;</button>
+            <button class="slide-arrow" data-slide="${slideId}" data-dir="prev">&#8678;</button>
+            <button class="slide-arrow" data-slide="${slideId}" data-dir="next">&#8680;</button>
           </div>
           <div class="slide-dots">${dots}</div>
         </div>
-        <script>
-        window['${slideId}_idx']=0;
-        window.slideGo=function(id,idx){
-          let wrap=document.getElementById(id);
-          let imgs=[...wrap.querySelectorAll('.slide-img')];
-          let dots=[...wrap.querySelectorAll('.slide-dot')];
-          if(imgs.length>0) imgs[0].src="${fotos[0]}".replace("${fotos[0]}", "${fotos[idx]}");
-          dots.forEach((d,i)=>d.classList.toggle('active',i==idx));
-          window[id+'_idx']=idx;
-        }
-        window.slidePrev=function(id){
-          let wrap=document.getElementById(id);
-          let imgs=[...wrap.querySelectorAll('.slide-img')];
-          let dots=[...wrap.querySelectorAll('.slide-dot')];
-          let idx=window[id+'_idx']||0;
-          idx=idx<=0?${fotos.length-1}:idx-1;
-          if(imgs.length>0) imgs[0].src="${fotos[0]}".replace("${fotos[0]}", "${fotos[idx]}");
-          dots.forEach((d,i)=>d.classList.toggle('active',i==idx));
-          window[id+'_idx']=idx;
-        }
-        window.slideNext=function(id){
-          let wrap=document.getElementById(id);
-          let imgs=[...wrap.querySelectorAll('.slide-img')];
-          let dots=[...wrap.querySelectorAll('.slide-dot')];
-          let idx=window[id+'_idx']||0;
-          idx=idx>=${fotos.length-1}?0:idx+1;
-          if(imgs.length>0) imgs[0].src="${fotos[0]}".replace("${fotos[0]}", "${fotos[idx]}");
-          dots.forEach((d,i)=>d.classList.toggle('active',i==idx));
-          window[id+'_idx']=idx;
-        }
-        </script>
       `;
     }
 
-    // Renderização de publicação única
+    function activateAllSlides() {
+      document.querySelectorAll('.slide-wrapper').forEach(function(slideWrap){
+        let imgs = slideWrap.querySelectorAll('.slide-img');
+        let dots = slideWrap.querySelectorAll('.slide-dot');
+        let idx = 0;
+        function show(i){
+          imgs.forEach((img,j)=>img.style.display=(j===i?'block':'none'));
+          dots.forEach((dot,j)=>dot.classList.toggle('active',j===i));
+          idx=i;
+        }
+        // Arrows
+        slideWrap.querySelectorAll('.slide-arrow').forEach(btn=>{
+          btn.onclick = function(e){
+            e.stopPropagation();
+            if(btn.dataset.dir==='prev') show((idx-1+imgs.length)%imgs.length);
+            else show((idx+1)%imgs.length);
+          }
+        });
+        // Dots
+        dots.forEach(dot=>{
+          dot.onclick = function(e){
+            e.stopPropagation();
+            show(Number(dot.dataset.idx));
+          }
+        });
+      });
+    }
+
     function renderPostFull(d, id) {
       return `
       <div class="post-card" style="margin-top:16px;">
-        ${renderSlide(d.slide||[])}
+        ${renderSlide(d.slide||[], id)}
         <div class="post-titulo">${d.titulo || ''}</div>
         <div class="post-data">${d.data && d.data.seconds ? new Date(d.data.seconds*1000).toLocaleString() : ''}</div>
         <div class="post-media">
@@ -190,11 +188,10 @@
       </div>`;
     }
 
-    // Renderização de lista
     function renderPostList(d, id){
       return `
       <div class="post-card">
-        ${renderSlide(d.slide||[])}
+        ${renderSlide(d.slide||[], id)}
         <div class="post-titulo">${d.titulo || ''}</div>
         <div class="post-data">${d.data && d.data.seconds ? new Date(d.data.seconds*1000).toLocaleString() : ''}</div>
         <div class="post-media">
@@ -236,7 +233,6 @@
       location.href = `${location.pathname}?id=${id}`;
     }
 
-    // Carregamento
     function carregar(){
       const id = getQueryParam('id');
       const postsDiv = document.getElementById('posts');
@@ -246,6 +242,7 @@
         db.collection("conteudos").doc(id).get().then(doc=>{
           if(doc.exists){
             postsDiv.innerHTML = renderPostFull(doc.data(), id);
+            setTimeout(activateAllSlides,50);
           }else{
             postsDiv.innerHTML = `<div style="color:#fff;text-align:center;padding:32px 0;">Publicação não encontrada.</div>`;
           }
@@ -254,6 +251,7 @@
         backBtn.style.display = 'none';
         db.collection("conteudos").orderBy("data","desc").onSnapshot(ss=>{
           postsDiv.innerHTML = ss.docs.map(doc=>renderPostList(doc.data(), doc.id)).join('') || '<p style="color:#ccc;">Nenhum post ainda.</p>';
+          setTimeout(activateAllSlides,50);
         });
       }
     }
