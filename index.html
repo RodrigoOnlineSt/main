@@ -2,230 +2,48 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Painel ADM - Gerenciar Conteúdos</title>
+  <title>Portal do Cliente</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
   <style>
-    body { background: #172236; color: #fff; font-family: 'Montserrat', Arial, sans-serif; margin: 0; }
-    .main { max-width: 650px; margin: 32px auto 0; background: #212f4c; border-radius: 15px; box-shadow: 0 10px 40px #0009; padding: 30px 22px 16px;}
-    h2 { color: #3ce1d8; text-align: center; margin-bottom: 28px;}
-    label { font-weight: bold; color: #aef2ec; display: block; margin-bottom: 3px;}
-    input[type="text"], textarea { width: 100%; padding: 10px; border-radius: 7px; border: none; background: #10192b; color: #fff; margin-bottom: 11px; font-size: 1em; }
-    textarea { min-height: 54px; }
-    .files-list img, .files-list video, .capa-preview img { max-width: 68px; max-height: 68px; margin: 4px 7px 4px 0; border-radius: 7px; border: 2px solid #3ce1d866;}
-    .capa-preview img {max-width:140px;max-height:80px;}
-    .files-list { margin: 7px 0 14px 0;}
-    button, .btn { background: #3ce1d8; color: #11223d; border: none; border-radius: 8px; padding: 11px 18px; font-weight: bold; font-size: 1em; cursor: pointer; margin-bottom: 10px; margin-right: 7px;}
-    .btn[disabled] {opacity:.5; cursor:not-allowed;}
-    .btn-danger { background: #fd4646; color: #fff;}
-    .list { margin-top: 34px; }
-    .item { background: #11223d; border-radius: 10px; margin-bottom: 16px; padding: 14px 16px 10px 16px; position: relative; }
-    .item-title { font-size: 1.1em; font-weight: bold; color: #2ee1c6;}
-    .item-btns { position: absolute; top: 14px; right: 18px;}
-    .item-btns button { background: none; color: #fff; border: none; font-size: 1.25em; margin-left: 7px;}
-    .editando { background: #0c1320 !important; border: 1.5px solid #3ce1d8; }
-    .share-link { margin:7px 0 6px 0; font-size:.98em; color:#9cf; word-break:break-all;}
-    .share-btn { background:#30d5c8; color:#1e293b; border:none; border-radius:7px; padding:6px 11px; font-size:.98em; cursor:pointer;}
-    @media (max-width:700px) { .main {max-width:98vw;} }
-  </style>
-</head>
-<body>
-  <div class="main">
-    <h2>Painel ADM</h2>
-    <form id="form">
-      <label>Título:</label>
-      <input type="text" id="titulo" required placeholder="Título do conteúdo">
-
-      <label>Foto de Capa:</label>
-      <input type="file" id="capa" accept="image/*">
-      <div class="capa-preview" id="capaPreview"></div>
-
-      <label>HTML (opcional):</label>
-      <textarea id="html" placeholder="Cole HTML se quiser"></textarea>
-
-      <label>Fotos (você pode selecionar várias):</label>
-      <input type="file" id="fotos" accept="image/*" multiple>
-      <div class="files-list" id="previewFotos"></div>
-
-      <label>Vídeos (pode selecionar vários):</label>
-      <input type="file" id="videos" accept="video/*" multiple>
-      <div class="files-list" id="previewVideos"></div>
-
-      <button type="submit" id="btnSalvar">Publicar Conteúdo</button>
-      <button type="button" onclick="limparForm()" class="btn btn-danger">Limpar</button>
-    </form>
-    <div class="list" id="list"></div>
-  </div>
-
-  <script>
-    // Config concursosuper-29c5b
-    const firebaseConfig = {
-      apiKey: "SUA_API_KEY_AQUI",
-      authDomain: "concursosuper-29c5b.firebaseapp.com",
-      projectId: "concursosuper-29c5b",
-      storageBucket: "concursosuper-29c5b.appspot.com",
-      messagingSenderId: "SEU_MESSAGING_SENDER_ID",
-      appId: "SEU_APP_ID",
-      measurementId: "SEU_MEASUREMENT_ID"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const storage = firebase.storage();
-
-    let editId = null; // Para edição
-
-    // Preview de foto de capa
-    document.getElementById('capa').onchange = function(){
-      const pv = document.getElementById('capaPreview');
-      pv.innerHTML = "";
-      if(this.files.length){
-        const url = URL.createObjectURL(this.files[0]);
-        pv.innerHTML = `<img src="${url}">`;
-      }
+    body { background: #e7f2ff; margin: 0; font-family: 'Montserrat', Arial, sans-serif; }
+    .header {
+      background: linear-gradient(90deg, #34b6ef 0%, #003c6c 100%);
+      color: #fff; font-size: 2.1em; padding: 36px 0 24px 0;
+      text-align: center; font-weight: bold; letter-spacing: 1px;
+      border-bottom-left-radius: 38px; border-bottom-right-radius: 38px;
+      box-shadow: 0 8px 32px #002c4a33; margin-bottom: 18px;
     }
-
-    // Pré-visualização das fotos e vídeos ao escolher
-    document.getElementById('fotos').onchange = function(){
-      const pv = document.getElementById('previewFotos');
-      pv.innerHTML = "";
-      [...this.files].forEach(f=>{
-        const url = URL.createObjectURL(f);
-        pv.innerHTML += `<img src="${url}">`;
-      });
+    .cards { max-width: 820px; margin: 30px auto 34px auto;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 28px; }
+    .card {
+      background: #fff; border-radius: 16px; box-shadow: 0 6px 26px #3bc2a225;
+      padding: 20px 18px 17px 18px; cursor: pointer; transition: .15s;
+      min-height: 125px; position: relative; display: flex; flex-direction: column; align-items: flex-start; overflow: hidden;
     }
-    document.getElementById('videos').onchange = function(){
-      const pv = document.getElementById('previewVideos');
-      pv.innerHTML = "";
-      [...this.files].forEach(f=>{
-        const url = URL.createObjectURL(f);
-        pv.innerHTML += `<video src="${url}" muted></video>`;
-      });
+    .card:hover { box-shadow: 0 16px 44px #3bc2a255; transform: scale(1.022);}
+    .card-titulo { font-size: 1.15em; color: #077cc3; font-weight: bold; margin-bottom: 7px;}
+    .capa-img { border-radius:12px;max-width:100%;max-height:108px; margin-bottom:8px; }
+    .thumbs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 7px;}
+    .thumbs img, .thumbs video { border-radius: 8px; max-width: 60px; max-height: 60px; border: 1.5px solid #d8ecfa;}
+    .card-data { color: #aaa; font-size: .91em; position: absolute; bottom: 11px; right: 15px;}
+    .share-btn { position:absolute; top:13px; right:13px; background:#30d5c8; color:#fff; border:none; border-radius:7px; padding:6px 11px; font-size:.98em; cursor:pointer;}
+    .card-empty {color:#b1bfd2; text-align:center; font-size:1.05em; padding:46px 0;}
+    /* Modal fullscreen */
+    .modal-bg {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: #003c6ce8; display: none; align-items: center; justify-content: center; z-index: 100;
+      animation: fadein .4s;
     }
-
-    // Publicar ou editar conteúdo
-    document.getElementById('form').onsubmit = async function(e){
-      e.preventDefault();
-      const btn = document.getElementById('btnSalvar');
-      btn.disabled = true; btn.textContent = editId ? "Salvando edição..." : "Publicando...";
-      const titulo = document.getElementById('titulo').value.trim();
-      const html = document.getElementById('html').value.trim();
-      const fotos = [...document.getElementById('fotos').files];
-      const videos = [...document.getElementById('videos').files];
-      let capaUrl = "";
-      // Upload da foto de capa se selecionada
-      const capaFile = document.getElementById('capa').files[0];
-      if(capaFile){
-        const ref = storage.ref("conteudos/capas/" + Date.now() + "_" + capaFile.name);
-        await ref.put(capaFile);
-        capaUrl = await ref.getDownloadURL();
-      }
-      // Upload fotos/vídeos
-      let fotosURLs = [], videosURLs = [];
-      for(const f of fotos){
-        const ref = storage.ref("conteudos/fotos/" + Date.now() + "_" + f.name);
-        await ref.put(f);
-        fotosURLs.push(await ref.getDownloadURL());
-      }
-      for(const v of videos){
-        const ref = storage.ref("conteudos/videos/" + Date.now() + "_" + v.name);
-        await ref.put(v);
-        videosURLs.push(await ref.getDownloadURL());
-      }
-
-      const dados = {
-        titulo,
-        html,
-        capa: capaUrl,
-        fotos: fotosURLs,
-        videos: videosURLs,
-        data: new Date()
-      };
-
-      let docRef;
-      if(editId) {
-        docRef = db.collection("conteudos").doc(editId);
-        const antigo = await docRef.get();
-        if(antigo.exists){
-          const ant = antigo.data();
-          dados.capa = capaUrl || ant.capa || "";
-          dados.fotos = (ant.fotos||[]).concat(fotosURLs);
-          dados.videos = (ant.videos||[]).concat(videosURLs);
-          if(!dados.html) dados.html = ant.html||"";
-        }
-        await docRef.update(dados);
-        alert("Conteúdo editado!");
-        editId = null;
-      } else {
-        docRef = await db.collection("conteudos").add(dados);
-        alert("Conteúdo publicado!");
-      }
-      limparForm();
-      btn.disabled = false; btn.textContent = "Publicar Conteúdo";
-      // Mostra link para compartilhar
-      setTimeout(()=>{ mostrarLink(docRef.id, titulo); }, 500);
+    @keyframes fadein { from{ opacity: 0;} to {opacity: 1;} }
+    .modal {
+      background: #fff; border-radius: 17px; max-width: 98vw; max-height: 98vh;
+      width: 680px; padding: 38px 34px 25px 34px; box-shadow: 0 16px 58px #0a2458cc;
+      color: #203650; overflow-y: auto; position: relative;
+      animation: popup .23s;
+      display: flex; flex-direction: column; align-items: center;
     }
-
-    // Mostra link para compartilhar
-    function mostrarLink(id, titulo){
-      let url = window.location.origin + "/?id=" + id;
-      let texto = `<div class="share-link"><b>Link dessa página:</b> <input style='width:70%' value='${url}' onclick='this.select()' readonly> 
-      <button class='share-btn' onclick="window.open('https://wa.me/?text='+encodeURIComponent('${titulo} - ${url}'))">Compartilhar WhatsApp</button></div>`;
-      document.getElementById('list').insertAdjacentHTML('afterbegin', texto);
+    @media (max-width: 750px) {
+      .modal { width: 99vw; padding: 18px 4vw;}
     }
-
-    // Listagem dinâmica (ordem recente primeiro)
-    db.collection("conteudos").orderBy("data","desc").onSnapshot(snapshot=>{
-      const list = document.getElementById('list');
-      list.innerHTML = "";
-      snapshot.forEach(doc=>{
-        const d = doc.data();
-        const item = document.createElement('div');
-        item.className = 'item'+(editId===doc.id?' editando':'');
-        item.innerHTML = `
-          <div class="item-title">${d.titulo}</div>
-          ${d.capa?`<img src="${d.capa}" style="max-width:80px;max-height:40px;border-radius:7px;">`:""}
-          <div style="margin:10px 0;">${(d.fotos||[]).map(url=>`<img src="${url}" style="max-width:44px;max-height:44px;border-radius:4px;margin-right:3px;">`).join('')}
-          ${(d.videos||[]).map(url=>`<video src="${url}" style="max-width:44px;max-height:44px;border-radius:4px;margin-right:3px;" muted></video>`).join('')}</div>
-          <div class="item-btns">
-            <button onclick="editar('${doc.id}')">&#9998;</button>
-            <button onclick="remover('${doc.id}')" class="btn-danger">&times;</button>
-          </div>
-        `;
-        list.appendChild(item);
-      });
-    });
-
-    // Função para editar
-    window.editar = async function(id){
-      const doc = await db.collection("conteudos").doc(id).get();
-      if(doc.exists){
-        const d = doc.data();
-        editId = id;
-        document.getElementById('titulo').value = d.titulo||"";
-        document.getElementById('html').value = d.html||"";
-        document.getElementById('capaPreview').innerHTML = d.capa?`<img src="${d.capa}">`:"";
-        document.getElementById('previewFotos').innerHTML = (d.fotos||[]).map(url=>`<img src="${url}">`).join('');
-        document.getElementById('previewVideos').innerHTML = (d.videos||[]).map(url=>`<video src="${url}" muted></video>`).join('');
-        window.scrollTo({top:0, behavior:'smooth'});
-      }
-    }
-    // Função para remover
-    window.remover = async function(id){
-      if(confirm("Remover este conteúdo?")) {
-        await db.collection("conteudos").doc(id).delete();
-      }
-    }
-    // Limpa form
-    window.limparForm = function(){
-      editId = null;
-      document.getElementById('form').reset();
-      document.getElementById('previewFotos').innerHTML = "";
-      document.getElementById('previewVideos').innerHTML = "";
-      document.getElementById('capaPreview').innerHTML = "";
-    }
-  </script>
-</body>
-</html>
+    @keyframes popup { from { transform: scale(.8); opacity:
