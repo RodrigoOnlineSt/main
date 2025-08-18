@@ -30,4 +30,271 @@
       margin: 22px auto 36px auto;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(295px, 1fr));
-      gap: 28px
+      gap: 28px;
+    }
+    .card {
+      background: #f9fbfe;
+      border-radius: 18px;
+      box-shadow: 0 6px 36px #1e4a8825, 0 1.5px 0 #eaf2fc55;
+      padding: 18px 18px 14px 18px;
+      cursor: pointer;
+      transition: .15s;
+      min-height: 145px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      overflow: hidden;
+      border: 2px solid #fff;
+    }
+    .card:hover {
+      box-shadow: 0 18px 58px #1966c455, 0 2px 8px #eaf2fc88;
+      transform: scale(1.022);
+      border: 2.5px solid #1966c4;
+    }
+    .card-titulo {
+      font-size: 1.12em;
+      color: #654ea3;
+      font-weight: bold;
+      margin-bottom: 6px;
+      text-shadow: 0 1px 8px #654ea320;
+    }
+    .capa-img {
+      border-radius: 11px;
+      max-width: 100%;
+      max-height: 104px;
+      margin-bottom: 8px;
+      box-shadow: 0 2px 12px #9bbbe6b0;
+      background: #dde8fa;
+    }
+    .card-data {
+      color: #96b4e3;
+      font-size: .93em;
+      position: absolute;
+      bottom: 11px;
+      right: 15px;
+      font-weight: 500;
+    }
+    .share-btn {
+      position: absolute;
+      top: 13px;
+      right: 13px;
+      background: linear-gradient(100deg, #0e3770 0%, #2c90fa 80%);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 6px 14px;
+      font-size: .98em;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 10px #1966c440;
+      transition: .12s;
+      letter-spacing: 0.04em;
+    }
+    .share-btn:hover {
+      filter: brightness(1.12) contrast(1.07);
+      background: linear-gradient(100deg, #2675db 0%, #5dbaff 80%);
+    }
+    .card-empty {
+      color: #b1bfd2;
+      text-align: center;
+      font-size: 1.09em;
+      padding: 48px 0;
+      font-weight: bold;
+      text-shadow: 0 2px 8px #fff9;
+    }
+    /* MODAL e FULLSCREEN */
+    .modal-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #152958e6; display: none; align-items: center; justify-content: center; z-index: 100; animation: fadein .4s;}
+    @keyframes fadein { from{ opacity: 0;} to {opacity: 1;} }
+    .modal { background: #fff; border-radius: 20px; max-width: 98vw; max-height: 98vh; width: 650px; padding: 32px 22px 25px 22px; box-shadow: 0 18px 64px #1843a1bb; color: #203650; overflow-y: auto; position: relative; animation: popup .23s; display: flex; flex-direction: column; align-items: center;}
+    @media (max-width: 800px) { .modal { width: 99vw; padding: 12px 4vw;} }
+    @keyframes popup { from { transform: scale(.8); opacity:0;} to { transform: scale(1); opacity:1;} }
+    .close-btn { position: absolute; top: 12px; right: 18px; font-size: 2.3em; color: #1966c4; background: none; border: none; cursor: pointer; transition: .17s; z-index: 20; font-weight: bold;}
+    .close-btn:hover { color: #654ea3;}
+    .modal-titulo { font-weight: bold; font-size: 1.17em; margin-bottom: 13px; color: #654ea3; text-align: center;}
+    .cabecalho-personalizado { background:#eaf2fc; padding:14px 10px; font-size:1.1em; text-align:center; border-bottom:2px solid #1966c4; margin-bottom:15px; color:#2675db; font-weight:bold; border-radius: 0 0 12px 12px;}
+    .galeria { display: flex; gap: 13px; flex-wrap: wrap; justify-content: center; margin:10px 0 18px 0;}
+    .galeria img, .galeria video { border-radius: 9px; max-width: 150px; max-height: 150px; border: 1.5px solid #d8ecfa; background: #eaf2fc; box-shadow: 0 2px 8px #4a7ee555;}
+    .fullscreen-bg { position:fixed; top:0; left:0; width:100vw; height:100vh; background:#101728ee; display:none; z-index:1000; justify-content:center; align-items:center;}
+    .fullscreen-iframe { width:100vw; height:100vh; border:none; background:#fff; display:block;}
+    .fs-close-btn { position:absolute; top:18px; right:24px; font-size:2.6em; color:#fff; background:#1966c4cc; border:none; border-radius:18px; z-index:1100; cursor:pointer; padding:0 12px 2px 12px; font-weight:bold; transition:.18s; box-shadow: 0 2px 12px #222c;}
+    .fs-close-btn:hover { color:#dbe6ff; background:#001a57;}
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <div class="header">
+    <img src="SUA_URL_DA_LOGO_AQUI" alt="Logo">
+  </div>
+  <div class="cards" id="cards"></div>
+  <div class="modal-bg" id="modalBg" onclick="fecharModal(event)">
+    <div class="modal" id="modal">
+      <button class="close-btn" onclick="fecharModal(event)">&times;</button>
+      <div id="cabecalhoModal"></div>
+      <div class="modal-titulo" id="modalTitulo"></div>
+      <div class="galeria" id="modalGaleria"></div>
+    </div>
+  </div>
+  <div class="fullscreen-bg" id="fullscreenBg">
+    <button class="fs-close-btn" onclick="fecharFullHtml()">&times;</button>
+    <iframe id="fullHtmlIframe" class="fullscreen-iframe"></iframe>
+  </div>
+  <script>
+    const LOGO_PADRAO = "SUA_URL_DA_LOGO_AQUI";
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "SUA_API_KEY_AQUI",
+      authDomain: "concursosuper-29c5b.firebaseapp.com",
+      projectId: "concursosuper-29c5b",
+      storageBucket: "concursosuper-29c5b.appspot.com",
+      messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+      appId: "SEU_APP_ID",
+      measurementId: "SEU_MEASUREMENT_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    function getQueryParam(k){
+      let p = new URLSearchParams(window.location.search);
+      return p.get(k);
+    }
+
+    let carregouUnico = false;
+    const idQuery = getQueryParam('id');
+    if(idQuery){
+      db.collection("conteudos").doc(idQuery).get().then(doc=>{
+        if(doc.exists){
+          const d = doc.data();
+          document.title = d.titulo || "Página";
+          abrirCard(d, idQuery, true);
+        } else {
+          document.getElementById('cards').innerHTML = "<div class='card-empty'>Conteúdo não encontrado.</div>";
+        }
+      });
+      carregouUnico = true;
+    }
+
+    if(!carregouUnico){
+      db.collection("conteudos").orderBy("data","desc").onSnapshot(snapshot=>{
+        const cards = document.getElementById('cards');
+        cards.innerHTML = "";
+        if(snapshot.empty){
+          cards.innerHTML = `<div class="card-empty">Nenhum conteúdo publicado ainda.</div>`;
+          return;
+        }
+        snapshot.forEach(doc=>{
+          const d = doc.data();
+          const data = d.data ? new Date(d.data.seconds*1000).toLocaleDateString() : '';
+          const card = document.createElement('div');
+          card.className = 'card';
+          let capa = d.capa ? `<img src="${d.capa}" class="capa-img">` : `<img src="${LOGO_PADRAO}" class="capa-img">`;
+          card.innerHTML = `
+            ${capa}
+            <div class="card-titulo">${d.titulo||''}</div>
+            <div class="card-data">${data}</div>
+            <button class="share-btn" onclick="event.stopPropagation(); compartilhar('${doc.id}','${encodeURIComponent(d.titulo||'Conteúdo')}');">Compartilhar</button>
+          `;
+          card.onclick = ()=>abrirCard(d, doc.id, false);
+          cards.appendChild(card);
+        });
+      });
+    }
+
+    window.compartilhar = function(id, titulo){
+      const url = window.location.origin + window.location.pathname + "?id=" + id;
+      if(navigator.share){
+        navigator.share({title: decodeURIComponent(titulo), url: url});
+      } else {
+        const wpp = `https://wa.me/?text=${decodeURIComponent(titulo)}%20${encodeURIComponent(url)}`;
+        if(confirm("Deseja compartilhar pelo WhatsApp?")) window.open(wpp);
+        else {
+          prompt("Link dessa página (copie):", url);
+        }
+      }
+    }
+
+    function abrirCard(d, id, fullForce){
+      if(d.html && d.html.trim()){
+        abrirFullHtml(d.html, d.titulo||'', id, d.cabecalho||'');
+      } else {
+        document.getElementById('modalTitulo').textContent = d.titulo || '';
+        document.getElementById('cabecalhoModal').innerHTML = d.cabecalho ? `<div class="cabecalho-personalizado">${d.cabecalho}</div>` : '';
+        const galeria = document.getElementById('modalGaleria');
+        galeria.innerHTML = "";
+        if(d.capa) galeria.innerHTML += `<img src="${d.capa}" loading="lazy" style="max-width:220px;max-height:110px;margin-bottom:12px;">`;
+        if(d.fotos && d.fotos.length)
+          galeria.innerHTML += d.fotos.map(url=>`<img src="${url}" loading="lazy">`).join('');
+        if(d.videos && d.videos.length)
+          galeria.innerHTML += d.videos.map(url=>`<video src="${url}" controls></video>`).join('');
+        document.getElementById('modalBg').style.display = "flex";
+      }
+    }
+
+    function abrirFullHtml(html, titulo, id, cabecalho){
+      document.body.style.overflow = 'hidden';
+      document.getElementById('fullscreenBg').style.display = 'flex';
+      document.title = titulo;
+      const fullHtml = `
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+          <meta charset="UTF-8">
+          <title>${titulo || 'Página'}</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+          <style>
+            body {
+              margin: 0;
+              padding: 0 2vw;
+              box-sizing: border-box;
+              font-family: Arial, Helvetica, sans-serif;
+              background: #fff;
+              color: #222;
+              max-width: 100vw;
+              min-height: 100vh;
+              overflow-x: hidden;
+              font-size: 1.08em;
+            }
+            img, video, iframe {
+              max-width: 100% !important;
+              height: auto !important;
+              display: block;
+              margin: 0 auto 14px auto;
+              border-radius: 8px;
+            }
+            * { box-sizing: border-box; }
+            .cabecalho-personalizado {
+              background:#eaf2fc;
+              padding:18px;
+              font-size:1.15em;
+              text-align:center;
+              border-bottom:2px solid #1966c4;
+              margin-bottom:18px;
+              color:#2675db;
+              font-weight:bold;
+              border-radius: 0 0 13px 13px;
+            }
+          </style>
+        </head>
+        <body>
+          ${cabecalho ? `<div class="cabecalho-personalizado">${cabecalho}</div>` : ''}
+          ${html}
+        </body>
+        </html>`;
+      document.getElementById('fullHtmlIframe').srcdoc = fullHtml;
+      if(id) history.replaceState({}, "", "?id=" + id);
+    }
+    function fecharFullHtml(){
+      document.getElementById('fullscreenBg').style.display = "none";
+      document.getElementById('fullHtmlIframe').srcdoc = "";
+      document.body.style.overflow = '';
+      document.title = "Portal do Cliente";
+      if(getQueryParam('id')) window.location.href = window.location.pathname;
+    }
+    function fecharModal(e){
+      if(e.target.className.includes('modal-bg')||e.target.className==='close-btn')
+        document.getElementById('modalBg').style.display = "none";
+    }
+  </script>
+</body>
+</html>
