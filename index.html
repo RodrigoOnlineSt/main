@@ -2,49 +2,49 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Publicações</title>
+  <title>Conteúdos Publicados</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
   <style>
-    body { background: #f6f8fa; font-family:'Montserrat',Arial,sans-serif; margin:0; }
-    .header { background: #1966c4; color: #fff; text-align: center; padding: 18px 0; margin-bottom: 18px; }
-    .container { max-width: 560px; margin: auto; padding: 16px 10px; }
-    .item { background: #fff; border-radius: 10px; margin-bottom: 22px; box-shadow: 0 3px 18px #2341; padding: 15px 14px; }
-    .titulo { font-size: 1.16em; font-weight: bold; color: #1966c4; margin-bottom: 8px; }
-    .capa { width: 100%; max-height: 180px; border-radius: 7px; object-fit: cover; display: block; margin-bottom: 8px; }
-    .galeria { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px;}
-    .galeria img, .galeria video { width: 56px; height: 56px; object-fit: cover; border-radius: 5px; border: 1px solid #ddd; background:#eee; }
-    .botoes { margin-top: 8px;}
-    .btn { display: inline-block; background: #1966c4; color: #fff; border: none; border-radius: 6px; padding: 7px 16px; font-size: 1em; cursor: pointer; margin-right: 8px;}
-    .btn-compartilhar { background: #30d5c8; color: #163246; }
-    .link { font-size: .93em; color:#123; opacity: 0.8; word-break: break-all; margin-top:5px;}
-    /* Modal HTML fullscreen */
-    #modalHtmlFull { display:none; position:fixed;z-index:99;left:0;top:0;width:100vw;height:100vh;background:#fff;overflow:auto;padding:0;margin:0;}
-    #modalHtmlFull .fechar { position:absolute;top:15px;right:20px;background:#1966c4;color:#fff;border:none;border-radius:6px;font-size:1.4em;padding:5px 14px;cursor:pointer;}
-    #htmlFullConteudo { padding: 0; min-height: 100vh; }
-    @media (max-width:600px){
-      .container { padding: 7px 2vw; }
-      .item { padding: 11px 5px; }
-      .titulo { font-size: 1em; }
-      .galeria img, .galeria video { width: 44px; height: 44px; }
+    body { background: #172236; color: #fff; font-family: 'Montserrat', Arial, sans-serif; margin: 0; }
+    .main { max-width: 660px; margin: 30px auto 0; background: #212f4c; border-radius: 15px; box-shadow: 0 10px 40px #0009; padding: 26px 0 18px;}
+    h2 { color: #3ce1d8; text-align: center; margin-bottom: 22px;}
+    .conteudo { background: #13243a; border-radius: 10px; margin: 24px 22px; padding: 19px 14px 15px 14px; box-shadow: 0 3px 12px #0a181f33;}
+    .titulo { font-size: 1.25em; font-weight: bold; color: #31e3c2; margin-bottom: 10px;}
+    .capa { width: 100%; max-width: 370px; max-height: 170px; border-radius: 9px; margin-bottom: 10px; display: block;}
+    .media-list img, .media-list video { max-width: 80px; max-height: 80px; border-radius: 7px; margin: 2px 7px 2px 0; }
+    .html-preview { background: #10192b; border-radius: 7px; margin: 12px 0 10px 0; padding: 13px 9px; overflow-x: auto;}
+    .abrir-html { background: #3ce1d8; color: #11223d; border: none; border-radius: 7px; padding: 7px 14px; font-weight: bold; cursor: pointer; margin-right: 7px; font-size: 1em;}
+    .share-btn { background: #30d5c8; color: #1e293b; border: none; border-radius: 7px; padding: 7px 14px; font-size: 1em; cursor: pointer;}
+    .link-btn { background: none; color: #aef2ec; border: none; text-decoration: underline; cursor: pointer; font-size: .98em;}
+    .modal-bg { display:none; position:fixed; z-index:99; left:0;top:0;width:100vw;height:100vh; background:rgba(18,23,44,0.95);}
+    .modal-html { position:fixed; z-index:100; left:50%;top:50%;transform:translate(-50%,-50%); background:#fff; color:#222; border-radius:15px; max-width:99vw; width:560px; max-height:92vh; overflow:auto; box-shadow:0 6px 32px #000b; padding:0;}
+    .modal-html .fechar { position:absolute; top:5px; right:13px; font-size:1.7em; color:#444; background:none; border:none; cursor:pointer;}
+    @media (max-width:700px) {
+      .main {max-width:99vw;}
+      .modal-html {width:97vw;}
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <span>Publicações</span>
+  <div class="main">
+    <h2>Conteúdos Publicados</h2>
+    <div id="list"></div>
   </div>
-  <div class="container" id="container"></div>
-  <!-- Modal para HTML fullscreen -->
-  <div id="modalHtmlFull">
-    <button class="fechar" onclick="fecharHtmlFull()">×</button>
-    <div id="htmlFullConteudo"></div>
+
+  <!-- Modal HTML fullscreen -->
+  <div class="modal-bg" id="modalBg">
+    <div class="modal-html" id="modalHtml">
+      <button class="fechar" onclick="fecharModal()">&times;</button>
+      <div id="modalHtmlContent" style="padding:22px 14px 13px 14px"></div>
+    </div>
   </div>
+
   <script>
-    // --- CONFIG FIREBASE DO SEU PAINEL ADM ---
+    // --- TROQUE PARA SUA CONFIG ---
     const firebaseConfig = {
       apiKey: "SUA_API_KEY_AQUI",
       authDomain: "concursosuper-29c5b.firebaseapp.com",
@@ -54,82 +54,71 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Se tiver parâmetro id na URL, mostra só a página individual
-    const params = new URLSearchParams(location.search);
-    const id = params.get("id");
-
-    // Abrir HTML em tela cheia
-    function abrirHtmlCompleto(html) {
-      const modal = document.getElementById('modalHtmlFull');
-      const conteudo = document.getElementById('htmlFullConteudo');
-      conteudo.innerHTML = html;
-      modal.style.display = 'block';
-      document.body.style.overflow = "hidden";
-    }
-    function fecharHtmlFull() {
-      document.getElementById('modalHtmlFull').style.display = 'none';
-      document.body.style.overflow = "";
-      document.getElementById('htmlFullConteudo').innerHTML = "";
-    }
-
-    // Card de conteúdo
-    function cardConteudo(d, docid) {
-      let capa = d.capa ? `<img class="capa" src="${d.capa}" alt="Capa">` : "";
-      let galeria = "";
-      if((d.fotos||[]).length || (d.videos||[]).length){
-        galeria = `<div class="galeria">`+
-          (d.fotos||[]).map(url=>`<img src="${url}">`).join('')+
-          (d.videos||[]).map(url=>`<video src="${url}" muted></video>`).join('')+
-        `</div>`;
-      }
-      let btnAbrirHtml = d.html && d.html.trim() ? `<button class="btn" onclick="abrirHtmlCompleto(\`${d.html.replace(/`/g,"\\`")}\`)">Abrir Página</button>` : "";
-      // Link único
-      let linkUnico = location.origin + "/?id=" + docid;
-      let btnCompartilhar = `<button class="btn btn-compartilhar" onclick="window.open('https://wa.me/?text='+encodeURIComponent('${d.titulo} - ${linkUnico}'))">Compartilhar</button>`;
-      let campoLink = `<div class="link">${linkUnico}</div>`;
-      return `
-        <div class="item">
-          ${capa}
-          <div class="titulo">${d.titulo||""}</div>
-          ${galeria}
-          <div class="botoes">
-            ${btnAbrirHtml} ${btnCompartilhar}
+    // Carregar lista de conteúdos
+    db.collection("conteudos").orderBy("data", "desc").onSnapshot(snapshot => {
+      const list = document.getElementById('list');
+      list.innerHTML = "";
+      snapshot.forEach(doc => {
+        const d = doc.data();
+        const id = doc.id;
+        let htmlResumo = (d.html && d.html.length > 120) ? d.html.slice(0, 120) + '...' : (d.html||'');
+        let capa = d.capa ? `<img src="${d.capa}" class="capa">` : "";
+        let fotos = (d.fotos||[]).map(url => `<img src="${url}" alt="foto">`).join('');
+        let videos = (d.videos||[]).map(url => `<video src="${url}" controls muted></video>`).join('');
+        let conteudo = `
+          <div class="conteudo">
+            <div class="titulo">${d.titulo||''}</div>
+            ${capa}
+            ${(fotos || videos) ? `<div class="media-list">${fotos} ${videos}</div>` : ""}
+            ${d.html ? `<div class="html-preview">${htmlResumo}
+              <br>
+              <button class="abrir-html" onclick="abrirHtml('${id}')">Abrir em Tela Cheia</button>
+            </div>` : ""}
+            <button class="share-btn" onclick="compartilhar('${id}','${encodeURIComponent(d.titulo||'Conteúdo')}')">Compartilhar</button>
           </div>
-          ${campoLink}
-        </div>
-      `;
-    }
+        `;
+        list.insertAdjacentHTML('beforeend', conteudo);
+      });
+    });
 
-    // Carrega o conteúdo: individual ou lista
-    async function carregarConteudo() {
-      const el = document.getElementById('container');
-      el.innerHTML = "<div style='color:#222;text-align:center;margin:40px 0;'>Carregando...</div>";
-      if(id) {
-        // Página individual
-        const doc = await db.collection("conteudos").doc(id).get();
-        if(doc.exists) {
-          const d = doc.data();
-          el.innerHTML = cardConteudo(d, id);
-        } else {
-          el.innerHTML = "<div style='color:#222;text-align:center;margin:44px 0;'>Conteúdo não encontrado.</div>";
-        }
-      } else {
-        // Lista geral
-        db.collection("conteudos").orderBy("data","desc").onSnapshot(snapshot=>{
-          let html = "";
-          snapshot.forEach(doc=>{
-            html += cardConteudo(doc.data(), doc.id);
-          });
-          el.innerHTML = html || "<div style='color:#222;text-align:center;margin:44px 0;'>Nenhum conteúdo disponível.</div>";
-        });
+    // Função para abrir o HTML em tela cheia (modal)
+    window.abrirHtml = async function(id){
+      const modalBg = document.getElementById('modalBg');
+      const modalContent = document.getElementById('modalHtmlContent');
+      modalContent.innerHTML = "<b>Carregando...</b>";
+      modalBg.style.display = "block";
+      const doc = await db.collection("conteudos").doc(id).get();
+      if(doc.exists) {
+        const d = doc.data();
+        // Exibe o HTML completo dentro do modal (com cuidado: conteúdo externo pode executar scripts!)
+        modalContent.innerHTML = d.html || "<i>Sem conteúdo HTML.</i>";
       }
     }
-    carregarConteudo();
+    window.fecharModal = function(){
+      document.getElementById('modalBg').style.display = "none";
+    }
 
-    // Fecha modal se apertar ESC
-    window.addEventListener('keydown', function(e){
-      if(e.key==="Escape") fecharHtmlFull();
-    });
+    // Compartilhar link
+    window.compartilhar = function(id, titulo){
+      let url = window.location.origin + "/?id=" + id;
+      if(navigator.share){
+        navigator.share({
+          title: decodeURIComponent(titulo),
+          url
+        });
+      } else {
+        prompt("Copie o link para compartilhar:", url);
+      }
+    }
+
+    // Abrir conteúdo individual direto via parâmetro (?id=...)
+    (async function(){
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+      if(id){
+        setTimeout(()=>abrirHtml(id), 500);
+      }
+    })();
   </script>
 </body>
 </html>
