@@ -14,6 +14,95 @@
       min-height: 100vh;
       font-family: 'Montserrat', Arial, sans-serif;
       background-attachment: fixed;
+      overflow-x: hidden;
+    }
+    /* ----- Animação GLOBO 3D da logo ----- */
+    .logo-animada-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 99;
+      background: linear-gradient(120deg, #1966c4 0%, #654ea3 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      transition: opacity 0.7s cubic-bezier(.67,0,.37,1.01);
+    }
+    .logo-animada-globo3d {
+      width: 164px; height: 164px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at 58% 30%, #fff7 37%, #92d3fa99 65%, #1966c4bb 90%, #2e345c 100%);
+      box-shadow: 0 0 48px #74eaff88, 0 0 0 #fff0, 0 0 0 #fff0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: visible;
+      will-change: box-shadow, background;
+      animation: brilhoGlobo3D 1.15s linear infinite alternate;
+      transition: box-shadow .8s, background .8s;
+      filter: drop-shadow(0 0 24px #36d1f7cc);
+    }
+    @keyframes brilhoGlobo3D {
+      0% { box-shadow: 0 0 38px #74eaff88, 0 0 0 #fff0;}
+      100% { box-shadow: 0 0 68px #fff, 0 0 44px #60c1ff99;}
+    }
+    .globo-reflexo {
+      position: absolute;
+      top: 21px; left: 38px;
+      width: 62px; height: 38px;
+      background: radial-gradient(ellipse at 48% 43%, #fff8 67%, #fff0 100%);
+      border-radius: 80% 100% 70% 120%;
+      opacity: 0.67;
+      pointer-events: none;
+      z-index: 4;
+      filter: blur(1.1px);
+      mix-blend-mode: lighten;
+      animation: reflexoGlobo 2.2s infinite alternate;
+    }
+    @keyframes reflexoGlobo {
+      from { transform: rotate(-8deg) scale(1);}
+      to   { transform: rotate(10deg) scale(1.09);}
+    }
+    .globo-logo-img {
+      width: 118px; height: 118px;
+      border-radius: 50%;
+      object-fit: contain;
+      background: #fff;
+      position: relative;
+      box-shadow: 0 0 0 #fff0;
+      z-index: 3;
+      margin: 0 auto;
+      filter: drop-shadow(0 0 12px #b4e9fe);
+      animation: logoPulse 1.7s infinite alternate;
+    }
+    @keyframes logoPulse {
+      0% { filter: drop-shadow(0 0 12px #b4e9fe);}
+      100% { filter: drop-shadow(0 0 22px #b4e9fe);}
+    }
+    .logo-animada-bg.hide { opacity: 0; pointer-events: none; }
+    .logo-slide-topo {
+      position: fixed;
+      left: 50%; top: 50%;
+      transform: translate(-50%,-50%);
+      z-index: 110;
+      width: 164px; height: 164px;
+      transition:
+        top 1.2s cubic-bezier(.65,0,.37,1.01),
+        left 1.2s cubic-bezier(.65,0,.37,1.01),
+        width 0.6s 1.05s cubic-bezier(.65,0,.37,1.01),
+        height 0.6s 1.05s cubic-bezier(.65,0,.37,1.01),
+        border-radius 0.4s 1.2s cubic-bezier(.65,0,.37,1.01),
+        box-shadow 1.1s cubic-bezier(.67,0,.37,1.01);
+      will-change: top, left, width, height, border-radius;
+      background: transparent;
+    }
+    .logo-slide-topo.to-header {
+      top: 33px; left: 50%;
+      width: 48px; height: 48px;
+      border-radius: 18px;
+      transform: translate(-50%, -50%) scale(1);
+      box-shadow: 0 2px 12px #fff7, 0 0 0 #fff0;
     }
     .header {
       background: #fff;
@@ -25,49 +114,70 @@
       border-bottom-left-radius: 32px;
       border-bottom-right-radius: 32px;
       box-shadow: 0 8px 32px #0e2a4a21;
+      position: relative;
+      z-index: 3;
+      overflow: visible;
     }
-    .header img { max-height: 44px; margin-right: 12px; border-radius: 7px;}
-    .header span { color: #1966c4; font-weight: bold; font-size: 1.28em; letter-spacing: 1px;}
-    .main { max-width: 540px; margin: 0 auto 30px auto; background: #1a2771cc; border-radius: 16px; padding: 20px 9px 30px 9px; box-shadow: 0 12px 38px #0007;}
-    .conteudos { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center;}
+    .header .header-logo {
+      height: 44px; width: 44px;
+      border-radius: 10px;
+      margin: 0 auto;
+      display: block;
+      box-shadow: 0 2px 10px #60c1ff33;
+      background: #fff;
+    }
+    .header .header-txt { display: none; }
+    .main {
+      max-width: 540px;
+      margin: 0 auto 30px auto;
+      background: #1a2771cc;
+      border-radius: 16px;
+      padding: 20px 9px 30px 9px;
+      box-shadow: 0 12px 38px #0007;
+    }
+    .conteudos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      justify-content: center;
+      opacity: 0;
+      transform: scale(0.98);
+      pointer-events: none;
+      transition: opacity 0.7s cubic-bezier(.76,0,.24,1.08), transform 0.7s cubic-bezier(.76,0,.24,1.08);
+    }
+    .conteudos.revela {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: all;
+      animation: zoomList .9s cubic-bezier(.52,0,.41,1.09);
+    }
+    @keyframes zoomList {
+      from { opacity: 0; transform: scale(0.97);}
+      80%  { opacity: 1; transform: scale(1.07);}
+      to   { opacity: 1; transform: scale(1);}
+    }
     .card-btn {
       background: #fff;
       color: #222;
       border: none;
       border-radius: 15px;
       box-shadow: 0 5px 24px #1966c477;
-      margin: 0; padding: 0;
-      cursor: pointer; overflow: hidden;
+      cursor: pointer;
       display: flex; flex-direction: column; align-items: center;
       min-width: 110px; max-width: 140px; min-height: 95px;
-      transition: transform .12s; outline: none; position: relative;
+      transition: transform .12s;
+      position: relative;
     }
     .card-btn:hover, .card-btn:active { transform: scale(1.035);}
     .card-capa { width: 100%; height: 80px; object-fit: cover; border-radius: 13px 13px 0 0; background: #d6e6fa; margin-bottom: 3px;}
     .card-titulo { font-weight: bold; font-size: 1.08em; color: #1966c4; padding: 7px 5px 6px 5px; text-align: center; width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;}
-    .btn-voltar { display: none !important;} /* Sempre escondido agora */
     .conteudo-html { color: #333; background: #f7f8fc; border-radius: 11px; margin: 0; font-size: 1.06em; min-height: 32px; word-break: break-word; overflow-x: auto; max-width: 100%;}
     .conteudo-fotos { display: flex; overflow-x: auto; gap: 11px; padding: 10px 7px 6px 7px; margin-bottom: 7px;}
     .conteudo-fotos img, .conteudo-fotos video { max-width: 80px; max-height: 90px; border-radius: 8px; border: 1.5px solid #1966c4; background: #f4f8ff; box-shadow: 0 2px 9px #1966c455; object-fit: cover;}
-    .conteudo-capa {
-      width: 100%;
-      border-radius: 16px 16px 0 0;
-      object-fit: cover;
-      max-height: 160px;
-      min-height: 70px;
-      background: #d6e6fa;
-      display: block;
-      position: relative;
-      z-index: 1;
-      overflow: hidden;
-      isolation: isolate;
-    }
+    .conteudo-capa { width: 100%; border-radius: 16px 16px 0 0; object-fit: cover; max-height: 160px; min-height: 70px; background: #d6e6fa; display: block; position: relative; z-index: 1; overflow: hidden; }
     .conteudo-capa.shine:after {
       content: "";
-      position: absolute;
-      top: 0; left: -120px;
-      width: 70px;
-      height: 100%;
+      position: absolute; top: 0; left: -120px; width: 70px; height: 100%;
       background: linear-gradient(120deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.6) 45%, rgba(255,255,255,0.12) 100%);
       transform: skewX(-24deg);
       animation: shine-capa 2.2s infinite;
@@ -87,14 +197,14 @@
       .conteudo-html { font-size: 1em; }
       .conteudo-fotos img, .conteudo-fotos video { max-width: 68px; max-height: 80px; }
       .card-btn { max-width: 99vw; min-width: 45vw;}
+      .logo-slide-topo, .logo-animada-bg { width: 100vw; }
     }
-    /* Fade-in ao abrir tela cheia */
+    /* Fullscreen para HTML publicado */
     .fullscreen-active #conteudoCompleto,
     .fullscreen-active .conteudo-html {
       animation: fadein 0.24s;
     }
     @keyframes fadein { from { opacity: 0;} to { opacity: 1;} }
-    /* Tela cheia */
     .fullscreen-active #header,
     .fullscreen-active .conteudo-capa,
     .fullscreen-active .conteudo-titulo,
@@ -122,17 +232,14 @@
       overflow: auto !important;
     }
     .fullscreen-active .conteudo-html * { max-width: 100vw !important;}
-    /* Botão X de fechar tela cheia - SVG moderno e área touch-friendly */
     #btnFecharTelaCheia {
       display: none;
       position: fixed;
-      top: 14px;
-      right: 15px;
+      top: 14px; right: 15px;
       z-index: 100000;
       background: rgba(30,40,60,0.11);
       border: none;
-      min-width: 48px;
-      min-height: 48px;
+      min-width: 48px; min-height: 48px;
       border-radius: 50%;
       cursor: pointer;
       box-shadow: 0 2px 12px #2221;
@@ -149,10 +256,7 @@
       opacity: 1;
       box-shadow: 0 0 8px #c004;
     }
-    .fullscreen-active #btnFecharTelaCheia {
-      display: flex;
-    }
-    /* Para clique fora do conteúdo */
+    .fullscreen-active #btnFecharTelaCheia { display: flex; }
     #conteudoCompleto.full-overlay-bg {
       background: rgba(255,255,255,0.98) !important;
       transition: background 0.22s;
@@ -160,14 +264,22 @@
   </style>
 </head>
 <body>
+  <!-- ANIMAÇÃO DE GLOBO/BINGO 3D -->
+  <div class="logo-animada-bg" id="logoAnimadaBg">
+    <div class="logo-slide-topo" id="logoAnimada">
+      <div class="logo-animada-globo3d">
+        <span class="globo-reflexo"></span>
+        <img class="globo-logo-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNxmA6mH86GQSOc7AKewTETB-55O3iY3QTCytGXS696o25IKkQTU2yQedvgeDo17i_EEYbJoy_eM9t7yN0vpEApNXt19M9Qj8Dh-IIHEi6o3AWTuVZXRtS2rvAT9lY3hAQ4riW3ftOonmBBBTzACHzZJ1pa1EC2joR90I9kH2noEZnCrQTgJOXjVunKjw/s1600/1000123334.png" alt="Logo">
+      </div>
+    </div>
+  </div>
   <div class="header" id="header">
-    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNxmA6mH86GQSOc7AKewTETB-55O3iY3QTCytGXS696o25IKkQTU2yQedvgeDo17i_EEYbJoy_eM9t7yN0vpEApNXt19M9Qj8Dh-IIHEi6o3AWTuVZXRtS2rvAT9lY3hAQ4riW3ftOonmBBBTzACHzZJ1pa1EC2joR90I9kH2noEZnCrQTgJOXjVunKjw/s1600/1000123334.png" alt="Logo">
-    <span>Portal de Conteúdos</span>
+    <img class="header-logo" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNxmA6mH86GQSOc7AKewTETB-55O3iY3QTCytGXS696o25IKkQTU2yQedvgeDo17i_EEYbJoy_eM9t7yN0vpEApNXt19M9Qj8Dh-IIHEi6o3AWTuVZXRtS2rvAT9lY3hAQ4riW3ftOonmBBBTzACHzZJ1pa1EC2joR90I9kH2noEZnCrQTgJOXjVunKjw/s1600/1000123334.png" alt="Logo">
+    <span class="header-txt">Portal de Conteúdos</span>
   </div>
   <div class="main" id="main">
     <div class="conteudos" id="conteudos"></div>
     <div id="conteudoCompleto" style="display:none;">
-      <!-- Botão X SVG para fechar tela cheia -->
       <button id="btnFecharTelaCheia" title="Fechar">
         <svg width="38" height="38" viewBox="0 0 38 38">
           <circle cx="19" cy="19" r="17" fill="white" opacity="0.04"/>
@@ -186,7 +298,7 @@
     </div>
   </div>
   <script>
-    // Função para injetar HTML e scripts
+    // Função para rodar scripts do HTML injetado
     function setHtmlWithScripts(container, html) {
       container.innerHTML = html;
       var scripts = container.querySelectorAll('script');
@@ -198,8 +310,23 @@
         oldScript.parentNode.replaceChild(newScript, oldScript);
       });
     }
-
-    // TROQUE pelo seu Firebase!
+    // ---- ANIMAÇÃO DA LOGO ----
+    window.addEventListener('DOMContentLoaded', function () {
+      const logoAnimadaBg = document.getElementById('logoAnimadaBg');
+      const logoAnimada = document.getElementById('logoAnimada');
+      const conteudos = document.getElementById('conteudos');
+      setTimeout(() => {
+        logoAnimada.classList.add('to-header');
+        setTimeout(() => {
+          logoAnimadaBg.classList.add('hide');
+          setTimeout(()=>{
+            logoAnimadaBg.style.display = "none";
+            conteudos.classList.add('revela');
+          }, 800);
+        }, 1200);
+      }, 900);
+    });
+    // ---- FIREBASE (adicione suas credenciais) ----
     const firebaseConfig = {
       apiKey: "SUA_API_KEY_AQUI",
       authDomain: "concursosuper-29c5b.firebaseapp.com",
@@ -212,7 +339,6 @@
     const conteudoCompletoDiv = document.getElementById('conteudoCompleto');
     const btnFecharTelaCheia = document.getElementById('btnFecharTelaCheia');
 
-    // Home: lista de conteúdos
     function mostrarConteudos(){
       db.collection("conteudos").orderBy("data","desc").onSnapshot(snapshot=>{
         conteudosDiv.innerHTML = "";
@@ -230,8 +356,6 @@
         });
       });
     }
-
-    // Mostra conteúdo completo
     function mostrarConteudo(id){
       conteudosDiv.style.display = "none";
       conteudoCompletoDiv.style.display = "";
@@ -243,7 +367,7 @@
         const d = doc.data();
         var capaImg = document.getElementById('conteudoCapa');
         capaImg.src = d.capa || (d.fotos && d.fotos[0]) || "";
-        capaImg.classList.add("shine"); // Efeito brilho sempre
+        capaImg.classList.add("shine");
         document.getElementById('conteudoTitulo').textContent = d.titulo||"";
         let fotosHtml = "";
         (d.fotos||[]).forEach(url=>{
@@ -265,14 +389,11 @@
         window._paginaId = id;
       });
     }
-
     function voltarHome(){
-      // Sempre volta para a tela inicial por inteiro
       document.body.classList.remove('fullscreen-active');
       window.location.search = "";
       window.scrollTo({top:0, behavior:"smooth"});
     }
-
     function compartilharPagina(){
       const id = window._paginaId;
       const titulo = window._paginaTitulo;
@@ -283,7 +404,6 @@
         window.open('https://wa.me/?text='+encodeURIComponent(titulo+" - "+url));
       }
     }
-
     function checarPagina(){
       const id = (new URL(location.href)).searchParams.get("id");
       if(id){
@@ -299,22 +419,18 @@
     window.onpopstate = checarPagina;
     checarPagina();
 
-    // ***** FUNÇÕES DE TELA CHEIA *****
+    // FULLSCREEN HTML
     function ativarTelaCheia(){
       document.body.classList.add('fullscreen-active');
       conteudoCompletoDiv.classList.add('full-overlay-bg');
       window.scrollTo(0,0);
     }
     btnFecharTelaCheia.onclick = voltarHome;
-
-    // (Opcional) Fechar tela cheia clicando no fundo fora do conteúdo
     conteudoCompletoDiv.addEventListener('click', function(e){
       if(document.body.classList.contains('fullscreen-active')) {
-        // Fecha só se clicar fora do conteúdo principal (.conteudo-html)
         if(e.target === conteudoCompletoDiv) voltarHome();
       }
     });
-
   </script>
 </body>
 </html>
