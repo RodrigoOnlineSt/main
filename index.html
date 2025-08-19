@@ -1,83 +1,246 @@
-<!--
-Requer que a instância db do Firebase Firestore já esteja inicializada!
-Use:
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
--->
-<script>
-// Função para injetar HTML e rodar scripts, com CSS global responsivo
-function setHtmlWithScripts(container, html) {
-  container.innerHTML = html;
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Portal de Conteúdos</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Montserrat', Arial, sans-serif;
+      background: linear-gradient(120deg, #1966c4 0%, #654ea3 100%);
+      background-attachment: fixed;
+    }
+    .header {
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 68px;
+      border-bottom-left-radius: 32px;
+      border-bottom-right-radius: 32px;
+      box-shadow: 0 8px 32px #0001;
+      margin-bottom: 20px;
+    }
+    .header img { height: 40px; margin-right: 16px; }
+    .header span { font-weight: 700; font-size: 1.5em; color: #1e3a66;}
+    .tabs { display: flex; justify-content: center; margin-bottom: 28px; }
+    .tab-btn {
+      background: #fff;
+      color: #1966c4;
+      font-weight: 700;
+      font-size: 1em;
+      border: none;
+      border-radius: 16px 16px 0 0;
+      margin: 0 2px;
+      padding: 10px 28px;
+      box-shadow: 0 4px 20px #0001;
+      cursor: pointer;
+      outline: none;
+      transition: background .2s, color .2s;
+    }
+    .tab-btn.active, .tab-btn:hover { background: #1966c4; color: #fff; }
+    .main { max-width: 540px; margin: auto; background: #fff; border-radius: 22px; box-shadow: 0 6px 30px #0002; padding: 34px 22px 30px 22px;}
+    .campo { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #dedede; font-size: 1em;}
+    .btn-publicar {
+      width: 100%;
+      background: linear-gradient(120deg, #1966c4 0%, #654ea3 100%);
+      color: #fff; font-weight: 700; border: none;
+      padding: 13px; border-radius: 12px; font-size: 1.14em;
+      margin-top: 10px; cursor: pointer; box-shadow: 0 2px 14px #0001;
+      transition: filter .2s;
+    }
+    .btn-publicar:active { filter: brightness(0.92);}
+    .conteudo-lista { margin-top: 18px; }
+    .conteudo-card {
+      background: linear-gradient(120deg, #1966c4 0%, #654ea3 100%);
+      color: #fff; border-radius: 13px; margin-bottom: 18px;
+      padding: 19px 16px; box-shadow: 0 3px 18px #0001; cursor: pointer;
+      font-size: 1.16em; font-weight: 600; transition: filter .15s;
+    }
+    .conteudo-card:hover { filter: brightness(1.08);}
+    .conteudo-titulo { font-weight: 700; font-size: 1.11em; }
+    .conteudo-data { font-size: .97em; opacity: .82;}
+    @media (max-width:620px) {
+      .main { max-width: 98vw; padding: 12px 3vw 22px 3vw;}
+      .header { border-radius: 0 0 16px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="https://i.imgur.com/1Qp9Z0u.png" alt="Logo"/>
+    <span>Portal de Conteúdos</span>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="abrirTab('adm')">Administrador</button>
+    <button class="tab-btn" onclick="abrirTab('cliente')">Cliente</button>
+  </div>
+  <div id="adm" class="main">
+    <h2 style="margin-top:0;">Publicar Conteúdo HTML</h2>
+    <input type="text" class="campo" id="campo-titulo" placeholder="Título da página (ex: Promoção, Novidade, etc)">
+    <textarea id="campo-html" class="campo" style="height: 170px; font-family: monospace;" placeholder="Cole aqui seu HTML completo"></textarea>
+    <button class="btn-publicar" onclick="publicarConteudo()">Publicar</button>
+    <div id="adm-mensagem" style="margin:14px 0 0 0; color:green;"></div>
+    <h3 style="margin-top:32px;">Conteúdos Publicados</h3>
+    <div id="adm-lista" class="conteudo-lista"></div>
+  </div>
+  <div id="cliente" class="main" style="display:none">
+    <h2 style="margin-top:0;">Conteúdos Disponíveis</h2>
+    <div id="cliente-lista" class="conteudo-lista"></div>
+  </div>
 
-  // Adiciona CSS global responsivo (evita múltiplos)
-  if (!document.getElementById('css-conteudo-html-full')) {
-    const cssGlobal = `
-      html, body { max-width: 100vw !important; overflow-x: hidden !important; }
-      #conteudo-html-full-outer, #conteudo-html-full-inner { max-width: 100vw !important; }
-      #conteudo-html-full-inner, #conteudo-html-full-inner * {
-        box-sizing: border-box !important;
-        max-width: 100vw !important;
-        overflow-x: auto !important;
-        margin-left: auto !important; margin-right: auto !important;
-      }
-      #conteudo-html-full-inner table,
-      #conteudo-html-full-inner .grid,
-      #conteudo-html-full-inner img,
-      #conteudo-html-full-inner > div,
-      #conteudo-html-full-inner > * {
-        max-width: 100vw !important; width: 100% !important; display: block !important;
-        margin-left: auto !important; margin-right: auto !important;
-      }
-      #conteudo-html-full-inner img { height: auto !important; }
-      #conteudo-html-full-inner td, #conteudo-html-full-inner th {
-        word-break: break-word !important;
-        white-space: pre-line !important;
-      }
-    `;
-    let styleTag = document.createElement('style');
-    styleTag.id = 'css-conteudo-html-full';
-    styleTag.innerHTML = cssGlobal;
-    document.head.appendChild(styleTag);
+<script>
+  // Troque pelos SEUS dados:
+  const firebaseConfig = {
+    apiKey: "SUA_KEY",
+    authDomain: "SEU_DOMINIO",
+    projectId: "SEU_PROJECT_ID"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // Abas ADM / Cliente
+  function abrirTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach((b,i) => {
+      b.classList.toggle('active', i == (tab == 'adm' ? 0 : 1));
+    });
+    document.getElementById('adm').style.display = tab == 'adm' ? '' : 'none';
+    document.getElementById('cliente').style.display = tab == 'cliente' ? '' : 'none';
+    if (tab == 'cliente') carregarConteudosCliente();
+    else carregarConteudosADM();
   }
 
-  // Reinjetar scripts inline/dinâmicos
-  const scripts = container.querySelectorAll('script');
-  scripts.forEach(oldScript => {
-    const newScript = document.createElement('script');
-    if (oldScript.src) newScript.src = oldScript.src;
-    if (oldScript.type) newScript.type = oldScript.type;
-    newScript.innerHTML = oldScript.innerHTML;
-    oldScript.parentNode.replaceChild(newScript, oldScript);
-  });
-}
-
-// Função para mostrar o conteúdo em tela cheia
-function mostrarConteudoTelaInteira(id) {
-  // Limpa todo o conteúdo do <body> (página fica só com o HTML publicado)
-  document.body.innerHTML = "";
-
-  // Cria wrappers para centralização e responsividade
-  let outer = document.createElement("div");
-  outer.id = "conteudo-html-full-outer";
-  let inner = document.createElement("div");
-  inner.id = "conteudo-html-full-inner";
-  outer.appendChild(inner);
-  document.body.appendChild(outer);
-
-  // Busca o conteúdo no Firestore
-  db.collection("conteudos").doc(id).get().then(doc => {
-    if (!doc.exists) {
-      inner.innerHTML = "<div style='color:red;text-align:center;margin:40px 0'>Conteúdo não encontrado</div>";
+  // Função publicar conteúdo
+  function publicarConteudo() {
+    const titulo = document.getElementById('campo-titulo').value.trim();
+    const html = document.getElementById('campo-html').value.trim();
+    if (!titulo || !html) {
+      document.getElementById('adm-mensagem').style.color = "red";
+      document.getElementById('adm-mensagem').innerText = "Preencha o título e o HTML!";
       return;
     }
-    let htmlPublicado = doc.data().html || "";
-    if (htmlPublicado.trim().length > 0) {
-      setHtmlWithScripts(inner, htmlPublicado);
-      document.body.style.overflowX = "hidden";
-      document.documentElement.style.overflowX = "hidden";
-    } else {
-      inner.innerHTML = "<div style='color:red;text-align:center;margin:40px 0'>Nenhum conteúdo HTML publicado.</div>";
+    // ID único por data+hora+random
+    const id = Date.now().toString(36) + Math.random().toString(36).substr(2,5);
+    db.collection("conteudos").doc(id).set({
+      titulo: titulo,
+      html: html,
+      data: new Date().toISOString()
+    }).then(() => {
+      document.getElementById('adm-mensagem').style.color = "green";
+      document.getElementById('adm-mensagem').innerText = "Publicado com sucesso!";
+      document.getElementById('campo-html').value = '';
+      document.getElementById('campo-titulo').value = '';
+      carregarConteudosADM();
+    });
+  }
+
+  // Carregar conteúdos (ADM)
+  function carregarConteudosADM() {
+    db.collection("conteudos").orderBy("data","desc").get().then(snapshot => {
+      let html = "";
+      snapshot.forEach(doc => {
+        let d = doc.data();
+        let dt = new Date(d.data);
+        html += `<div class="conteudo-card" onclick="mostrarConteudoTelaInteira('${doc.id}')">
+          <div class="conteudo-titulo">${d.titulo||'Sem título'}</div>
+          <div class="conteudo-data">${dt.toLocaleDateString()} ${dt.toLocaleTimeString()}</div>
+        </div>`;
+      });
+      document.getElementById('adm-lista').innerHTML = html||"<div style='color:#222;opacity:.66'>Nenhum conteúdo publicado ainda.</div>";
+    });
+  }
+
+  // Carregar conteúdos (Cliente)
+  function carregarConteudosCliente() {
+    db.collection("conteudos").orderBy("data","desc").get().then(snapshot => {
+      let html = "";
+      snapshot.forEach(doc => {
+        let d = doc.data();
+        let dt = new Date(d.data);
+        html += `<div class="conteudo-card" onclick="mostrarConteudoTelaInteira('${doc.id}')">
+          <div class="conteudo-titulo">${d.titulo||'Sem título'}</div>
+          <div class="conteudo-data">${dt.toLocaleDateString()} ${dt.toLocaleTimeString()}</div>
+        </div>`;
+      });
+      document.getElementById('cliente-lista').innerHTML = html||"<div style='color:#222;opacity:.66'>Nenhum conteúdo disponível ainda.</div>";
+    });
+  }
+
+  // Exibição HTML publicado (responsivo, fullscreen, roda scripts)
+  function setHtmlWithScripts(container, html) {
+    container.innerHTML = html;
+    if (!document.getElementById('css-conteudo-html-full')) {
+      const cssGlobal = `
+        html, body { max-width: 100vw !important; overflow-x: hidden !important; }
+        #conteudo-html-full-outer, #conteudo-html-full-inner { max-width: 100vw !important; }
+        #conteudo-html-full-inner, #conteudo-html-full-inner * {
+          box-sizing: border-box !important;
+          max-width: 100vw !important;
+          overflow-x: auto !important;
+          margin-left: auto !important; margin-right: auto !important;
+        }
+        #conteudo-html-full-inner table,
+        #conteudo-html-full-inner .grid,
+        #conteudo-html-full-inner img,
+        #conteudo-html-full-inner > div,
+        #conteudo-html-full-inner > * {
+          max-width: 100vw !important; width: 100% !important; display: block !important;
+          margin-left: auto !important; margin-right: auto !important;
+        }
+        #conteudo-html-full-inner img { height: auto !important; }
+        #conteudo-html-full-inner td, #conteudo-html-full-inner th {
+          word-break: break-word !important;
+          white-space: pre-line !important;
+        }
+      `;
+      let styleTag = document.createElement('style');
+      styleTag.id = 'css-conteudo-html-full';
+      styleTag.innerHTML = cssGlobal;
+      document.head.appendChild(styleTag);
     }
-  });
-}
+    const scripts = container.querySelectorAll('script');
+    scripts.forEach(oldScript => {
+      const newScript = document.createElement('script');
+      if (oldScript.src) newScript.src = oldScript.src;
+      if (oldScript.type) newScript.type = oldScript.type;
+      newScript.innerHTML = oldScript.innerHTML;
+      oldScript.parentNode.replaceChild(newScript, oldScript);
+    });
+  }
+
+  // Exibir HTML em tela cheia
+  function mostrarConteudoTelaInteira(id) {
+    document.body.innerHTML = "";
+    let outer = document.createElement("div");
+    outer.id = "conteudo-html-full-outer";
+    let inner = document.createElement("div");
+    inner.id = "conteudo-html-full-inner";
+    outer.appendChild(inner);
+    document.body.appendChild(outer);
+
+    db.collection("conteudos").doc(id).get().then(doc => {
+      if (!doc.exists) {
+        inner.innerHTML = "<div style='color:red;text-align:center;margin:40px 0'>Conteúdo não encontrado</div>";
+        return;
+      }
+      let htmlPublicado = doc.data().html || "";
+      if (htmlPublicado.trim().length > 0) {
+        setHtmlWithScripts(inner, htmlPublicado);
+        document.body.style.overflowX = "hidden";
+        document.documentElement.style.overflowX = "hidden";
+      } else {
+        inner.innerHTML = "<div style='color:red;text-align:center;margin:40px 0'>Nenhum conteúdo HTML publicado.</div>";
+      }
+    });
+  }
+
+  // Carrega o ADM na abertura
+  carregarConteudosADM();
 </script>
+</body>
+</html>
