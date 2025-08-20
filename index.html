@@ -29,324 +29,26 @@
       box-sizing: border-box;
     }
     *, *::before, *::after { box-sizing: border-box; max-width: 100vw; }
-
-    /* ----- LOGO 3D ANIMADA ----- */
-    .logo-animada-bg {
-      position: fixed;
-      left: 0; top: 0; width: 100vw; height: 100vh;
-      z-index: 1000;
-      pointer-events: none;
-      background: transparent;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      animation: logoFundoUp 1.4s cubic-bezier(.72,0,.15,1.01);
-    }
-    @keyframes logoFundoUp {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-    .logo-animada-esfera {
-      width: 98px; height: 98px; border-radius: 50%;
-      background: radial-gradient(circle at 70% 25%, #fff 5%, #7dc6ff 30%, #1e54c4 90%);
-      box-shadow: 0 0 32px 12px #37a0f7bb, 0 6px 52px #102c5b85;
-      display: flex; align-items: center; justify-content: center;
-      position: absolute; bottom: 9vh;
-      animation: esferaUp 1.6s cubic-bezier(.62,0,.19,1.1) forwards;
-    }
-    @keyframes esferaUp {
-      0%   { bottom: -110px; opacity: 0; transform: scale(0.4);}
-      20%  { opacity: 1; transform: scale(1.22);}
-      80%  { bottom: 9vh; transform: scale(1.12);}
-      100% { bottom: calc(42px + 18px); opacity: 1; transform: scale(1);}
-    }
-    .logo-animada-esfera svg {
-      width: 64px; height: 64px;
-      filter: drop-shadow(0 0 18px #37a0f7);
-    }
-    .logo-animada-nome {
-      position: absolute; left: 50%; transform: translateX(-50%);
-      top: calc(100% + 10px);
-      font-size: 1.32em;
-      font-weight: bold;
-      color: #fff;
-      text-shadow: 0 0 22px #37a0f7cc, 0 2px 12px #161b225a;
-      opacity: 0;
-      letter-spacing: 1.5px;
-      animation: nomeUp 0.7s 1.05s ease-in forwards;
-      font-family: 'Montserrat', Arial, sans-serif;
-      white-space: nowrap;
-      pointer-events: none;
-    }
-    @keyframes nomeUp {
-      0%   { opacity: 0; transform: translateX(-50%) translateY(20px) scale(0.94);}
-      95%  { opacity: 1; transform: translateX(-50%) translateY(-4px) scale(1.10);}
-      100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1);}
-    }
-    .logo-animada-bg.hide { display: none !important; }
-
-    /* CABEÇALHO LOGO */
-    .cabecalho-portal {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 18px 0 13px 0;
-      background: transparent;
-      min-height: 40px;
-      position: relative;
-      width: 100%;
-      transition: opacity 0.4s;
-      z-index: 10;
-    }
-    .logo-voltar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 59px;
-      min-height: 59px;
-      border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 2px 18px #1d8fff14;
-      margin: 0 auto;
-      box-sizing: border-box;
-      filter: drop-shadow(0 0 16px #37a0f7cc);
-      transition: opacity .2s, transform .22s;
-      opacity: 1;
-      padding: 0 24px;
-      /* inicia invisível para a animação */
-      opacity: 0;
-      transform: translateY(-35px) scale(0.8);
-      pointer-events: none;
-    }
-    .cabecalho-portal.visible .logo-voltar {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      pointer-events: all;
-      transition: opacity .6s, transform .6s;
-      animation: brilhoCabecalho 2.8s 1.7s linear infinite alternate;
-    }
-    @keyframes brilhoCabecalho {
-      from { box-shadow: 0 2px 18px #37a0f733; }
-      to   { box-shadow: 0 4px 36px #7dc6ff66, 0 0 14px #37a0f7cc;}
-    }
-    .nome-logo {
-      font-weight: bold;
-      font-size: 1.24em;
-      letter-spacing: 1.5px;
-      color: #1966c4;
-      text-shadow: 0 0 18px #7dc6ff2a;
-      font-family: 'Montserrat', Arial, sans-serif;
-      padding: 0;
-      white-space: nowrap;
-      animation: brilhoLogo 2.6s linear infinite alternate;
-    }
-    @keyframes brilhoLogo {
-      from { text-shadow: 0 0 16px #7dc6ff44; }
-      to   { text-shadow: 0 0 34px #1c9bf799, 0 0 8px #7dc6ff88; }
-    }
-    .cabecalho-portal.invisivel {
-      opacity: 0;
-      pointer-events: none;
-      height: 0;
-      min-height: 0;
-      padding: 0;
-    }
-
-    /* PRINCIPAL */
-    .main {
-      max-width: 540px; margin: 0 auto 30px auto;
-      background: #1b2235ee;
-      border-radius: 16px;
-      padding: 20px 9px 30px 9px;
-      box-shadow: 0 12px 38px #000c;
-      width: 100%;
-      box-sizing: border-box;
-    }
-    .conteudos {
-      display: flex; flex-wrap: wrap; gap: 18px; justify-content: center;
-      opacity: 0; transform: scale(0.97); pointer-events: none;
-      transition: opacity .7s, transform .7s;
-      width: 100%;
-      margin: 0 auto;
-      box-sizing: border-box;
-    }
-    .conteudos.revela {
-      opacity: 1; transform: scale(1);
-      animation: zoomList .9s cubic-bezier(.52,0,.41,1.09);
-      pointer-events: all;
-    }
-    @keyframes zoomList {
-      from { opacity: 0; transform: scale(0.97);}
-      80%  { opacity: 1; transform: scale(1.07);}
-      to   { opacity: 1; transform: scale(1);}
-    }
-    .card-btn {
-      background: var(--card-bg);
-      color: #eaf3fa;
-      border: none;
-      border-radius: 15px;
-      box-shadow: 0 5px 24px #141b2877, 0 1px 5px #22304c38 inset;
-      cursor: pointer;
-      display: flex; flex-direction: column; align-items: center;
-      min-width: 110px; max-width: 140px; min-height: 95px;
-      transition: transform .12s, box-shadow .19s;
-      position: relative;
-      overflow: hidden;
-      width: 44vw;
-      max-width: 99vw;
-    }
-    .card-btn:after {
-      content: "";
-      position: absolute; left: 50%; top: 50%;
-      width: 0; height: 0;
-      background: radial-gradient(circle, #63e7ff55 40%, #00c0ff00 70%);
-      border-radius: 50%;
-      opacity: 0;
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      transition: width .36s, height .36s, opacity .28s;
-    }
-    .card-btn:active:after {
-      width: 180px; height: 180px;
-      opacity: .24;
-      transition: 0s;
-    }
-    .card-btn:hover, .card-btn:focus {
-      transform: scale(1.04);
-      box-shadow: 0 8px 38px #3fbcffb6, 0 3px 15px #22304c42 inset;
-    }
-    .card-capa { width: 100%; height: 80px; object-fit: cover; border-radius: 13px 13px 0 0; background: #2e345c; margin-bottom: 3px; max-width: 100vw;}
-    .card-titulo { font-weight: bold; font-size: 1.09em; color: var(--txt-azul); padding: 8px 5px 6px 5px; text-align: center; width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;}
-
-    /* BOTÃO WHATSAPP FLUTUANTE */
-    .whatsapp-btn {
-      position: fixed; right: 20px; bottom: 22px;
-      background: linear-gradient(135deg,#2fc15c 60%,#60f381 100%);
-      color: #fff;
-      border-radius: 50%; width: 59px; height: 59px;
-      box-shadow: 0 2px 20px #34ff6666;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2.2em;
-      z-index: 100;
-      cursor: pointer;
-      border: none;
-      transition: box-shadow .22s;
-    }
-    .whatsapp-btn:hover { box-shadow: 0 2px 32px #2fdd4d99; }
-
-    /* MODAL/TELA CHEIA */
-    .conteudo-html, .fullscreen-active .conteudo-html {
-      color: #161b22 !important;
-      background: #fff !important;
-      border-radius: 16px;
-      margin: 0 auto;
-      font-size: 1.08em;
-      min-height: 32px;
-      word-break: break-word;
-      overflow-x: auto;
-      max-width: 99vw;
-      box-shadow: 0 6px 32px #23304c21;
-      font-family: 'Montserrat', Arial, sans-serif;
-      padding: 18px 3vw 28px 3vw;
-    }
-    .conteudo-html * { max-width: 100vw !important; box-sizing: border-box; word-break: break-word; }
-
-    /* Botão fechar */
-    #btnFecharTelaCheia {
-      display: none; position: fixed; top: 16px; right: 16px;
-      z-index: 100000; background: rgba(30,40,60,0.14);
-      border: none; min-width: 52px; min-height: 52px;
-      border-radius: 50%; cursor: pointer;
-      box-shadow: 0 2px 16px #233c56;
-      opacity: 0.94; padding: 0;
-      display: flex; align-items: center; justify-content: center;
-      backdrop-filter: blur(2px);
-      transition: background .2s, color .12s, opacity .12s, box-shadow .14s;
-    }
-    #btnFecharTelaCheia svg { width: 32px; height: 32px; }
-    #btnFecharTelaCheia:hover { background: rgba(40,120,255,0.17);}
-    .fullscreen-active #btnFecharTelaCheia { display: flex; }
-
-    @media (max-width:700px) {
-      .main { max-width: 99vw; }
-      .conteudo-html { font-size: 1em; border-radius: 9px; }
-      .card-btn { max-width: 99vw; min-width: 45vw;}
-      body { font-size: 16px; }
-      .logo-animada-esfera { width: 72px; height: 72px;}
-    }
-    @media (max-width:420px) {
-      .main { padding: 13px 1vw 19px 1vw; }
-      .conteudo-html { padding: 10px 1vw 14px 1vw; border-radius: 6px;}
-    }
+    /* ... restante do seu CSS ... */
   </style>
 </head>
 <body>
-  <!-- ANIMAÇÃO LOGO 3D ESFERA NA ENTRADA -->
-  <div class="logo-animada-bg" id="logoAnimada">
-    <div class="logo-animada-esfera">
-      <!-- Aqui pode por seu SVG/logomarca se quiser -->
-      <svg viewBox="0 0 80 80" fill="none">
-        <defs>
-          <radialGradient id="grad" cx="50%" cy="30%" r="70%" fx="70%" fy="25%">
-            <stop offset="0%" stop-color="#fff"/>
-            <stop offset="35%" stop-color="#7dc6ff"/>
-            <stop offset="100%" stop-color="#1966c4"/>
-          </radialGradient>
-        </defs>
-        <circle cx="40" cy="40" r="37" fill="url(#grad)" stroke="#7dc6ff" stroke-width="4"/>
-        <!-- Brilho -->
-        <ellipse cx="54" cy="29" rx="13" ry="6" fill="#fff" opacity="0.19"/>
-        <!-- Sombra -->
-        <ellipse cx="40" cy="60" rx="22" ry="7" fill="#111e" opacity="0.18"/>
-        <!-- Sombra abaixo -->
-        <ellipse cx="40" cy="76" rx="19" ry="4.5" fill="#111a" opacity="0.20"/>
-      </svg>
-      <div class="logo-animada-nome">Rodrigo Cambista</div>
+  <!-- ANIMAÇÃO LOGO 3D SLIDE -->
+  <div class="logo-animada-bg" id="logoAnimadaBg">
+    <div class="logo-slide-topo" id="logoAnimada">
+      <div class="logo-animada-globo3d">
+        <span class="globo-reflexo"></span>
+        <img class="globo-logo-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjNxmA6mH86GQSOc7AKewTETB-55O3iY3QTCytGXS696o25IKkQTU2yQedvgeDo17i_EEYbJoy_eM9t7yN0vpEApNXt19M9Qj8Dh-IIHEi6o3AWTuVZXRtS2rvAT9lY3hAQ4riW3ftOonmBBBTzACHzZJ1pa1EC2joR90I9kH2noEZnCrQTgJOXjVunKjw/s1600/1000123334.png" alt="Logo">
+      </div>
     </div>
   </div>
-  <!-- CABEÇALHO LOGO - aparece só na tela inicial -->
-  <div class="cabecalho-portal" id="cabecalhoLogo">
-    <div class="logo-voltar">
-      <span class="nome-logo">Rodrigo Cambista</span>
-    </div>
-  </div>
-
   <!-- PRINCIPAL -->
   <div class="main" id="main">
     <div class="conteudos" id="conteudos"></div>
-    <div id="conteudoCompleto" style="display:none;">
-      <button id="btnFecharTelaCheia" title="Fechar">
-        <svg viewBox="0 0 38 38">
-          <circle cx="19" cy="19" r="17" fill="white" opacity="0.04"/>
-          <path d="M13 13L25 25M25 13L13 25" stroke="#7dc6ff" stroke-width="2.7" stroke-linecap="round"/>
-        </svg>
-      </button>
-      <div class="conteudo-html" id="conteudoHtml"></div>
-    </div>
   </div>
-  <!-- BOTÃO WHATSAPP FLUTUANTE -->
-  <button class="whatsapp-btn" onclick="window.open('https://wa.me/5583999999999?text=Ol%C3%A1!%20Gostaria%20de%20suporte%20no%20Portal%20de%20Conte%C3%BAdos.','_blank')" title="Fale no WhatsApp">
-    <svg viewBox="0 0 50 50" fill="none" width="33" height="33">
-      <circle cx="25" cy="25" r="25" fill="#25D366"/>
-      <path fill="#fff" d="M37.9 32.8l-2.6-.7c-1-.3-1.8-.5-2.6.7-.7 1-1.3 1.3-2.4.9-1.7-.7-3.3-1.7-4.7-3-1.2-1.2-2.1-2.4-2.9-4-.5-1.1-.2-1.7.7-2.3.8-.5 1.7-1.3 1.9-2.2.2-.8 0-1.7-.3-2.4-.2-.7-1.6-3.6-2.1-4.9-.6-1.3-1.2-1.2-2-.7-.8.5-2.2 2-2.2 4.8 0 2.8 1.9 5.7 4.5 8.3 2.5 2.6 6 4.1 8.7 4.1 1.3 0 2.6-.2 3.2-.6.7-.3 1.4-1.1 1.6-1.5.2-.4.2-.9.1-1.2-.2-.3-.7-.4-1.1-.5z"/>
-    </svg>
-  </button>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script>
-    // Função para rodar scripts do HTML injetado
-    function setHtmlWithScripts(container, html) {
-      container.innerHTML = html;
-      var scripts = container.querySelectorAll('script');
-      scripts.forEach(oldScript => {
-        var newScript = document.createElement('script');
-        if (oldScript.src) newScript.src = oldScript.src;
-        if (oldScript.type) newScript.type = oldScript.type;
-        newScript.innerHTML = oldScript.innerHTML;
-        oldScript.parentNode.replaceChild(newScript, oldScript);
-      });
-    }
-
     // FIREBASE (adicione suas credenciais)
     const firebaseConfig = {
       apiKey: "SUA_API_KEY_AQUI",
@@ -357,30 +59,24 @@
     const db = firebase.firestore();
 
     const conteudosDiv = document.getElementById('conteudos');
-    const conteudoCompletoDiv = document.getElementById('conteudoCompleto');
-    const btnFecharTelaCheia = document.getElementById('btnFecharTelaCheia');
-    const cabecalhoLogo = document.getElementById('cabecalhoLogo');
+    const logoAnimadaBg = document.getElementById('logoAnimadaBg');
     const logoAnimada = document.getElementById('logoAnimada');
 
-    // Animação: Logo esfera sobe e fixa no topo
-    function startLogoAnimacao() {
-      setTimeout(() => {
-        // Oculta animação, mostra cabeçalho com efeito
-        logoAnimada.classList.add('hide');
-        cabecalhoLogo.classList.add('visible');
-      }, 2050);
-    }
-    // Só executa animação na tela inicial
+    // Animação: Logo globo 3D sobe pro topo e some
     window.addEventListener('DOMContentLoaded', function () {
-      if(!(new URL(location.href)).searchParams.get("id")) {
-        startLogoAnimacao();
-      } else {
-        logoAnimada.classList.add('hide');
-        cabecalhoLogo.classList.add('visible');
-      }
+      setTimeout(() => {
+        logoAnimada.classList.add('to-header');
+        setTimeout(() => {
+          logoAnimadaBg.classList.add('hide');
+          setTimeout(()=>{
+            logoAnimadaBg.style.display = "none";
+          }, 800);
+        }, 1200);
+      }, 900);
+
       setTimeout(() => {
         conteudosDiv.classList.add('revela');
-      }, 700);
+      }, 1500);
     });
 
     function mostrarConteudos(){
@@ -400,62 +96,68 @@
         });
       });
     }
+
+    // INSERE CSS GLOBAL NO HTML DE TERCEIROS (para responsividade forçada)
+    function cssResponsivoHtmlTerceiros() {
+      return `
+      <style>
+      html, body {
+        margin:0; padding:0;
+        overflow-x: hidden !important;
+        width:100vw; box-sizing:border-box;
+        background: #181c24 !important;
+      }
+      *, *:before, *:after { box-sizing: border-box; max-width: 100vw !important; }
+      img, video, iframe, object, embed {
+        max-width: 100vw !important;
+        height: auto !important;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      table { width: 100% !important; max-width: 100vw; word-break: break-word; }
+      td, th { word-break: break-word; }
+      pre, code { white-space: pre-wrap; word-break: break-all;}
+      .container, .content, .main, .wrapper { max-width:100vw !important; width:100vw !important; }
+      </style>
+      <script>
+        // Força ajuste em imagens e vídeos dinâmicos
+        setTimeout(function(){
+          document.querySelectorAll('img,video,iframe,object,embed').forEach(e=>{
+            e.style.maxWidth='100vw';
+            e.style.height='auto';
+          });
+        },500);
+      <\/script>
+      `;
+    }
+
     function mostrarConteudo(id){
-      conteudosDiv.style.display = "none";
-      conteudoCompletoDiv.style.display = "";
       db.collection("conteudos").doc(id).get().then(doc=>{
         if(!doc.exists){
-          conteudoCompletoDiv.innerHTML = "<div style='color:red;text-align:center;margin:40px 0'>Conteúdo não encontrado</div>";
+          document.body.innerHTML = "<div style='color:red;text-align:center;margin:40px 0'>Conteúdo não encontrado</div>";
           return;
         }
         const d = doc.data();
         let htmlPublicado = d.html||"";
-        setHtmlWithScripts(document.getElementById('conteudoHtml'), htmlPublicado);
-        ativarTelaCheia();
+        // ADICIONA CSS RESPONSIVO antes do conteúdo original
+        let htmlFinal = cssResponsivoHtmlTerceiros() + htmlPublicado;
+        document.open();
+        document.write(htmlFinal);
+        document.close();
       });
     }
-    function voltarHome(){
-      document.body.classList.remove('fullscreen-active');
-      conteudoCompletoDiv.classList.remove('full-overlay-bg');
-      window.location.search = "";
-      window.scrollTo({top:0, behavior:"smooth"});
-    }
+
     function checarPagina(){
       const id = (new URL(location.href)).searchParams.get("id");
       if(id){
-        conteudosDiv.style.display = "none";
-        conteudoCompletoDiv.style.display = "";
         mostrarConteudo(id);
-        // ESCONDE LOGO
-        cabecalhoLogo.classList.add('invisivel');
-        logoAnimada.classList.add('hide');
       } else {
-        conteudosDiv.style.display = "";
-        conteudoCompletoDiv.style.display = "none";
         mostrarConteudos();
-        // MOSTRA LOGO animada de novo ao voltar pra home
-        cabecalhoLogo.classList.remove('visible','invisivel');
-        logoAnimada.classList.remove('hide');
-        startLogoAnimacao();
       }
     }
     window.onpopstate = checarPagina;
     checarPagina();
-
-    // FULLSCREEN HTML
-    function ativarTelaCheia(){
-      document.body.classList.add('fullscreen-active');
-      conteudoCompletoDiv.classList.add('full-overlay-bg');
-      window.scrollTo(0,0);
-      btnFecharTelaCheia.style.display = "flex";
-    }
-    btnFecharTelaCheia.onclick = voltarHome;
-    conteudoCompletoDiv.addEventListener('click', function(e){
-      if(document.body.classList.contains('fullscreen-active')) {
-        if(e.target === conteudoCompletoDiv) voltarHome();
-      }
-    });
-
   </script>
 </body>
 </html>
