@@ -40,7 +40,6 @@
       perspective: 1400px;
     }
     *, *::before, *::after { box-sizing: border-box; max-width: 100vw; }
-    /* ANIMAÇÃO LOGO 3D */
     .logo-animada-bg {
       position: fixed; inset: 0; z-index: 99;
       background: linear-gradient(120deg, #233c63 0%, #7dc6ff 100%);
@@ -151,7 +150,6 @@
       .logo-slide-topo.to-header .logo-animada-globo3d { width: 62vw; height: 30vw; max-width:88px; max-height:56px;}
       .logo-slide-topo.to-header .globo-logo-img { width: 53vw; height:23vw; max-width:80px; max-height:45px;}
     }
-    /* PAINEL PRINCIPAL 3D */
     .main {
       max-width: 620px; margin: 0 auto 34px auto;
       background: var(--painel);
@@ -202,20 +200,20 @@
       box-shadow: 0 8px 44px #7dc6ffcc, 0 8px 60px #ffe175cc;
       background: linear-gradient(120deg,#fff9 15%,#ffe17533 100%);
     }
-
-    /* GRID responsivo dos cards */
+    /* ----------- SEMPRE 2 POR LINHA, INCLUSIVE CELULAR ------------ */
     .conteudos {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 28px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 22px;
       justify-items: center;
-      opacity: 0; transform: scale(0.97); pointer-events: none;
-      transition: opacity .7s, transform .7s;
       width: 100%;
+      min-height: 120px;
       margin: 0 auto;
       box-sizing: border-box;
-      min-height: 120px;
       perspective: 1400px;
+      scroll-behavior: smooth;
+      opacity: 0; transform: scale(0.97); pointer-events: none;
+      transition: opacity .7s, transform .7s;
     }
     .conteudos.revela {
       opacity: 1; transform: scale(1);
@@ -227,8 +225,19 @@
       80%  { opacity: 1; transform: scale(1.07);}
       to   { opacity: 1; transform: scale(1);}
     }
-    /* CARD 3D */
+    @media (max-width:700px) {
+      .conteudos { grid-template-columns: repeat(2, 1fr); gap: 10px;}
+      .card-btn { font-size: 0.93em; min-height: 94px; }
+    }
+    @media (max-width:400px) {
+      .conteudos { grid-template-columns: repeat(2, 1fr); gap: 6px;}
+      .card-btn { font-size: 0.9em; min-height: 80px;}
+    }
     .card-btn {
+      min-width: 0;
+      max-width: 290px;
+      width: 100%;
+      margin: 0;
       background: linear-gradient(120deg,#1b274b 10%,#22304c 70%,#293860 100%);
       color: var(--txt-azul);
       border: 2.7px solid #7dc6ffbb;
@@ -236,11 +245,10 @@
       box-shadow: var(--sombra-card), 0 16px 38px #003474cc;
       cursor: pointer;
       display: flex; flex-direction: column; align-items: center;
-      min-width: 140px; max-width: 180px; min-height: 120px;
+      min-height: 120px;
       transition: transform .17s, box-shadow .21s, border .19s;
       position: relative;
       overflow: hidden;
-      width: 100%;
       font-weight: 800;
       outline: none;
       animation: none;
@@ -292,7 +300,6 @@
       text-shadow: 0 2px 8px #176fc185, 0 2px 8px #fff8;
       filter: drop-shadow(0 0 6px #00347430);
     }
-    /* Loader 3D */
     .carregando {
       text-align: center;
       padding: 50px 0 34px 0;
@@ -304,7 +311,7 @@
       background: linear-gradient(120deg,#fff9 55%,#7dc6ff22 100%);
     }
     @keyframes gira { 100% { transform: rotate(360deg);} }
-    @keyframes fadeIn { from { opacity:0;} to {opacity:1;} }
+    @keyframes fadeIn { from { opacity:0;} to{opacity:1;} }
     .busca-bar {
       width: 98%;
       margin: 12px auto 22px auto;
@@ -393,6 +400,8 @@
     <div class="conteudos" id="conteudos"></div>
     <div id="semResultados" style="display:none;text-align:center;color:#7dc6ff;font-size:1.12em;margin:36px 0 16px 0;text-shadow:0 1px 6px #7dc6ff99;">Nenhum conteúdo encontrado.<br><span style="font-size:1.4em;" class="estrela">⭐</span></div>
   </div>
+  <!-- Islaid ADM aqui -->
+  <div id="rodapeIslaid"></div>
   <div class="footer-loterico">
     <span class="estrela">⭐</span>
     Faça sua aposta com <span>confiança!</span> Portal de Conteúdos – Visual Premium 3D
@@ -512,6 +521,16 @@
     }
     window.onpopstate = checarPagina;
     checarPagina();
+
+    // Exibe o Islaid do ADM acima do rodapé (executa HTML do campo islaid)
+    db.collection("rodape_conteudo").orderBy("data", "desc").limit(1).get().then(snapshot => {
+      snapshot.forEach(doc => {
+        const d = doc.data();
+        if (d.islaid) {
+          document.getElementById("rodapeIslaid").innerHTML = d.islaid;
+        }
+      });
+    });
   </script>
 </body>
 </html>
