@@ -57,7 +57,7 @@
       will-change: box-shadow, background;
       animation: brilhoGlobo3D 1.5s linear infinite alternate;
       filter: drop-shadow(0 0 38px #7dc6ffb0) drop-shadow(0 4px 24px #212b44b8);
-      border: none !important; /* Remove borda dourada */
+      border: none !important;
       perspective: 900px;
       transform-style: preserve-3d;
       transition: box-shadow .36s;
@@ -93,7 +93,7 @@
       margin: 0 auto;
       filter: drop-shadow(0 0 24px #7dc6ffcc) drop-shadow(0 0 13px #fff8);
       animation: logoPulse 1.7s infinite alternate;
-      border: none !important; /* Remove borda dourada */
+      border: none !important;
       box-shadow: 0 2px 22px #ffe17533, 0 0 40px #60b3ff33 inset;
     }
     @keyframes logoPulse {
@@ -202,8 +202,13 @@
       box-shadow: 0 8px 44px #7dc6ffcc, 0 8px 60px #ffe175cc;
       background: linear-gradient(120deg,#fff9 15%,#ffe17533 100%);
     }
+
+    /* GRID responsivo dos cards */
     .conteudos {
-      display: flex; flex-wrap: wrap; gap: 28px; justify-content: center;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 28px;
+      justify-items: center;
       opacity: 0; transform: scale(0.97); pointer-events: none;
       transition: opacity .7s, transform .7s;
       width: 100%;
@@ -231,12 +236,11 @@
       box-shadow: var(--sombra-card), 0 16px 38px #003474cc;
       cursor: pointer;
       display: flex; flex-direction: column; align-items: center;
-      min-width: 110px; max-width: 166px; min-height: 100px;
+      min-width: 140px; max-width: 180px; min-height: 120px;
       transition: transform .17s, box-shadow .21s, border .19s;
       position: relative;
       overflow: hidden;
-      width: 44vw;
-      max-width: 99vw;
+      width: 100%;
       font-weight: 800;
       outline: none;
       animation: none;
