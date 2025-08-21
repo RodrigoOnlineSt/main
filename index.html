@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Portal de Conteúdos</title>
+  <title>Rodrigo Cambista Online</title>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
   <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
   <style>
@@ -13,226 +13,208 @@
       --azul4: #60b3ff;
       --prata: #e3f3ff;
       --ouro: #ffe175;
-      --ouro2: #e9b300;
-      --vidro: rgba(36,55,106,0.38);
-      --card-bg: #22304ce6;
       --painel: rgba(29,47,84,0.85);
       --txt-azul: #8dc8ff;
       --txt-destaque: #ffe175;
       --txt-prata: #e3f3ff;
-      --sombra-3d: 0 4px 32px #1966c4a1, 0 0.5px 1.5px #fff9 inset, 0 0 8px #212b4477;
-      --sombra-card: 0 12px 36px #00347454, 0 1.5px 6px #7dc6ff55 inset, 0 0 0.7px #fff4;
-      --borda-neon: 0 0 14px #60b3ff, 0 0 30px #fff4;
-      --borda-ouro: 0 0 10px #ffe17588;
       --grad: linear-gradient(120deg, #22304C 0%, #1656a7 60%, #60b3ff 120%);
-      --glow: 0 0 46px #7dc6ff77;
     }
     html, body {
-      margin: 0; padding: 0;
-      min-height: 100vh;
+      margin: 0; padding: 0; min-height: 100vh;
       font-family: 'Montserrat', Arial, sans-serif;
       background: linear-gradient(120deg, #222d40 0%, #1656a7 65%, #60b3ff 120%);
-      color: var(--txt-prata);
+      color: var(--txt-prata); width: 100vw; box-sizing: border-box;
       overflow-x: hidden !important;
-      width: 100vw;
-      box-sizing: border-box;
-      position: relative;
-      perspective: 1400px;
     }
     *, *::before, *::after { box-sizing: border-box; max-width: 100vw; }
+
+    /* --------- ESFERA ANIMADA --------- */
     .logo-animada-bg {
-      position: fixed; inset: 0; z-index: 99;
-      background: linear-gradient(120deg, #233c63 0%, #7dc6ff 100%);
-      display: flex; justify-content: center; align-items: center; flex-direction: column;
-      transition: opacity 0.7s cubic-bezier(.67,0,.37,1.01);
+      width: 100vw; height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      position: fixed; top: 0; left: 0;
+      z-index: 9999;
+      background: linear-gradient(120deg, #1966c4 0%, #1b274b 100%) !important;
+      transition: opacity .7s;
+    }
+    .logo-animada-bg.oculto { opacity: 0; pointer-events: none; }
+    .logo-slide-topo {
+      display: flex; align-items: center; justify-content: center;
+      width: 100vw;
     }
     .logo-animada-globo3d {
-      width: 164px; height: 164px;
+      width: 176px; height: 176px;
+      display: flex; align-items: center; justify-content: center;
       border-radius: 50%;
-      background: radial-gradient(ellipse at 58% 33%, #fff8 32%, #7dc6ff99 70%, #22304C 100%);
-      box-shadow: 0 0 58px #60b3ffb6, 0 0 44px #1b274bbb inset, 0 2px 28px #ffe17577;
-      display: flex; justify-content: center; align-items: center;
-      position: relative; overflow: visible;
-      will-change: box-shadow, background;
-      animation: brilhoGlobo3D 1.5s linear infinite alternate;
-      filter: drop-shadow(0 0 38px #7dc6ffb0) drop-shadow(0 4px 24px #212b44b8);
-      border: none !important;
-      perspective: 900px;
-      transform-style: preserve-3d;
-      transition: box-shadow .36s;
+      position: relative;
+      box-shadow:
+        0 0 110px #8bd3fff6,
+        0 0 60px #64c7ff88 inset,
+        0 12px 42px #113d8077,
+        0 2px 42px #7dc6ff66,
+        0 0 32px #8bd3ff55 inset,
+        0 0 0 14px #e3f3ff18 inset;
+      background:
+        radial-gradient(ellipse at 54% 39%, #fff 18%, #b8e5ff 60%, #289dff 90%, #183966 100%);
+      overflow: visible;
+      animation: globoSobe 2.3s cubic-bezier(.19,1,.22,1) forwards;
     }
-    @keyframes brilhoGlobo3D {
-      0% { box-shadow: 0 0 44px #60b3ff77, 0 0 0 #fff0, 0 2px 22px #ffe17544;}
-      100% { box-shadow: 0 0 110px #7dc6fff6, 0 0 44px #ffe175aa inset, 0 2px 42px #ffe17599;}
+    @keyframes globoSobe {
+      0% { transform: translateY(230px) scale(1.1); opacity: 0.9;}
+      30% { opacity: 1; transform: translateY(-16px) scale(1.03);}
+      60% { transform: translateY(-8px) scale(1.01);}
+      85% { opacity: 1; transform: translateY(-300px) scale(0.98);}
+      98% { opacity: 0.95;}
+      100% { transform: translateY(-480px) scale(0.95); opacity: 0;}
+    }
+    .globo-reflexo, .globo-reflexo2 {
+      position: absolute; border-radius: 80% 100% 70% 120%; pointer-events: none; z-index: 4; opacity: .67;
+      filter: blur(1.3px); mix-blend-mode: lighten;
     }
     .globo-reflexo {
-      position: absolute;
-      top: 19px; left: 38px;
-      width: 60px; height: 38px;
-      background: radial-gradient(ellipse at 48% 43%, #fff8 77%, #fff0 100%);
-      border-radius: 80% 100% 70% 120%;
-      opacity: 0.55;
-      pointer-events: none;
-      z-index: 4;
-      filter: blur(1.1px);
-      mix-blend-mode: lighten;
-      animation: reflexoGlobo 2.2s infinite alternate;
+      top: 18px; left: 36px; width: 65px; height: 34px;
+      background: radial-gradient(ellipse at 58% 45%, #fff9 82%, #8bd3ff55 100%);
+      animation: reflexoGlobo 1.8s infinite alternate;
     }
     @keyframes reflexoGlobo {
-      from { transform: rotate(-8deg) scale(1);}
-      to   { transform: rotate(10deg) scale(1.09);}
+      from { transform: scale(.98) rotate(-6deg);}
+      to   { transform: scale(1.05) rotate(10deg);}
     }
-    .globo-logo-img {
-      width: 118px; height: 118px;
+    .globo-reflexo2 {
+      top: 94px; left: 98px; width: 37px; height: 17px;
+      background: radial-gradient(ellipse at 32% 56%, #eaf7ff 68%, #8bd3ff55 100%);
+      opacity: .21;
+      animation: reflexoGlobo2 2.2s infinite alternate;
+    }
+    @keyframes reflexoGlobo2 {
+      from { transform: scale(.97) rotate(9deg);}
+      to   { transform: scale(1.04) rotate(-7deg);}
+    }
+    .globo-iluminacao {
+      position: absolute; inset: 0;
       border-radius: 50%;
-      object-fit: contain;
-      background: #fff;
-      position: relative;
-      z-index: 3;
-      margin: 0 auto;
-      filter: drop-shadow(0 0 24px #7dc6ffcc) drop-shadow(0 0 13px #fff8);
-      animation: logoPulse 1.7s infinite alternate;
-      border: none !important;
-      box-shadow: 0 2px 22px #ffe17533, 0 0 40px #60b3ff33 inset;
+      box-shadow: 0 0 44px 24px #fff8 inset, 0 0 100px 32px #8bd3ff77 inset, 0 0 54px #8bd3ff33;
+      opacity: .17;
+      pointer-events: none; z-index: 2;
+      mix-blend-mode: lighten;
+      animation: luzRodando 3.3s linear infinite;
     }
-    @keyframes logoPulse {
-      0% { filter: drop-shadow(0 0 13px #60b3ff) drop-shadow(0 0 2px #fff8);}
-      100% { filter: drop-shadow(0 0 38px #7dc6ff) drop-shadow(0 0 13px #ffe175);}
+    @keyframes luzRodando {
+      0%   { box-shadow: 0 0 42px 24px #fff8 inset, 0 0 90px 28px #8bd3ff77 inset; }
+      100% { box-shadow: 0 0 64px 38px #fff8 inset, 0 0 180px 50px #8bd3ffcc inset; }
     }
-    .logo-animada-bg.hide { opacity: 0; pointer-events: none; }
-    .logo-slide-topo {
-      position: fixed;
-      left: 50%; top: 50%;
+    .globo-sombra {
+      position: absolute; left: 18px; right: 18px; bottom: -36px; height: 36px;
+      background: radial-gradient(ellipse at 50% 40%, #10285092 80%, #0000 100%);
+      border-radius: 60% 60% 90% 90%; opacity: 0.43; z-index: 1;
+      filter: blur(6.5px); pointer-events: none;
+      animation: sombraMove 2.7s ease-in-out infinite alternate;
+    }
+    @keyframes sombraMove {
+      0% { transform: scaleX(1);}
+      100% { transform: scaleX(1.09);}
+    }
+    .globo-arco {
+      position: absolute; inset: -13px;
+      border-radius: 50%;
+      border: 3.1px solid #8bd3ff44;
+      box-shadow: 0 0 26px #7dc6ff88, 0 0 52px #eaf7ff33;
+      animation: arcoGlow 2.8s infinite alternate;
+      pointer-events: none; z-index: 5; opacity: .42;
+    }
+    @keyframes arcoGlow {
+      0%   { box-shadow: 0 0 18px #8bd3ff88, 0 0 13px #eaf7ff33;}
+      100% { box-shadow: 0 0 44px #8bd3ffbb, 0 0 34px #eaf7ff77;}
+    }
+    .globo-foco {
+      position: absolute;
+      width: 38px; height: 38px; top: 28px; right: 19px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at 70% 55%, #fff9 71%, #8bd3ff55 100%);
+      opacity: 0.38; z-index: 7;
+      filter: blur(2.4px);
+      animation: focoMove 2.2s cubic-bezier(.47,0,.37,1.01) infinite alternate;
+    }
+    @keyframes focoMove {
+      0% { right: 18px; top: 30px;}
+      100% { right: 38px; top: 46px;}
+    }
+    .logo-centro-esfera {
+      position: absolute; left: 50%; top: 50%;
+      width: 94px; height: 94px;
       transform: translate(-50%,-50%);
-      z-index: 110;
-      width: 164px; height: 164px;
-      transition:
-        top 1.2s cubic-bezier(.65,0,.37,1.01),
-        left 1.2s cubic-bezier(.65,0,.37,1.01),
-        width 0.6s 1.05s cubic-bezier(.65,0,.37,1.01),
-        height 0.6s 1.05s cubic-bezier(.65,0,.37,1.01),
-        border-radius 0.6s 1.1s cubic-bezier(.65,0,.37,1.01),
-        box-shadow 1.1s cubic-bezier(.67,0,.37,1.01);
-      will-change: top, left, width, height, border-radius;
+      border-radius: 50%; z-index: 9;
+      box-shadow: 0 0 24px #7dc6ff88;
+      background: none;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none;
+    }
+    .logo-centro-esfera img {
+      width: 100%; height: 100%; object-fit: contain; border-radius: 50%;
+      background: none;
+      filter: drop-shadow(0 0 2px #fff9);
+      pointer-events: none;
+    }
+    @media (max-width: 600px) {
+      .logo-animada-globo3d { width: 128px; height: 128px; }
+      .logo-centro-esfera { width: 64px; height: 64px;}
+    }
+
+    /* ------ PORTAL ------ */
+    .logo-topo {
+      width: 92px; height: 56px;
+      display: flex; align-items: center; justify-content: center;
+      position: fixed; left: 50%; top: 18px; z-index: 100;
       background: transparent;
-      display: flex; justify-content: center; align-items: center;
-    }
-    .logo-slide-topo.to-header {
-      top: 24px; left: 50%;
-      width: 92px; height: 56px;
-      border-radius: 19px;
-      transform: translate(-50%, -50%) scale(1);
-      box-shadow: 0 2px 22px #7dc6ff90, 0 0 18px #fff3 inset;
-      background: #1b274b;
+      border-radius: 16px;
+      transform: translateX(-50%);
+      box-shadow: none !important;
       border: none !important;
+      pointer-events: none;
     }
-    .logo-slide-topo.to-header .logo-animada-globo3d {
-      width: 92px; height: 56px;
-      border-radius: 17px;
-      box-shadow: 0 2px 8px #22304c77, 0 0 10px #60b3ff44;
-      background: #233c63;
-      animation: none; filter: none;
-      border: none !important;
-      transition: box-shadow .36s;
-    }
-    .logo-slide-topo.to-header .globo-logo-img {
+    .logo-topo img {
       width: 77px; height: 45px;
+      object-fit: contain;
       border-radius: 13px;
-      filter: none;
-      background: #fff;
-      animation: none;
+      background: none;
+      box-shadow: none;
       border: none !important;
-      transition: width .6s, height .6s, border-radius .6s;
+      filter: none;
+      pointer-events: none;
+      display: block;
     }
     @media (max-width:700px) {
-      .logo-slide-topo, .logo-animada-bg { width: 100vw; }
-      .logo-slide-topo.to-header { width: 62vw; height: 30vw; max-width:88px; max-height:56px;}
-      .logo-slide-topo.to-header .logo-animada-globo3d { width: 62vw; height: 30vw; max-width:88px; max-height:56px;}
-      .logo-slide-topo.to-header .globo-logo-img { width: 53vw; height:23vw; max-width:80px; max-height:45px;}
+      .logo-topo { width: 62vw; height: 30vw; max-width:88px; max-height:56px;}
+      .logo-topo img { width: 53vw; height:23vw; max-width:80px; max-height:45px;}
     }
     .main {
       max-width: 620px; margin: 0 auto 34px auto;
       background: var(--painel);
       border-radius: 26px;
-      padding: 30px 12px 40px 12px;
+      padding: 70px 12px 40px 12px;  /* Mais espaço no topo! */
       box-shadow: 0 16px 54px #00347499, 0 0 0 7px #7dc6ff16, 0 0 44px #22304c59 inset;
       width: 100%;
       border: 3px solid #7dc6ff55;
       position: relative;
       backdrop-filter: blur(5px) brightness(1.11);
-      border-style: solid;
-      transform-style: preserve-3d;
-      transition: box-shadow .34s;
     }
-    .main:before, .main:after {
-      content: "";
-      position: absolute; left: 6px; right: 6px;
-      height: 11px; border-radius: 10px 10px 0 0;
-      background: repeating-linear-gradient(90deg,#60b3ff 0 18px,#22304c 18px 36px);
-      z-index: 2;
-      filter: blur(1px) brightness(1.2);
-      box-shadow: 0 1.5px 7px #60b3ff44;
-    }
-    .main:before { top: -11px;}
-    .main:after { bottom: -11px; transform: rotate(180deg);}
-    .logo-autenticidade {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px 0 20px 0;
-      margin-bottom: 15px;
-      perspective: 700px;
-      filter: drop-shadow(0 6px 18px #7dc6ffcc) drop-shadow(0 3px 16px #22304c99);
-    }
-    .logo-autenticidade img {
-      height: 58px; width: auto; display: block;
-      border-radius: 19px;
-      box-shadow: 0 2px 32px #7dc6ff88, 0 2px 44px #ffe17544;
-      background: linear-gradient(120deg,#fff9 45%,#7dc6ff22 100%);
-      border: none !important;
-      padding: 3px 13px;
-      filter: drop-shadow(0 0 24px #7dc6ffcc) brightness(1.06);
-      transition: filter .2s, box-shadow .2s;
-      transform: rotateY(-8deg) rotateX(2deg) scale(1.06);
-    }
-    .logo-autenticidade img:hover {
-      filter: drop-shadow(0 0 38px #ffe175bb) brightness(1.12);
-      box-shadow: 0 8px 44px #7dc6ffcc, 0 8px 60px #ffe175cc;
-      background: linear-gradient(120deg,#fff9 15%,#ffe17533 100%);
-    }
-    /* ----------- SEMPRE 2 POR LINHA, INCLUSIVE CELULAR ------------ */
     .conteudos {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 22px;
+      gap: 32px; /* Cards mais afastados */
       justify-items: center;
       width: 100%;
       min-height: 120px;
       margin: 0 auto;
       box-sizing: border-box;
-      perspective: 1400px;
-      scroll-behavior: smooth;
       opacity: 0; transform: scale(0.97); pointer-events: none;
       transition: opacity .7s, transform .7s;
     }
-    .conteudos.revela {
-      opacity: 1; transform: scale(1);
-      animation: zoomList .9s cubic-bezier(.52,0,.41,1.09);
-      pointer-events: all;
-    }
-    @keyframes zoomList {
-      from { opacity: 0; transform: scale(0.97);}
-      80%  { opacity: 1; transform: scale(1.07);}
-      to   { opacity: 1; transform: scale(1);}
-    }
-    @media (max-width:700px) {
-      .conteudos { grid-template-columns: repeat(2, 1fr); gap: 10px;}
-      .card-btn { font-size: 0.93em; min-height: 94px; }
-    }
-    @media (max-width:400px) {
-      .conteudos { grid-template-columns: repeat(2, 1fr); gap: 6px;}
-      .card-btn { font-size: 0.9em; min-height: 80px;}
-    }
+    .conteudos.revela { opacity: 1; transform: scale(1); pointer-events: all;}
+    @keyframes zoomList { from { opacity: 0; transform: scale(0.97);} 80%  { opacity: 1; transform: scale(1.07);} to   { opacity: 1; transform: scale(1);}}
+    @media (max-width:700px) { .conteudos { gap: 16px;} .card-btn { font-size: 0.93em; min-height: 94px; }}
+    @media (max-width:400px) { .conteudos { gap: 9px;} .card-btn { font-size: 0.9em; min-height: 80px;}}
+
     .card-btn {
       min-width: 0;
       max-width: 290px;
@@ -242,7 +224,7 @@
       color: var(--txt-azul);
       border: 2.7px solid #7dc6ffbb;
       border-radius: 19px;
-      box-shadow: var(--sombra-card), 0 16px 38px #003474cc;
+      box-shadow: 0 12px 36px #00347454, 0 1.5px 6px #7dc6ff55 inset;
       cursor: pointer;
       display: flex; flex-direction: column; align-items: center;
       min-height: 120px;
@@ -251,7 +233,6 @@
       overflow: hidden;
       font-weight: 800;
       outline: none;
-      animation: none;
       perspective: 700px;
       border-style: solid;
       transform: translateZ(0) scale(1) perspective(800px) rotateY(-7deg) rotateX(2deg);
@@ -268,11 +249,7 @@
       transform: translate(-50%, -50%);
       transition: width .36s, height .36s, opacity .28s;
     }
-    .card-btn:active:after {
-      width: 170px; height: 170px;
-      opacity: .21;
-      transition: 0s;
-    }
+    .card-btn:active:after { width: 170px; height: 170px; opacity: .21; transition: 0s; }
     .card-btn:hover, .card-btn:focus {
       transform: scale(1.09) perspective(800px) rotateY(-5deg) rotateX(2deg);
       box-shadow: 0 18px 48px #7dc6ffc0, 0 3px 15px #ffe17599 inset, 0 0 35px #fff5;
@@ -300,40 +277,61 @@
       text-shadow: 0 2px 8px #176fc185, 0 2px 8px #fff8;
       filter: drop-shadow(0 0 6px #00347430);
     }
-    .carregando {
-      text-align: center;
-      padding: 50px 0 34px 0;
+    /* ----------- Carrossel ISLAID ----------- */
+    .carrossel-islaid {
+      width: 100%;
+      max-width: 610px;
+      margin: 28px auto 24px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      position: relative;
+      min-height: 144px;
+      z-index: 15;
+    }
+    .carrossel-islaid-slide {
+      background: #233c63e0;
+      border-radius: 19px;
+      box-shadow: 0 8px 32px #176fc1bb;
+      overflow: hidden;
+      padding: 0;
+      min-width: 0;
+      width: 100%;
+      max-width: 450px;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 134px;
+      position: relative;
       animation: fadeIn .6s;
     }
-    .carregando img {
-      filter: drop-shadow(0 8px 22px #7dc6ffcc);
-      border-radius: 30%;
-      background: linear-gradient(120deg,#fff9 55%,#7dc6ff22 100%);
-    }
-    @keyframes gira { 100% { transform: rotate(360deg);} }
-    @keyframes fadeIn { from { opacity:0;} to{opacity:1;} }
-    .busca-bar {
-      width: 98%;
-      margin: 12px auto 22px auto;
+    .carrossel-islaid-slide img, .carrossel-islaid-slide video {
+      width: 100%; height: 134px; object-fit: cover;
+      border-radius: 17px;
+      background: #0003;
       display: block;
-      padding: 14px 18px;
-      border-radius: 16px;
-      border: 2.7px solid #7dc6ffbb;
-      font-size: 1.1em;
-      font-weight: 800;
-      box-shadow: 0 3px 16px #60b3ff25, 0 1.5px 6px #fff4 inset;
-      outline: none;
-      background: linear-gradient(110deg,#263863 60%,#1b274b 100%);
-      color: #8dc8ff;
-      transition: border .18s, box-shadow .19s;
     }
-    .busca-bar:focus {
-      border-color: #ffe175;
-      box-shadow: 0 0 0 2px #ffe17555, 0 0 15px #7dc6ff77;
-      background: #1b274b;
-      color: #fff;
+    .carrossel-islaid-slide .islaid-txt {
+      padding: 24px 22px;
+      font-size: 1.19em; color: #ffe175;
+      text-align: center;
+      width: 100%;
+      font-weight: bold;
+      line-height: 1.25em;
     }
-    @keyframes cascata { from{ opacity:0; transform:translateY(22px) scale(.98);} to{opacity:1;transform:none;} }
+    .carrossel-seta {
+      width: 36px; height: 36px;
+      background: #233c63dd;
+      color: #7dc6ff;
+      border-radius: 50%;
+      border: 2px solid #7dc6ff33;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.65em; font-weight: bold;
+      cursor: pointer;
+      z-index: 8;
+      transition: background .17s;
+      user-select: none;
+    }
+    .carrossel-seta:hover { background: #7dc6ff33; color: #ffe175;}
     .footer-loterico {
       width: 100vw;
       background: linear-gradient(90deg,#22304c 20%,#7dc6ff 120%);
@@ -375,41 +373,54 @@
       from { filter: drop-shadow(0 1px 8px #ffe175cc); }
       to { filter: drop-shadow(0 2px 15px #fffde3); }
     }
+    @keyframes fadeIn { from { opacity:0;} to{opacity:1;} }
   </style>
 </head>
 <body>
-  <!-- ANIMAÇÃO LOGO 3D SLIDE -->
-  <div class="logo-animada-bg" id="logoAnimadaBg">
-    <div class="logo-slide-topo" id="logoAnimada">
-      <div class="logo-animada-globo3d">
+  <!-- ESFERA 3D ANIMADA DE ABERTURA -->
+  <div class="logo-animada-bg" id="bgAnimada">
+    <div class="logo-slide-topo">
+      <div class="logo-animada-globo3d efeito-3d-potente" id="esferaAnimada">
         <span class="globo-reflexo"></span>
-        <img class="globo-logo-img" src="https://assets.nicepagecdn.com/42b47b7b/817911/images/novalogo.png" alt="Logo">
+        <span class="globo-reflexo2"></span>
+        <span class="globo-iluminacao"></span>
+        <span class="globo-sombra"></span>
+        <span class="globo-arco"></span>
+        <span class="globo-foco"></span>
+        <span class="logo-centro-esfera">
+          <img src="https://assets.nicepagecdn.com/42b47b7b/817911/images/novalogo.png" alt="Logo">
+        </span>
       </div>
     </div>
   </div>
+  <!-- LOGO FIXA TOPO -->
+  <div class="logo-topo">
+    <img src="https://assets.nicepagecdn.com/42b47b7b/817911/images/novalogo.png" alt="Logo topo">
+  </div>
+  <!-- BARRA DE NOTIFICAÇÕES -->
+  <div id="notificacaoBar" class="notificacao-bar" style="display:none;">
+    <span class="estrela">☘️</span>
+    <span id="notificacaoTexto"></span>
+  </div>
   <!-- PRINCIPAL -->
   <div class="main" id="main">
-    <div class="logo-autenticidade">
-      <img src="https://assets.nicepagecdn.com/42b47b7b/817911/images/novalogo.png" alt="Logo Autenticidade">
-    </div>
-    <input id="buscaConteudo" class="busca-bar" type="search" placeholder="Buscar conteúdos..." autocomplete="off" style="display:none;">
-    <div id="carregando" class="carregando">
-      <img src="https://assets.nicepagecdn.com/42b47b7b/817911/images/novalogo.png" alt="Carregando..." style="width:62px;animation:gira 1.2s linear infinite;">
-      <div style="color:#7dc6ff;font-weight:800;margin-top:14px;font-size:1.16em;text-shadow:0 1px 8px #176fc199;">Carregando conteúdo premium...</div>
-    </div>
     <div class="conteudos" id="conteudos"></div>
-    <div id="semResultados" style="display:none;text-align:center;color:#7dc6ff;font-size:1.12em;margin:36px 0 16px 0;text-shadow:0 1px 6px #7dc6ff99;">Nenhum conteúdo encontrado.<br><span style="font-size:1.4em;" class="estrela">⭐</span></div>
+    <!-- Carrossel ISLAID -->
+    <div id="carrosselIslaid" class="carrossel-islaid" style="display:none;">
+      <div class="carrossel-seta" onclick="carrosselAnterior()" aria-label="Anterior">&#9664;</div>
+      <div id="islaidSlide" class="carrossel-islaid-slide"></div>
+      <div class="carrossel-seta" onclick="carrosselProximo()" aria-label="Próximo">&#9654;</div>
+    </div>
   </div>
-  <!-- Islaid ADM aqui -->
-  <div id="rodapeIslaid"></div>
   <div class="footer-loterico">
     <span class="estrela">☘️</span>
-    Faça sua aposta com <span>confiança!</span> Rodrigo tá on line 
+    Faça sua aposta com <span>confiança!</span> Rodrigo tá on line
   </div>
+  <!-- Firebase + Script -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script>
-    // FIREBASE (adicione suas credenciais)
+    // FIREBASE CONFIG (troque pela sua)
     const firebaseConfig = {
       apiKey: "SUA_API_KEY_AQUI",
       authDomain: "concursosuper-29c5b.firebaseapp.com",
@@ -418,62 +429,55 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    // ----------- ANIMAÇÃO DE ABERTURA -----------
+    setTimeout(() => {
+      document.getElementById('bgAnimada').classList.add('oculto');
+      setTimeout(()=>{
+        document.getElementById('bgAnimada').style.display='none';
+      }, 700);
+      setTimeout(() => {
+        document.getElementById('conteudos').classList.add('revela');
+      }, 1000);
+    }, 2350);
+
+    // -------------------- NOTIFICAÇÕES -------------------
+    function carregarNotificacao() {
+      db.collection("notificacoes").orderBy("data", "desc").limit(1).get().then(snapshot => {
+        let encontrou = false;
+        snapshot.forEach(doc => {
+          encontrou = true;
+          document.getElementById("notificacaoBar").style.display = "flex";
+          document.getElementById("notificacaoTexto").innerHTML = doc.data().texto || '';
+        });
+        if (!encontrou) document.getElementById("notificacaoBar").style.display = "none";
+      });
+    }
+    carregarNotificacao();
+
+    // -------------------- CARDS DE CONTEÚDOS ---------------
     const conteudosDiv = document.getElementById('conteudos');
-    const logoAnimadaBg = document.getElementById('logoAnimadaBg');
-    const logoAnimada = document.getElementById('logoAnimada');
-    const buscaInput = document.getElementById('buscaConteudo');
-    const carregandoDiv = document.getElementById('carregando');
-    const semResultadosDiv = document.getElementById('semResultados');
-
-    let todosConteudos = []; // Guarda todos para busca
-
-    // Animação: Logo globo 3D sobe pro topo e some
-    window.addEventListener('DOMContentLoaded', function () {
-      setTimeout(() => {
-        logoAnimada.classList.add('to-header');
-        setTimeout(() => {
-          logoAnimadaBg.classList.add('hide');
-          setTimeout(()=>{
-            logoAnimadaBg.style.display = "none";
-          }, 800);
-        }, 1200);
-      }, 900);
-
-      setTimeout(() => {
-        conteudosDiv.classList.add('revela');
-      }, 1500);
-    });
-
+    let todosConteudos = [];
     function mostrarConteudos(){
-      carregandoDiv.style.display = "block";
       conteudosDiv.innerHTML = "";
-      buscaInput.style.display = "none";
-      semResultadosDiv.style.display = "none";
-      todosConteudos = [];
       db.collection("conteudos").orderBy("data","desc").get().then(snapshot=>{
-        carregandoDiv.style.display = "none";
-        let idx = 0;
+        todosConteudos = [];
         snapshot.forEach(doc=>{
           const d = doc.data();
           todosConteudos.push({ id: doc.id, ...d });
         });
         if (todosConteudos.length === 0) {
-          semResultadosDiv.style.display = "block";
-          buscaInput.style.display = "none";
+          conteudosDiv.innerHTML = "<div style='color:#7dc6ff;font-size:1.12em;margin:36px 0 16px 0;text-shadow:0 1px 6px #7dc6ff99;text-align:center;'>Nenhum conteúdo encontrado.<br><span style='font-size:1.4em;' class='estrela'>⭐</span></div>";
           return;
         }
-        buscaInput.style.display = "block";
         renderizaCards(todosConteudos);
       });
     }
-
     function renderizaCards(lista){
       conteudosDiv.innerHTML = "";
-      semResultadosDiv.style.display = lista.length ? "none" : "block";
       lista.forEach((d, idx)=>{
         let btn = document.createElement('button');
         btn.className = 'card-btn';
-        btn.style.animation = `cascata .54s ${idx*0.07}s backwards`;
+        btn.style.animation = `zoomList .54s ${idx*0.07}s backwards`;
         btn.onclick = ()=>window.location.search = '?id='+d.id;
         let capa = d.capa || (d.fotos && d.fotos[0]) || "";
         btn.innerHTML = `
@@ -483,17 +487,6 @@
         conteudosDiv.appendChild(btn);
       });
     }
-
-    buscaInput.oninput = function(){
-      const termo = this.value.trim().toLowerCase();
-      if (!termo) {
-        renderizaCards(todosConteudos);
-        return;
-      }
-      const filtrados = todosConteudos.filter(d => (d.titulo||"").toLowerCase().includes(termo));
-      renderizaCards(filtrados);
-    };
-
     function mostrarConteudo(id){
       db.collection("conteudos").doc(id).get().then(doc=>{
         if(!doc.exists){
@@ -502,35 +495,63 @@
         }
         const d = doc.data();
         let htmlPublicado = d.html||"";
-        document.open();
-        document.write(htmlPublicado);
-        document.close();
+        document.open(); document.write(htmlPublicado); document.close();
       });
     }
-
     function checarPagina(){
       const id = (new URL(location.href)).searchParams.get("id");
-      if(id){
-        buscaInput.style.display = "none";
-        semResultadosDiv.style.display = "none";
-        conteudosDiv.innerHTML = "";
-        mostrarConteudo(id);
-      } else {
-        mostrarConteudos();
-      }
+      if(id){ conteudosDiv.innerHTML = ""; mostrarConteudo(id); }
+      else { mostrarConteudos(); }
     }
     window.onpopstate = checarPagina;
     checarPagina();
 
-    // Exibe o Islaid do ADM acima do rodapé (executa HTML do campo islaid)
-    db.collection("rodape_conteudo").orderBy("data", "desc").limit(1).get().then(snapshot => {
-      snapshot.forEach(doc => {
-        const d = doc.data();
-        if (d.islaid) {
-          document.getElementById("rodapeIslaid").innerHTML = d.islaid;
+    // ------------------- CARROSSEL ISLAID ---------------------
+    let islaidSlides = [], slideAtual = 0, timerIslaid = null;
+    function carregarIslaid() {
+      db.collection("islaid").orderBy("data", "asc").get().then(snapshot => {
+        islaidSlides = [];
+        snapshot.forEach(doc => {
+          const d = doc.data();
+          if (d.tipo === "imagem" && d.url) {
+            islaidSlides.push({ tipo: "imagem", url: d.url, texto: d.texto||"" });
+          } else if (d.tipo === "video" && d.url) {
+            islaidSlides.push({ tipo: "video", url: d.url, texto: d.texto||"" });
+          } else if (d.tipo === "texto" && d.texto) {
+            islaidSlides.push({ tipo: "texto", texto: d.texto });
+          }
+        });
+        if (islaidSlides.length) {
+          document.getElementById("carrosselIslaid").style.display = "flex";
+          mostrarSlideIslaid(0);
+        } else {
+          document.getElementById("carrosselIslaid").style.display = "none";
         }
       });
-    });
+    }
+    function mostrarSlideIslaid(idx) {
+      slideAtual = (idx + islaidSlides.length) % islaidSlides.length;
+      const slide = islaidSlides[slideAtual];
+      const div = document.getElementById("islaidSlide");
+      if (!slide) { div.innerHTML = ""; return; }
+      if (slide.tipo === "imagem") {
+        div.innerHTML = `<img src="${slide.url}" alt="Slide"><div class="islaid-txt">${slide.texto||''}</div>`;
+      } else if (slide.tipo === "video") {
+        div.innerHTML = `<video src="${slide.url}" controls autoplay loop muted></video><div class="islaid-txt">${slide.texto||''}</div>`;
+      } else {
+        div.innerHTML = `<div class="islaid-txt">${slide.texto}</div>`;
+      }
+      if (timerIslaid) clearTimeout(timerIslaid);
+      timerIslaid = setTimeout(()=>carrosselProximo(), 10000); // troca automática a cada 10s
+    }
+    function carrosselProximo() {
+      mostrarSlideIslaid(slideAtual + 1);
+    }
+    function carrosselAnterior() {
+      mostrarSlideIslaid(slideAtual - 1);
+    }
+    carregarIslaid();
+    setInterval(carregarIslaid, 20000);
   </script>
 </body>
 </html>
