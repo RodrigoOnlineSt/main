@@ -187,11 +187,16 @@
       .logo-topo { width: 62vw; height: 30vw; max-width:88px; max-height:56px;}
       .logo-topo img { width: 53vw; height:23vw; max-width:80px; max-height:45px;}
     }
+
+    /* NOVO: Espaço animado para descer os cards quando tem notificação */
+    .main.comNotificacao { transition: margin-top .42s cubic-bezier(.34,1.56,.64,1); margin-top: 75px; }
+    .main { transition: margin-top .42s cubic-bezier(.34,1.56,.64,1); }
+
     .main {
       max-width: 620px; margin: 0 auto 34px auto;
       background: var(--painel);
       border-radius: 26px;
-      padding: 70px 12px 40px 12px;  /* Mais espaço no topo! */
+      padding: 70px 12px 40px 12px;
       box-shadow: 0 16px 54px #00347499, 0 0 0 7px #7dc6ff16, 0 0 44px #22304c59 inset;
       width: 100%;
       border: 3px solid #7dc6ff55;
@@ -410,6 +415,23 @@
       animation: fadeOutUp .7s;
       pointer-events: none;
     }
+    /* IMAGEM DA NOTIFICAÇÃO DESTACADA */
+    .notificacao-img-destaque {
+      display: block;
+      margin: 0 10px 0 0;
+      max-width: 110px;
+      max-height: 62px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px #2986d9aa;
+      border: 2px solid #ffe175;
+      background: #fff;
+      object-fit: contain;
+      animation: destaqueImgNotif .7s;
+    }
+    @keyframes destaqueImgNotif {
+      from { opacity: 0; transform: scale(0.84) translateY(-20px);}
+      to   { opacity: 1; transform: scale(1) translateY(0);}
+    }
     @keyframes fadeInDownBounce {
       0% { opacity: 0; transform: translateX(-50%) translateY(-80px) scale(0.98);}
       60% { opacity: 1; transform: translateX(-50%) translateY(10px) scale(1.04);}
@@ -446,6 +468,7 @@
   <!-- BARRA DE NOTIFICAÇÕES ANIMADA -->
   <div id="notificacaoBar" class="notificacao-bar" style="display:none;">
     <span class="estrela">🔔</span>
+    <span id="notificacaoImgSpan"></span>
     <span id="notificacaoTexto"></span>
   </div>
   <!-- PRINCIPAL -->
@@ -459,7 +482,7 @@
     </div>
   </div>
   <div class="footer-loterico">
-    <span class="estrela">🔔</span>
+    <span class="estrela">☘️</span>
     Faça sua aposta com <span>confiança!</span> Rodrigo tá on line
   </div>
   <!-- Firebase + Script -->
@@ -488,7 +511,7 @@
       }, 1000);
     }, 2350);
 
-    // ----------- NOTIFICAÇÃO ADM INTEGRADA -----------
+    // ----------- NOTIFICAÇÃO ADM INTEGRADA (com imagem, vibrar e cards descendo) -----------
     let ultimaNotificacao = '';
     function carregarNotificacao() {
       db.collection("notificacoes").orderBy("data", "desc").limit(1).onSnapshot(snapshot => {
@@ -499,36 +522,47 @@
           // Só mostra se for dia correto
           const hoje = new Date().getDay();
           if (d.dias && Array.isArray(d.dias) && d.dias.length && !d.dias.includes(hoje)) {
-            document.getElementById("notificacaoBar").classList.remove('mostrar');
-            document.getElementById("notificacaoBar").style.display = "none";
+            escondeNotificacao();
             return;
           }
           const texto = d.texto || '';
+          const img = d.img || d.imagem || ""; // ajuste conforme painel ADM
           if (texto !== ultimaNotificacao) {
             ultimaNotificacao = texto;
-            animarNotificacao(texto, d.efeito, d.atraso, d.duracao);
+            animarNotificacao(texto, img, d.efeito, d.atraso, d.duracao);
           }
         });
-        if (!encontrou) {
-          document.getElementById("notificacaoBar").classList.remove('mostrar');
-          document.getElementById("notificacaoBar").style.display = "none";
-        }
+        if (!encontrou) escondeNotificacao();
       });
     }
-    function animarNotificacao(texto, efeito = 'fadeInDownBounce', atraso = 2, duracao = 8) {
+    function escondeNotificacao() {
+      document.getElementById("notificacaoBar").classList.remove('mostrar');
+      document.getElementById("notificacaoBar").style.display = "none";
+      document.getElementById('main').classList.remove('comNotificacao');
+    }
+    function animarNotificacao(texto, img = "", efeito = 'fadeInDownBounce', atraso = 2, duracao = 8) {
       const bar = document.getElementById("notificacaoBar");
+      // Imagem destacada se existir
+      document.getElementById('notificacaoImgSpan').innerHTML = img ? `<img src="${img}" class="notificacao-img-destaque">` : "";
+      // Texto
+      document.getElementById("notificacaoTexto").innerHTML = texto;
+      // Aplica efeito
       bar.style.display = "flex";
       bar.className = 'notificacao-bar';
-      // Aplica efeito de entrada definido pelo ADM
       if (efeito && efeito !== 'fadeInDownBounce') bar.classList.add(efeito);
       setTimeout(()=>{
         bar.classList.add('mostrar');
-        document.getElementById("notificacaoTexto").innerHTML = texto;
+        document.getElementById('main').classList.add('comNotificacao');
+        // Vibra (Mobile, 3s)
+        if (window.navigator.vibrate) {
+          window.navigator.vibrate([500, 100, 500, 100, 1500]);
+        }
       }, (atraso||2)*1000);
       // Some após duracao segundos
       setTimeout(()=>{
         bar.classList.remove('mostrar');
         bar.classList.add('fechar');
+        document.getElementById('main').classList.remove('comNotificacao');
         setTimeout(()=>{
           bar.classList.remove('fechar');
           bar.style.display = "none";
@@ -590,14 +624,12 @@
     checarPagina();
 
     // ------------------- CARROSSEL ISLAID ---------------------
-    // BUSCA OS SLIDES DA COLEÇÃO DO ADM: "rodape_conteudo"
     let islaidSlides = [], slideAtual = 0, timerIslaid = null;
     function carregarIslaid() {
       db.collection("rodape_conteudo").orderBy("data", "asc").get().then(snapshot => {
         islaidSlides = [];
         snapshot.forEach(doc => {
           const d = doc.data();
-          // Slide pode ter HTML, imagens e vídeos
           islaidSlides.push({
             tipo: d.imgs && d.imgs.length ? "imagem" : d.videos && d.videos.length ? "video" : "html",
             url: d.imgs && d.imgs[0] ? d.imgs[0] : d.videos && d.videos[0] ? d.videos[0] : "",
