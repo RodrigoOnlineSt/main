@@ -28,7 +28,6 @@
     }
     *, *::before, *::after { box-sizing: border-box; max-width: 100vw; }
 
-    /* --------- ESFERA ANIMADA --------- */
     .logo-animada-bg {
       width: 100vw; height: 100vh;
       display: flex; align-items: center; justify-content: center;
@@ -160,7 +159,6 @@
       .logo-centro-esfera { width: 64px; height: 64px;}
     }
 
-    /* ------ PORTAL ------ */
     .logo-topo {
       width: 92px; height: 56px;
       display: flex; align-items: center; justify-content: center;
@@ -188,8 +186,7 @@
       .logo-topo img { width: 53vw; height:23vw; max-width:80px; max-height:450px;}
     }
 
-    /* NOVO: Espaço animado para descer os cards quando tem notificação */
-    .main.comNotificacao { transition: margin-top .42s cubic-bezier(.34,1.56,.64,1); margin-top: 75px; }
+    .main.comNotificacao { transition: margin-top .42s cubic-bezier(.34,1.56,.64,1); margin-top: 120px; }
     .main { transition: margin-top .42s cubic-bezier(.34,1.56,.64,1); }
 
     .main {
@@ -282,7 +279,6 @@
       text-shadow: 0 2px 8px #176fc185, 0 2px 8px #fff8;
       filter: drop-shadow(0 0 6px #00347430);
     }
-    /* ----------- Carrossel ISLAID ----------- */
     .carrossel-islaid {
       width: 100%;
       max-width: 610px;
@@ -380,24 +376,23 @@
     }
     @keyframes fadeIn { from { opacity:0;} to{opacity:1;} }
 
-    /* ---- NOTIFICAÇÃO ANIMADA ---- */
+    /* === NOTIFICAÇÃO CENTRALIZADA, MÍDIA PURA === */
     .notificacao-bar {
       position: fixed;
       left: 50%;
       top: 0;
       transform: translateX(-50%);
-      min-width: 230px;
-      max-width: 94vw;
-      background: linear-gradient(90deg,#233c63,#2986d9 90%);
+      min-width: 210px;
+      max-width: 98vw;
+      background: transparent !important;
       color: #ffe175;
-      padding: 12px 34px;
-      font-size: 1.11em;
-      font-weight: 900;
-      border-radius: 0 0 20px 20px;
-      box-shadow: 0 8px 22px #7dc6ff77;
+      padding: 12px 8px 6px 8px;
+      border-radius: 0 0 22px 22px;
+      box-shadow: none;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 0;
       z-index: 999;
       opacity: 0;
       pointer-events: none;
@@ -415,22 +410,32 @@
       animation: fadeOutUp .7s;
       pointer-events: none;
     }
-    /* IMAGEM DA NOTIFICAÇÃO DESTACADA */
-    .notificacao-img-destaque {
+    #notificacaoMídia img, #notificacaoMídia video {
       display: block;
-      margin: 0 10px 0 0;
-      max-width: 110px;
-      max-height: 62px;
-      border-radius: 15px;
-      box-shadow: 0 4px 20px #2986d9aa;
-      border: 2px solid #ffe175;
-      background: #fff;
+      margin: 0 auto;
+      max-width: 140px;
+      max-height: 80px;
+      width: auto;
+      height: auto;
+      border-radius: 10px;
+      background: none !important;
+      box-shadow: none !important;
+      border: none !important;
       object-fit: contain;
-      animation: destaqueImgNotif .7s;
+      background-color: transparent !important;
     }
-    @keyframes destaqueImgNotif {
-      from { opacity: 0; transform: scale(0.84) translateY(-20px);}
-      to   { opacity: 1; transform: scale(1) translateY(0);}
+    @media (max-width:600px) {
+      #notificacaoMídia img, #notificacaoMídia video {
+        max-width: 94vw;
+        max-height: 60vw;
+      }
+      .notificacao-bar {
+        max-width: 99vw;
+        min-width: 0;
+        padding-left: 2vw;
+        padding-right: 2vw;
+      }
+      .main.comNotificacao { margin-top: 110px; }
     }
     @keyframes fadeInDownBounce {
       0% { opacity: 0; transform: translateX(-50%) translateY(-80px) scale(0.98);}
@@ -467,9 +472,10 @@
   </div>
   <!-- BARRA DE NOTIFICAÇÕES ANIMADA -->
   <div id="notificacaoBar" class="notificacao-bar" style="display:none;">
-    <span class="estrela">☘️</span>
-    <span id="notificacaoImgSpan"></span>
-    <span id="notificacaoTexto"></span>
+    <div id="notificacaoConteudo" style="width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+      <div id="notificacaoMídia"></div>
+      <div id="notificacaoTexto" style="margin-top:6px;font-weight:900;text-align:center;color:#ffe175;word-break:break-word;"></div>
+    </div>
   </div>
   <!-- PRINCIPAL -->
   <div class="main" id="main">
@@ -511,7 +517,7 @@
       }, 1000);
     }, 2350);
 
-    // ----------- NOTIFICAÇÃO ADM INTEGRADA (com imagem, vibrar e cards descendo) -----------
+    // ----------- NOTIFICAÇÃO ADM INTEGRADA -----------
     let ultimaNotificacao = '';
     function carregarNotificacao() {
       db.collection("notificacoes").orderBy("data", "desc").limit(1).onSnapshot(snapshot => {
@@ -519,17 +525,16 @@
         snapshot.forEach(doc => {
           encontrou = true;
           const d = doc.data();
-          // Só mostra se for dia correto
           const hoje = new Date().getDay();
           if (d.dias && Array.isArray(d.dias) && d.dias.length && !d.dias.includes(hoje)) {
             escondeNotificacao();
             return;
           }
           const texto = d.texto || '';
-          const img = d.img || d.imagem || ""; // ajuste conforme painel ADM
+          const midia = d.img || d.imagem || d.video || ""; // Pode ser imagem/vídeo/gif
           if (texto !== ultimaNotificacao) {
             ultimaNotificacao = texto;
-            animarNotificacao(texto, img, d.efeito, d.atraso, d.duracao);
+            animarNotificacao(texto, midia, d.efeito, d.atraso, d.duracao);
           }
         });
         if (!encontrou) escondeNotificacao();
@@ -540,25 +545,30 @@
       document.getElementById("notificacaoBar").style.display = "none";
       document.getElementById('main').classList.remove('comNotificacao');
     }
-    function animarNotificacao(texto, img = "", efeito = 'fadeInDownBounce', atraso = 2, duracao = 8) {
+    // Exibe só imagem/vídeo/gif centralizado, texto embaixo!
+    function animarNotificacao(texto, midia = "", efeito = 'fadeInDownBounce', atraso = 2, duracao = 8) {
       const bar = document.getElementById("notificacaoBar");
-      // Imagem destacada se existir
-      document.getElementById('notificacaoImgSpan').innerHTML = img ? `<img src="${img}" class="notificacao-img-destaque">` : "";
-      // Texto
-      document.getElementById("notificacaoTexto").innerHTML = texto;
-      // Aplica efeito
+      const mídiaDiv = document.getElementById('notificacaoMídia');
+      let midiaHTML = "";
+      if (midia) {
+        if (/\.(mp4|webm|ogg)$/i.test(midia)) {
+          midiaHTML = `<video src="${midia}" autoplay loop muted playsinline style="width:100%;max-width:140px;max-height:80px;display:block;"></video>`;
+        } else {
+          midiaHTML = `<img src="${midia}" alt="" style="width:100%;max-width:140px;max-height:80px;display:block;background:none;">`;
+        }
+      }
+      mídiaDiv.innerHTML = midiaHTML;
+      document.getElementById("notificacaoTexto").innerHTML = texto||"";
       bar.style.display = "flex";
       bar.className = 'notificacao-bar';
       if (efeito && efeito !== 'fadeInDownBounce') bar.classList.add(efeito);
       setTimeout(()=>{
         bar.classList.add('mostrar');
         document.getElementById('main').classList.add('comNotificacao');
-        // Vibra (Mobile, 3s)
         if (window.navigator.vibrate) {
           window.navigator.vibrate([500, 100, 500, 100, 1500]);
         }
       }, (atraso||2)*1000);
-      // Some após duracao segundos
       setTimeout(()=>{
         bar.classList.remove('mostrar');
         bar.classList.add('fechar');
