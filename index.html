@@ -376,76 +376,63 @@
     }
     @keyframes fadeIn { from { opacity:0;} to{opacity:1;} }
 
-    /* === NOTIFICAÇÃO CENTRALIZADA, MÍDIA PURA === */
-    .notificacao-bar {
-      position: fixed;
-      left: 50%;
-      top: 0;
-      transform: translateX(-50%);
-      min-width: 210px;
-      max-width: 98vw;
-      background: transparent !important;
-      color: #ffe175;
-      padding: 12px 8px 6px 8px;
-      border-radius: 0 0 22px 22px;
-      box-shadow: none;
+    /* Redes sociais + aviso */
+    .redes-sociais-midia {
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      gap: 0;
-      z-index: 999;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .45s, transform .45s;
-      animation: none;
+      gap: 20px;
+      margin: 26px 0 12px 0;
     }
-    .notificacao-bar.mostrar {
-      opacity: 1;
-      pointer-events: all;
-      animation: fadeInDownBounce 1.1s;
-      transform: translateX(-50%) translateY(0);
+    .btn-social {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: #242424;
+      box-shadow: 0 2px 12px #0003;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .15s, box-shadow .15s;
+      position: relative;
+      border: 3px solid #fff2;
+      text-decoration: none;
     }
-    .notificacao-bar.fechar {
-      opacity: 0;
-      animation: fadeOutUp .7s;
-      pointer-events: none;
+    .btn-social:hover {
+      transform: scale(1.12) translateY(-3px);
+      box-shadow: 0 4px 20px #ffe17588, 0 2px 8px #0004;
+      z-index: 2;
     }
-    #notificacaoMídia img, #notificacaoMídia video {
-      display: block;
-      margin: 0 auto;
-      max-width: 140px;
-      max-height: 80px;
-      width: auto;
-      height: auto;
-      border-radius: 10px;
-      background: none !important;
-      box-shadow: none !important;
-      border: none !important;
-      object-fit: contain;
-      background-color: transparent !important;
+    .btn-social svg { display: block; }
+    .faixa-aviso-jogo {
+      background: #111;
+      color: #fff;
+      text-align: center;
+      padding: 24px 10px 14px 10px;
+      margin: 36px 0 0 0;
+      font-size: 1.14em;
+      font-weight: 700;
+      border-radius: 18px 18px 0 0;
+      letter-spacing: 0.01em;
+      box-shadow: 0 -2px 14px #0007;
+      border-top: 4px solid #ffe17577;
+      position: relative;
+    }
+    .faixa-aviso-jogo .maior18 {
+      font-size: 1.36em;
+      margin-right: 7px;
+      vertical-align: middle;
+    }
+    .faixa-aviso-jogo .consci {
+      font-size: .98em;
+      margin-top: 10px;
+      color: #ffe175;
+      font-weight: 400;
     }
     @media (max-width:600px) {
-      #notificacaoMídia img, #notificacaoMídia video {
-        max-width: 94vw;
-        max-height: 60vw;
-      }
-      .notificacao-bar {
-        max-width: 99vw;
-        min-width: 0;
-        padding-left: 2vw;
-        padding-right: 2vw;
-      }
-      .main.comNotificacao { margin-top: 110px; }
-    }
-    @keyframes fadeInDownBounce {
-      0% { opacity: 0; transform: translateX(-50%) translateY(-80px) scale(0.98);}
-      60% { opacity: 1; transform: translateX(-50%) translateY(10px) scale(1.04);}
-      80% { opacity: 1; transform: translateX(-50%) translateY(-4px) scale(1);}
-      100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1);}
-    }
-    @keyframes fadeOutUp {
-      0% { opacity: 1; transform: translateX(-50%) translateY(0);}
-      100% { opacity: 0; transform: translateX(-50%) translateY(-40px);}
+      .redes-sociais-midia { gap: 13px; }
+      .btn-social { width: 42px; height: 42px;}
+      .faixa-aviso-jogo { font-size: 0.97em; }
     }
   </style>
 </head>
@@ -470,13 +457,6 @@
   <div class="logo-topo">
     <img src="https://assets.nicepagecdn.com/42b47b7b/817911/images/novalogo.png" alt="Logo topo">
   </div>
-  <!-- BARRA DE NOTIFICAÇÕES ANIMADA -->
-  <div id="notificacaoBar" class="notificacao-bar" style="display:none;">
-    <div id="notificacaoConteudo" style="width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-      <div id="notificacaoMídia"></div>
-      <div id="notificacaoTexto" style="margin-top:6px;font-weight:900;text-align:center;color:#ffe175;word-break:break-word;"></div>
-    </div>
-  </div>
   <!-- PRINCIPAL -->
   <div class="main" id="main">
     <div class="conteudos" id="conteudos"></div>
@@ -490,6 +470,26 @@
   <div class="footer-loterico">
     <span class="estrela">☘️</span>
     Faça sua aposta com <span>confiança!</span> Rodrigo tá on line
+  </div>
+  <!-- REDES SOCIAIS -->
+  <div class="redes-sociais-midia">
+    <a href="https://instagram.com/seuusuario" target="_blank" aria-label="Instagram" class="btn-social insta">
+      <svg viewBox="0 0 32 32" width="26" height="26" fill="none"><circle cx="16" cy="16" r="16" fill="#E4405F"/><path d="M22 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm-6 2.5A4.5 4.5 0 1 0 20.5 17 4.5 4.5 0 0 0 16 12.5Zm0 7.3a2.8 2.8 0 1 1 2.8-2.8A2.8 2.8 0 0 1 16 19.8Zm7-7.1a1 1 0 0 0-1-1h-1a1 1 0 1 0 0 2h1a1 1 0 0 0 1-1Zm-8 11.8A8 8 0 1 1 24 16a8 8 0 0 1-9 7.7Z" fill="#fff"/></svg>
+    </a>
+    <a href="https://youtube.com/@seucanal" target="_blank" aria-label="YouTube" class="btn-social yt">
+      <svg viewBox="0 0 32 32" width="26" height="26" fill="none"><circle cx="16" cy="16" r="16" fill="#FF0000"/><polygon points="13,11 22,16 13,21" fill="#fff"/></svg>
+    </a>
+    <a href="https://wa.me/5583999999999" target="_blank" aria-label="WhatsApp" class="btn-social zap">
+      <svg viewBox="0 0 32 32" width="26" height="26" fill="none"><circle cx="16" cy="16" r="16" fill="#25D366"/><path d="M23.1 20.2l-2.6-.4c-.5-.1-.9.1-1.1.5-.3.4-.7 1-1.1 1.1-.4.2-.7.1-1-.1a9.3 9.3 0 0 1-2.9-2.2A9.3 9.3 0 0 1 11.7 16c-.2-.3-.2-.6 0-1l1.1-1.1c.2-.2.3-.5.2-.8l-.4-2.6c0-.3-.3-.6-.7-.7l-1.7-.2c-.3 0-.6.1-.8.4A8.1 8.1 0 0 0 8 16c0 2.1.8 4.2 2.2 5.8A8.1 8.1 0 0 0 16 24a8.1 8.1 0 0 0 5.8-2.2c.3-.3.5-.7.4-1l-.2-1.7c-.1-.4-.4-.6-.7-.7Z" fill="#fff"/></svg>
+    </a>
+  </div>
+  <!-- AVISO JOGO RESPONSÁVEL -->
+  <div class="faixa-aviso-jogo">
+    <span class="maior18">🔞</span>
+    <strong>Aposta de jogos é proibida para menores de 18 anos.</strong> Jogue com responsabilidade.
+    <div class="consci">
+      O jogo pode causar dependência. Aposte apenas o que puder perder. Em caso de dúvidas, procure ajuda!
+    </div>
   </div>
   <!-- Firebase + Script -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -593,7 +593,8 @@
           todosConteudos.push({ id: doc.id, ...d });
         });
         if (todosConteudos.length === 0) {
-          conteudosDiv.innerHTML = "<div style='color:#7dc6ff;font-size:1.12em;margin:36px 0 16px 0;text-shadow:0 1px 6px #7dc6ff99;text-align:center;'>Nenhum conteúdo encontrado.<br><span style='font-size:1.4em;' class='estrela'>⭐</span></div>";
+          conteudosDiv.innerHTML = "<div style='color:#7dc6ff;font-size:1.12em;margin:36px 0 16px 0;text-shadow:0 1px 6px #7dc6ff99;text-align:center;'>Nenhum conteúdo encontrado.<br>
+<span style='font-size:1.4em;' class='estrela'>⭐</span></div>";
           return;
         }
         renderizaCards(todosConteudos);
