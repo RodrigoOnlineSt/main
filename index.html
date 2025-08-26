@@ -667,7 +667,8 @@
           todosConteudos.push({ id: doc.id, ...d });
         });
         if (todosConteudos.length === 0) {
-          conteudosDiv.innerHTML = "<div style='color:#7dc6ff;font-size:1.12em;margin:36px 0 16px 0;text-shadow:0 1px 6px #7dc6ff99;text-align:center;'>Nenhum conteúdo encontrado.<br><span style='font-size:1.4em;' class='estrela'>⭐</span></div>";
+          conteudosDiv.innerHTML = "<div style='color:#7dc6ff;font-size:1.12em;margin:36px 0 16px 0;text-shadow:0 1px 6px #7dc6ff99;text-align:center;'>Nenhum conteúdo encontrado.<br>
+<span style='font-size:1.4em;' class='estrela'>⭐</span></div>";
           return;
         }
         renderizaCards(todosConteudos);
@@ -759,6 +760,283 @@
     }
     carregarIslaid();
     setInterval(carregarIslaid, 20000);
+  </script>
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Pix Flutuante Menor - QR Preto e Branco</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    body { font-family: 'Montserrat', Arial, sans-serif; min-height:100vh; background:#eff6fb;}
+    /* BOTÃO FLUTUANTE PIX MENOR */
+    #btnPixFlutuante {
+      position: fixed;
+      right: 16px;
+      bottom: 20px;
+      z-index: 9999;
+      background: linear-gradient(120deg, #03a04a 65%, #1cb5e0 120%);
+      color: #fff;
+      border: none;
+      border-radius: 28px;
+      box-shadow: 0 3px 12px #03a04a30, 0 1px 5px #0003;
+      min-width: 40px;
+      height: 40px;
+      font-size: 1.12em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 13px 0 9px;
+      transition: background 0.7s, box-shadow 0.2s, filter 0.15s;
+      cursor: pointer;
+      animation: pixVerde2 4s infinite alternate;
+      font-family: 'Montserrat', Arial, sans-serif;
+    }
+    @keyframes pixVerde2 {
+      0%   { background: linear-gradient(120deg, #03a04a 60%, #1cb5e0 120%);}
+      55%  { background: linear-gradient(120deg, #39ff90 90%, #1eae68 120%);}
+      100% { background: linear-gradient(120deg, #03a04a 60%, #1cb5e0 120%);}
+    }
+    #btnPixFlutuante:active {
+      box-shadow: 0 2px 7px #03a04a40, 0 1px 3px #0005;
+      filter: brightness(0.95);
+      transform: scale(0.93);
+    }
+    .logo-pix-icone {
+      background: linear-gradient(145deg,#00e1a2 0%,#27d8ff 100%);
+      color: #fff;
+      border-radius: 50%;
+      padding: 4px 5px 4px 4px;
+      box-shadow: 0 1px 4px #00e1a277;
+      font-size: 0.99em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .nome-pix {
+      font-size: 0.96em;
+      font-weight: 800;
+      background: linear-gradient(90deg, #1de992 0%, #32e1d1 45%, #38bcfc 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.07em;
+      text-shadow: 0 1px 6px #27d8ff11, 0 2px 10px #00347411;
+      animation: gradMove 5s linear infinite;
+      font-family: 'Montserrat', Arial, sans-serif;
+      margin-left: 1px;
+    }
+    @keyframes gradMove {
+      0% {background-position: 0 0;}
+      100% {background-position: 300px 0;}
+    }
+
+    /* MODAL PIX */
+    #modalPixBg {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(22,34,56,0.85);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      transition: opacity .22s;
+      animation: fadeInModal .3s;
+    }
+    @keyframes fadeInModal { from { opacity: 0;} to   { opacity: 1;} }
+    #modalPix {
+      background: #fff;
+      color: #232a39;
+      border-radius: 19px;
+      box-shadow: 0 8px 40px #222d40aa, 0 0 0 4px #00b38328;
+      padding: 25px 14px 18px 14px;
+      max-width: 97vw;
+      width: 320px;
+      text-align: center;
+      position: relative;
+      font-family: 'Montserrat', Arial, sans-serif;
+      animation: fadeModalIn 0.36s;
+    }
+    @keyframes fadeModalIn { from { opacity: 0; transform: scale(0.87);} to   { opacity: 1; transform: scale(1);} }
+    #modalPix h2 {
+      font-size: 1.14em;
+      margin: 0 0 7px 0;
+      color: #03a04a;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+    }
+    #qrCodePix {
+      margin: 13px auto 8px auto;
+      display: block;
+      background: #fff;
+      border-radius: 9px;
+      box-shadow: 0 3px 13px #2223;
+      border: 2px solid #e1e1e1;
+      width: 130px;
+      height: 130px;
+    }
+    #pixChaveContainer {
+      margin: 12px auto 9px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      background: #f2fff5;
+      padding: 5px 10px;
+      border-radius: 10px;
+      font-size: 0.97em;
+      font-weight: bold;
+      color: #03a04a;
+      box-shadow: 0 1px 7px #03a04a0a;
+      user-select: all;
+      word-break: break-all;
+    }
+    .btn-copiar-grande {
+      background: linear-gradient(90deg, #1de992 0%, #32e1d1 65%, #38bcfc 100%);
+      color: #093b1c;
+      border: none;
+      border-radius: 9px;
+      font-size: 1em;
+      font-weight: 800;
+      box-shadow: 0 2px 10px #1cb5e028;
+      padding: 10px 0;
+      width: 100%;
+      margin: 0 auto 0 auto;
+      cursor: pointer;
+      margin-top: 4px;
+      transition: background .2s, color .2s;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      outline: none;
+      font-family: 'Montserrat', Arial, sans-serif;
+    }
+    .btn-copiar-grande:active,
+    .btn-copiar-grande.copiado {
+      background: linear-gradient(90deg, #2fff97 0%, #1db5e0 100%);
+      color: #02652f;
+    }
+    #modalPix .fechar {
+      position: absolute;
+      top: 6px; right: 12px;
+      background: none;
+      border: none;
+      font-size: 1.3em;
+      color: #03a04a;
+      cursor: pointer;
+      z-index: 12;
+      padding: 0;
+      font-weight: bold;
+    }
+    #modalPix p {
+      color: #232a39;
+      font-size: 0.97em;
+      margin: 10px 0 0 0;
+      line-height: 1.35em;
+      font-weight: 600;
+    }
+    #modalPix .titular {
+      font-size:0.98em;
+      font-weight: 700;
+      color:#1cb5e0;
+      margin-bottom:2px;
+    }
+    @media (max-width:480px) {
+      #modalPix { width: 95vw; padding: 12px 2vw 12px 2vw;}
+      #qrCodePix { width: 88vw; max-width: 130px; height: auto;}
+    }
+  </style>
+</head>
+<body>
+  <!-- BOTÃO FLUTUANTE PIX MENOR -->
+  <button id="btnPixFlutuante" title="Pagamento via Pix" aria-label="Pagamento Pix">
+    <span class="logo-pix-icone">
+      <i class="fa-brands fa-pix"></i>
+    </span>
+    <span class="nome-pix">PIX</span>
+  </button>
+
+  <!-- MODAL PIX MODERNO -->
+  <div id="modalPixBg">
+    <div id="modalPix">
+      <button class="fechar" onclick="fecharModalPix()" title="Fechar" aria-label="Fechar">&times;</button>
+      <h2>Pague com Pix</h2>
+      <div class="titular">Titular: Vagner Rodrigo da Silva</div>
+      <div id="qrCodePix"></div>
+      <div style="font-size:1em;font-weight:700;margin:7px 0 4px 0; color:#2e4d39;">
+        Chave Pix (copia e cola):
+      </div>
+      <div id="pixChaveContainer" style="margin-bottom:9px;">
+        <span id="pixChave" style="user-select:all;">
+          00020126580014BR.GOV.BCB.PIX0136c3c0ed82-c29e-46dd-8196-92c0fdaccd9e5204000053039865802BR5923Vagner Rodrigo da Silva6009SAO PAULO61080540900062070503***630404E9
+        </span>
+      </div>
+      <!-- Botão GRANDE para copiar -->
+      <button id="btnCopiaPixGrande" onclick="copiarPixChave()" class="btn-copiar-grande">
+        <i class="fa fa-copy"></i> Copiar Chave Pix
+      </button>
+      <p style="margin-top:13px;">
+        Abra o app do seu banco, escaneie o QR Code ou clique para copiar a chave Pix acima.
+      </p>
+    </div>
+  </div>
+
+  <!-- QRious para QR Code -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <script>
+    // Dados Pix
+    const chavePix = "00020126580014BR.GOV.BCB.PIX0136c3c0ed82-c29e-46dd-8196-92c0fdaccd9e5204000053039865802BR5923Vagner Rodrigo da Silva6009SAO PAULO61080540900062070503***630404E9";
+    // Botão mostra o modal
+    document.getElementById('btnPixFlutuante').onclick = function() {
+      document.getElementById('modalPixBg').style.display = "flex";
+      document.body.style.overflow = "hidden";
+      // QR code só gera uma vez
+      if (!document.getElementById('qrCodePix').querySelector('canvas')) {
+        var qr = new QRious({
+          element: document.createElement('canvas'),
+          value: chavePix,
+          size: 130,
+          level: 'M',
+          background: '#fff',
+          foreground: '#000' // Preto!
+        });
+        var container = document.getElementById('qrCodePix');
+        container.innerHTML = "";
+        container.appendChild(qr.element);
+      }
+    };
+    // Fecha o modal
+    function fecharModalPix() {
+      document.getElementById('modalPixBg').style.display = "none";
+      document.body.style.overflow = "";
+    }
+    // Botão grande de copiar chave Pix
+    function copiarPixChave() {
+      var chave = document.getElementById('pixChave').innerText.trim();
+      navigator.clipboard.writeText(chave).then(function() {
+        var btn = document.getElementById('btnCopiaPixGrande');
+        btn.innerHTML = '<i class="fa fa-check"></i> Copiado!';
+        btn.classList.add("copiado");
+        setTimeout(function() {
+          btn.innerHTML = '<i class="fa fa-copy"></i> Copiar Chave Pix';
+          btn.classList.remove("copiado");
+        }, 1500);
+      });
+    }
+    // Fecha ao clicar fora do modal
+    document.getElementById('modalPixBg').addEventListener('click', function(e){
+      if(e.target.id === 'modalPixBg'){ fecharModalPix(); }
+    });
   </script>
 </body>
 </html>
