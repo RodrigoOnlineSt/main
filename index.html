@@ -29,7 +29,7 @@
     }
     *, *::before, *::after { box-sizing: border-box; max-width: 100vw; }
 
-    /* ----------- ANIMAÇÃO DE ABERTURA ----------- */
+    /* --- ANIMAÇÃO DE ABERTURA --- */
     .logo-animada-bg {
       width: 100vw; height: 100vh;
       display: flex; align-items: center; justify-content: center;
@@ -500,282 +500,8 @@
     @media (max-width: 600px) {
       .aviso-18 { font-size: 1em; padding: 7px 6vw 7px 6vw; }
     }
-  </style>
-</head>
-<body>
-  <!-- ESFERA 3D ANIMADA DE ABERTURA -->
-  <div class="logo-animada-bg" id="bgAnimada">
-    <div class="logo-slide-topo">
-      <div class="logo-animada-globo3d efeito-3d-potente" id="esferaAnimada">
-        <span class="globo-reflexo"></span>
-        <span class="globo-reflexo2"></span>
-        <span class="globo-iluminacao"></span>
-        <span class="globo-sombra"></span>
-        <span class="globo-arco"></span>
-        <span class="globo-foco"></span>
-        <span class="logo-centro-esfera">
-          <img src="https://assets.nicepagecdn.com/42b47b7b/817911/images/novalogo.png" alt="Logo">
-        </span>
-      </div>
-    </div>
-  </div>
-  <!-- LOGO FIXA TOPO -->
-  <div class="logo-topo">
-    <img src="https://assets.nicepagecdn.com/42b47b7b/817911/images/novalogo.png" alt="Logo topo">
-  </div>
-  <!-- BARRA DE NOTIFICAÇÕES ANIMADA -->
-  <div id="notificacaoBar" class="notificacao-bar" style="display:none;">
-    <div id="notificacaoConteudo" style="width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-      <div id="notificacaoMídia"></div>
-      <div id="notificacaoTexto" style="margin-top:6px;font-weight:900;text-align:center;color:#ffe175;word-break:break-word;"></div>
-    </div>
-  </div>
-  <!-- PRINCIPAL -->
-  <div class="main" id="main">
-    <div class="conteudos" id="conteudos"></div>
-    <!-- Carrossel ISLAID -->
-    <div id="carrosselIslaid" class="carrossel-islaid" style="display:none;">
-      <div class="carrossel-seta" onclick="carrosselAnterior()" aria-label="Anterior">&#9664;</div>
-      <div id="islaidSlide" class="carrossel-islaid-slide"></div>
-      <div class="carrossel-seta" onclick="carrosselProximo()" aria-label="Próximo">&#9654;</div>
-    </div>
-  </div>
 
-  <div class="footer-loterico">
-    <span class="estrela">☘️</span>
-    Faça sua aposta com <span>confiança!</span> Rodrigo tá on line
-  </div>
-
-  <!-- REDES SOCIAIS -->
-  <div class="social-bar">
-    <a href="https://www.instagram.com/rodrigocambistapb?igsh=MzVxdmZtMWd0a3d5" target="_blank" title="Instagram" aria-label="Instagram">
-      <i class="fab fa-instagram"></i>
-    </a>
-    <a href="https://youtube.com/@seu_usuario" target="_blank" title="YouTube" aria-label="YouTube">
-      <i class="fab fa-youtube"></i>
-    </a>
-    <a href="https://wa.me/5583996323995?text=Ol%C3%A1%2C%20quero%20fazer%20uma%20aposta%21" target="_blank" title="WhatsApp" aria-label="WhatsApp">
-      <i class="fab fa-whatsapp"></i>
-    </a>
-  </div>
-
-  <!-- AVISO MAIOR DE 18 -->
-  <div class="aviso-18">
-    <span class="icon18">🔞</span>
-    Proibido para menores de 18 anos. Jogue com responsabilidade.
-  </div>
-
-  <!-- Firebase + Script -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script>
-    // === FIREBASE CONFIG ===
-    const firebaseConfig = {
-      apiKey: "SUA_API_KEY_AQUI",
-      authDomain: "concursosuper-29c5b.firebaseapp.com",
-      projectId: "concursosuper-29c5b",
-    };
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.firestore();
-
-    // ----------- ANIMAÇÃO DE ABERTURA -----------
-    setTimeout(() => {
-      document.getElementById('bgAnimada').classList.add('oculto');
-      setTimeout(()=>{
-        document.getElementById('bgAnimada').style.display='none';
-      }, 700);
-      setTimeout(() => {
-        document.getElementById('conteudos').classList.add('revela');
-      }, 1000);
-    }, 2350);
-
-    // ----------- NOTIFICAÇÃO ADM INTEGRADA -----------
-    let ultimaNotificacao = '';
-    function carregarNotificacao() {
-      db.collection("notificacoes").orderBy("data", "desc").limit(1).onSnapshot(snapshot => {
-        let encontrou = false;
-        snapshot.forEach(doc => {
-          encontrou = true;
-          const d = doc.data();
-          const hoje = new Date().getDay();
-          if (d.dias && Array.isArray(d.dias) && d.dias.length && !d.dias.includes(hoje)) {
-            escondeNotificacao();
-            return;
-          }
-          const texto = d.texto || '';
-          const midia = d.img || d.imagem || d.video || ""; // Pode ser imagem/vídeo/gif
-          if (texto !== ultimaNotificacao) {
-            ultimaNotificacao = texto;
-            animarNotificacao(texto, midia, d.efeito, d.atraso, d.duracao);
-          }
-        });
-        if (!encontrou) escondeNotificacao();
-      });
-    }
-    function escondeNotificacao() {
-      document.getElementById("notificacaoBar").classList.remove('mostrar');
-      document.getElementById("notificacaoBar").style.display = "none";
-      document.getElementById('main').classList.remove('comNotificacao');
-    }
-    // Exibe só imagem/vídeo/gif centralizado, texto embaixo!
-    function animarNotificacao(texto, midia = "", efeito = 'fadeInDownBounce', atraso = 2, duracao = 8) {
-      const bar = document.getElementById("notificacaoBar");
-      const mídiaDiv = document.getElementById('notificacaoMídia');
-      let midiaHTML = "";
-      if (midia) {
-        if (/\.(mp4|webm|ogg)$/i.test(midia)) {
-          midiaHTML = `<video src="${midia}" autoplay loop muted playsinline style="width:100%;max-width:140px;max-height:80px;display:block;"></video>`;
-        } else {
-          midiaHTML = `<img src="${midia}" alt="" style="width:100%;max-width:140px;max-height:80px;display:block;background:none;">`;
-        }
-      }
-      mídiaDiv.innerHTML = midiaHTML;
-      document.getElementById("notificacaoTexto").innerHTML = texto||"";
-      bar.style.display = "flex";
-      bar.className = 'notificacao-bar';
-      if (efeito && efeito !== 'fadeInDownBounce') bar.classList.add(efeito);
-      setTimeout(()=>{
-        bar.classList.add('mostrar');
-        document.getElementById('main').classList.add('comNotificacao');
-        if (window.navigator.vibrate) {
-          window.navigator.vibrate([500, 100, 500, 100, 1500]);
-        }
-      }, (atraso||2)*1000);
-      setTimeout(()=>{
-        bar.classList.remove('mostrar');
-        bar.classList.add('fechar');
-        document.getElementById('main').classList.remove('comNotificacao');
-        setTimeout(()=>{
-          bar.classList.remove('fechar');
-          bar.style.display = "none";
-        },700);
-      }, ((duracao||8)+(atraso||2))*1000);
-    }
-    carregarNotificacao();
-
-    // -------------------- CARDS DE CONTEÚDOS ---------------
-    const conteudosDiv = document.getElementById('conteudos');
-    let todosConteudos = [];
-    function mostrarConteudos(){
-      conteudosDiv.innerHTML = "";
-      db.collection("conteudos").orderBy("data","desc").get().then(snapshot=>{
-        todosConteudos = [];
-        snapshot.forEach(doc=>{
-          const d = doc.data();
-          todosConteudos.push({ id: doc.id, ...d });
-        });
-        if (todosConteudos.length === 0) {
-          conteudosDiv.innerHTML = "<div style='color:#7dc6ff;font-size:1.12em;margin:36px 0 16px 0;text-shadow:0 1px 6px #7dc6ff99;text-align:center;'>Nenhum conteúdo encontrado.<br>
-<span style='font-size:1.4em;' class='estrela'>⭐</span></div>";
-          return;
-        }
-        renderizaCards(todosConteudos);
-      });
-    }
-    function renderizaCards(lista){
-      conteudosDiv.innerHTML = "";
-      lista.forEach((d, idx)=>{
-        let btn = document.createElement('button');
-        btn.className = 'card-btn';
-        btn.style.animation = `zoomList .54s ${idx*0.07}s backwards`;
-        btn.onclick = ()=>window.location.search = '?id='+d.id;
-        let capa = d.capa || (d.fotos && d.fotos[0]) || "";
-        btn.innerHTML = `
-          ${capa ? `<img class="card-capa" src="${capa}">` : `<div class="card-capa" style="background:#7dc6ff22"></div>`}
-          <div class="card-titulo">${d.titulo||""}</div>
-        `;
-        conteudosDiv.appendChild(btn);
-      });
-    }
-    function mostrarConteudo(id){
-      db.collection("conteudos").doc(id).get().then(doc=>{
-        if(!doc.exists){
-          document.body.innerHTML = "<div style='color:red;text-align:center;margin:40px 0'>Conteúdo não encontrado</div>";
-          return;
-        }
-        const d = doc.data();
-        let htmlPublicado = d.html||"";
-        document.open(); document.write(htmlPublicado); document.close();
-      });
-    }
-    function checarPagina(){
-      const id = (new URL(location.href)).searchParams.get("id");
-      if(id){ conteudosDiv.innerHTML = ""; mostrarConteudo(id); }
-      else { mostrarConteudos(); }
-    }
-    window.onpopstate = checarPagina;
-    checarPagina();
-
-    // ------------------- CARROSSEL ISLAID ---------------------
-    let islaidSlides = [], slideAtual = 0, timerIslaid = null;
-    function carregarIslaid() {
-      db.collection("rodape_conteudo").orderBy("data", "asc").get().then(snapshot => {
-        islaidSlides = [];
-        snapshot.forEach(doc => {
-          const d = doc.data();
-          islaidSlides.push({
-            tipo: d.imgs && d.imgs.length ? "imagem" : d.videos && d.videos.length ? "video" : "html",
-            url: d.imgs && d.imgs[0] ? d.imgs[0] : d.videos && d.videos[0] ? d.videos[0] : "",
-            texto: d.html || "",
-            imgs: d.imgs || [],
-            videos: d.videos || [],
-            efeito: d.efeito || "fade"
-          });
-        });
-        if (islaidSlides.length) {
-          document.getElementById("carrosselIslaid").style.display = "flex";
-          mostrarSlideIslaid(0);
-        } else {
-          document.getElementById("carrosselIslaid").style.display = "none";
-        }
-      });
-    }
-    function mostrarSlideIslaid(idx) {
-      slideAtual = (idx + islaidSlides.length) % islaidSlides.length;
-      const slide = islaidSlides[slideAtual];
-      const div = document.getElementById("islaidSlide");
-      if (!slide) { div.innerHTML = ""; return; }
-      let html = "";
-      if (slide.tipo === "imagem" && slide.imgs.length) {
-        html += slide.imgs.map(url => `<img src="${url}" style="width:100%;max-height:134px;object-fit:cover;border-radius:17px;background:#0003;">`).join('');
-        html += `<div class="islaid-txt">${slide.texto||''}</div>`;
-      } else if (slide.tipo === "video" && slide.videos.length) {
-        html += slide.videos.map(url => `<video src="${url}" controls autoplay loop muted style="width:100%;max-height:134px;border-radius:17px;background:#0003;"></video>`).join('');
-        html += `<div class="islaid-txt">${slide.texto||''}</div>`;
-      } else {
-        html += `<div class="islaid-txt">${slide.texto||''}</div>`;
-      }
-      div.innerHTML = html;
-      div.className = "carrossel-islaid-slide " + (slide.efeito||'fade');
-      if (timerIslaid) clearTimeout(timerIslaid);
-      timerIslaid = setTimeout(()=>carrosselProximo(), 10000);
-    }
-    function carrosselProximo() {
-      mostrarSlideIslaid(slideAtual + 1);
-    }
-    function carrosselAnterior() {
-      mostrarSlideIslaid(slideAtual - 1);
-    }
-    carregarIslaid();
-    setInterval(carregarIslaid, 20000);
-  </script>
-</body>
-</html>
-
-
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <title>Pix Flutuante Menor - QR Preto e Branco</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  <style>
-    body { font-family: 'Montserrat', Arial, sans-serif; min-height:100vh; background:#eff6fb;}
-    /* BOTÃO FLUTUANTE PIX MENOR */
+    /* ----------- PIX FLUTUANTE ----------- */
     #btnPixFlutuante {
       position: fixed;
       right: 16px;
@@ -839,7 +565,6 @@
       100% {background-position: 300px 0;}
     }
 
-    /* MODAL PIX */
     #modalPixBg {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
@@ -958,14 +683,74 @@
   </style>
 </head>
 <body>
-  <!-- BOTÃO FLUTUANTE PIX MENOR -->
+  <!-- ANIMAÇÃO DE ABERTURA -->
+  <div class="logo-animada-bg" id="bgAnimada">
+    <div class="logo-slide-topo">
+      <div class="logo-animada-globo3d efeito-3d-potente" id="esferaAnimada">
+        <span class="globo-reflexo"></span>
+        <span class="globo-reflexo2"></span>
+        <span class="globo-iluminacao"></span>
+        <span class="globo-sombra"></span>
+        <span class="globo-arco"></span>
+        <span class="globo-foco"></span>
+        <span class="logo-centro-esfera">
+          <img src="https://assets.nicepagecdn.com/42b47b7b/817911/images/novalogo.png" alt="Logo">
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGO FIXA TOPO -->
+  <div class="logo-topo">
+    <img src="https://assets.nicepagecdn.com/42b47b7b/817911/images/novalogo.png" alt="Logo topo">
+  </div>
+  <!-- NOTIFICAÇÃO ADM -->
+  <div id="notificacaoBar" class="notificacao-bar" style="display:none;">
+    <div id="notificacaoConteudo" style="width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+      <div id="notificacaoMídia"></div>
+      <div id="notificacaoTexto" style="margin-top:6px;font-weight:900;text-align:center;color:#ffe175;word-break:break-word;"></div>
+    </div>
+  </div>
+  <!-- PRINCIPAL -->
+  <div class="main" id="main">
+    <div class="conteudos" id="conteudos"></div>
+    <!-- Carrossel ISLAID -->
+    <div id="carrosselIslaid" class="carrossel-islaid" style="display:none;">
+      <div class="carrossel-seta" onclick="carrosselAnterior()" aria-label="Anterior">&#9664;</div>
+      <div id="islaidSlide" class="carrossel-islaid-slide"></div>
+      <div class="carrossel-seta" onclick="carrosselProximo()" aria-label="Próximo">&#9654;</div>
+    </div>
+  </div>
+  <!-- RODAPÉ -->
+  <div class="footer-loterico">
+    <span class="estrela">☘️</span>
+    Faça sua aposta com <span>confiança!</span> Rodrigo tá on line
+  </div>
+  <!-- REDES SOCIAIS -->
+  <div class="social-bar">
+    <a href="https://www.instagram.com/rodrigocambistapb?igsh=MzVxdmZtMWd0a3d5" target="_blank" title="Instagram" aria-label="Instagram">
+      <i class="fab fa-instagram"></i>
+    </a>
+    <a href="https://youtube.com/@seu_usuario" target="_blank" title="YouTube" aria-label="YouTube">
+      <i class="fab fa-youtube"></i>
+    </a>
+    <a href="https://wa.me/5583996323995?text=Ol%C3%A1%2C%20quero%20fazer%20uma%20aposta%21" target="_blank" title="WhatsApp" aria-label="WhatsApp">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+  </div>
+  <!-- AVISO 18+ -->
+  <div class="aviso-18">
+    <span class="icon18">🔞</span>
+    Proibido para menores de 18 anos. Jogue com responsabilidade.
+  </div>
+
+  <!-- BOTÃO PIX FLUTUANTE (INTEGRADO) -->
   <button id="btnPixFlutuante" title="Pagamento via Pix" aria-label="Pagamento Pix">
     <span class="logo-pix-icone">
       <i class="fa-brands fa-pix"></i>
     </span>
     <span class="nome-pix">PIX</span>
   </button>
-
   <!-- MODAL PIX MODERNO -->
   <div id="modalPixBg">
     <div id="modalPix">
@@ -981,7 +766,6 @@
           00020126580014BR.GOV.BCB.PIX0136c3c0ed82-c29e-46dd-8196-92c0fdaccd9e5204000053039865802BR5923Vagner Rodrigo da Silva6009SAO PAULO61080540900062070503***630404E9
         </span>
       </div>
-      <!-- Botão GRANDE para copiar -->
       <button id="btnCopiaPixGrande" onclick="copiarPixChave()" class="btn-copiar-grande">
         <i class="fa fa-copy"></i> Copiar Chave Pix
       </button>
@@ -991,12 +775,203 @@
     </div>
   </div>
 
-  <!-- QRious para QR Code -->
+  <!-- SCRIPTS -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
   <script>
-    // Dados Pix
+    // === FIREBASE CONFIG ===
+    const firebaseConfig = {
+      apiKey: "SUA_API_KEY_AQUI",
+      authDomain: "concursosuper-29c5b.firebaseapp.com",
+      projectId: "concursosuper-29c5b",
+    };
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
+
+    // ----------- ANIMAÇÃO DE ABERTURA -----------
+    setTimeout(() => {
+      document.getElementById('bgAnimada').classList.add('oculto');
+      setTimeout(()=>{
+        document.getElementById('bgAnimada').style.display='none';
+      }, 700);
+      setTimeout(() => {
+        document.getElementById('conteudos').classList.add('revela');
+      }, 1000);
+    }, 2350);
+
+    // ----------- NOTIFICAÇÃO ADM INTEGRADA -----------
+    let ultimaNotificacao = '';
+    function carregarNotificacao() {
+      db.collection("notificacoes").orderBy("data", "desc").limit(1).onSnapshot(snapshot => {
+        let encontrou = false;
+        snapshot.forEach(doc => {
+          encontrou = true;
+          const d = doc.data();
+          const hoje = new Date().getDay();
+          if (d.dias && Array.isArray(d.dias) && d.dias.length && !d.dias.includes(hoje)) {
+            escondeNotificacao();
+            return;
+          }
+          const texto = d.texto || '';
+          const midia = d.img || d.imagem || d.video || ""; // Pode ser imagem/vídeo/gif
+          if (texto !== ultimaNotificacao) {
+            ultimaNotificacao = texto;
+            animarNotificacao(texto, midia, d.efeito, d.atraso, d.duracao);
+          }
+        });
+        if (!encontrou) escondeNotificacao();
+      });
+    }
+    function escondeNotificacao() {
+      document.getElementById("notificacaoBar").classList.remove('mostrar');
+      document.getElementById("notificacaoBar").style.display = "none";
+      document.getElementById('main').classList.remove('comNotificacao');
+    }
+    function animarNotificacao(texto, midia = "", efeito = 'fadeInDownBounce', atraso = 2, duracao = 8) {
+      const bar = document.getElementById("notificacaoBar");
+      const mídiaDiv = document.getElementById('notificacaoMídia');
+      let midiaHTML = "";
+      if (midia) {
+        if (/\.(mp4|webm|ogg)$/i.test(midia)) {
+          midiaHTML = `<video src="${midia}" autoplay loop muted playsinline style="width:100%;max-width:140px;max-height:80px;display:block;"></video>`;
+        } else {
+          midiaHTML = `<img src="${midia}" alt="" style="width:100%;max-width:140px;max-height:80px;display:block;background:none;">`;
+        }
+      }
+      mídiaDiv.innerHTML = midiaHTML;
+      document.getElementById("notificacaoTexto").innerHTML = texto||"";
+      bar.style.display = "flex";
+      bar.className = 'notificacao-bar';
+      if (efeito && efeito !== 'fadeInDownBounce') bar.classList.add(efeito);
+      setTimeout(()=>{
+        bar.classList.add('mostrar');
+        document.getElementById('main').classList.add('comNotificacao');
+        if (window.navigator.vibrate) {
+          window.navigator.vibrate([500, 100, 500, 100, 1500]);
+        }
+      }, (atraso||2)*1000);
+      setTimeout(()=>{
+        bar.classList.remove('mostrar');
+        bar.classList.add('fechar');
+        document.getElementById('main').classList.remove('comNotificacao');
+        setTimeout(()=>{
+          bar.classList.remove('fechar');
+          bar.style.display = "none";
+        },700);
+      }, ((duracao||8)+(atraso||2))*1000);
+    }
+    carregarNotificacao();
+
+    // -------------------- CARDS DE CONTEÚDOS ---------------
+    const conteudosDiv = document.getElementById('conteudos');
+    let todosConteudos = [];
+    function mostrarConteudos(){
+      conteudosDiv.innerHTML = "";
+      db.collection("conteudos").orderBy("data","desc").get().then(snapshot=>{
+        todosConteudos = [];
+        snapshot.forEach(doc=>{
+          const d = doc.data();
+          todosConteudos.push({ id: doc.id, ...d });
+        });
+        if (todosConteudos.length === 0) {
+          conteudosDiv.innerHTML = "<div style='color:#7dc6ff;font-size:1.12em;margin:36px 0 16px 0;text-shadow:0 1px 6px #7dc6ff99;text-align:center;'>Nenhum conteúdo encontrado.<br><span style='font-size:1.4em;' class='estrela'>⭐</span></div>";
+          return;
+        }
+        renderizaCards(todosConteudos);
+      });
+    }
+    function renderizaCards(lista){
+      conteudosDiv.innerHTML = "";
+      lista.forEach((d, idx)=>{
+        let btn = document.createElement('button');
+        btn.className = 'card-btn';
+        btn.style.animation = `zoomList .54s ${idx*0.07}s backwards`;
+        btn.onclick = ()=>window.location.search = '?id='+d.id;
+        let capa = d.capa || (d.fotos && d.fotos[0]) || "";
+        btn.innerHTML = `
+          ${capa ? `<img class="card-capa" src="${capa}">` : `<div class="card-capa" style="background:#7dc6ff22"></div>`}
+          <div class="card-titulo">${d.titulo||""}</div>
+        `;
+        conteudosDiv.appendChild(btn);
+      });
+    }
+    function mostrarConteudo(id){
+      db.collection("conteudos").doc(id).get().then(doc=>{
+        if(!doc.exists){
+          document.body.innerHTML = "<div style='color:red;text-align:center;margin:40px 0'>Conteúdo não encontrado</div>";
+          return;
+        }
+        const d = doc.data();
+        let htmlPublicado = d.html||"";
+        document.open(); document.write(htmlPublicado); document.close();
+      });
+    }
+    function checarPagina(){
+      const id = (new URL(location.href)).searchParams.get("id");
+      if(id){ conteudosDiv.innerHTML = ""; mostrarConteudo(id); }
+      else { mostrarConteudos(); }
+    }
+    window.onpopstate = checarPagina;
+    checarPagina();
+
+    // ------------------- CARROSSEL ISLAID ---------------------
+    let islaidSlides = [], slideAtual = 0, timerIslaid = null;
+    function carregarIslaid() {
+      db.collection("rodape_conteudo").orderBy("data", "asc").get().then(snapshot => {
+        islaidSlides = [];
+        snapshot.forEach(doc => {
+          const d = doc.data();
+          islaidSlides.push({
+            tipo: d.imgs && d.imgs.length ? "imagem" : d.videos && d.videos.length ? "video" : "html",
+            url: d.imgs && d.imgs[0] ? d.imgs[0] : d.videos && d.videos[0] ? d.videos[0] : "",
+            texto: d.html || "",
+            imgs: d.imgs || [],
+            videos: d.videos || [],
+            efeito: d.efeito || "fade"
+          });
+        });
+        if (islaidSlides.length) {
+          document.getElementById("carrosselIslaid").style.display = "flex";
+          mostrarSlideIslaid(0);
+        } else {
+          document.getElementById("carrosselIslaid").style.display = "none";
+        }
+      });
+    }
+    function mostrarSlideIslaid(idx) {
+      slideAtual = (idx + islaidSlides.length) % islaidSlides.length;
+      const slide = islaidSlides[slideAtual];
+      const div = document.getElementById("islaidSlide");
+      if (!slide) { div.innerHTML = ""; return; }
+      let html = "";
+      if (slide.tipo === "imagem" && slide.imgs.length) {
+        html += slide.imgs.map(url => `<img src="${url}" style="width:100%;max-height:134px;object-fit:cover;border-radius:17px;background:#0003;">`).join('');
+        html += `<div class="islaid-txt">${slide.texto||''}</div>`;
+      } else if (slide.tipo === "video" && slide.videos.length) {
+        html += slide.videos.map(url => `<video src="${url}" controls autoplay loop muted style="width:100%;max-height:134px;border-radius:17px;background:#0003;"></video>`).join('');
+        html += `<div class="islaid-txt">${slide.texto||''}</div>`;
+      } else {
+        html += `<div class="islaid-txt">${slide.texto||''}</div>`;
+      }
+      div.innerHTML = html;
+      div.className = "carrossel-islaid-slide " + (slide.efeito||'fade');
+      if (timerIslaid) clearTimeout(timerIslaid);
+      timerIslaid = setTimeout(()=>carrosselProximo(), 10000);
+    }
+    function carrosselProximo() {
+      mostrarSlideIslaid(slideAtual + 1);
+    }
+    function carrosselAnterior() {
+      mostrarSlideIslaid(slideAtual - 1);
+    }
+    carregarIslaid();
+    setInterval(carregarIslaid, 20000);
+
+    // ----------- PIX FLUTUANTE -----------
     const chavePix = "00020126580014BR.GOV.BCB.PIX0136c3c0ed82-c29e-46dd-8196-92c0fdaccd9e5204000053039865802BR5923Vagner Rodrigo da Silva6009SAO PAULO61080540900062070503***630404E9";
-    // Botão mostra o modal
     document.getElementById('btnPixFlutuante').onclick = function() {
       document.getElementById('modalPixBg').style.display = "flex";
       document.body.style.overflow = "hidden";
@@ -1008,19 +983,17 @@
           size: 130,
           level: 'M',
           background: '#fff',
-          foreground: '#000' // Preto!
+          foreground: '#000'
         });
         var container = document.getElementById('qrCodePix');
         container.innerHTML = "";
         container.appendChild(qr.element);
       }
     };
-    // Fecha o modal
     function fecharModalPix() {
       document.getElementById('modalPixBg').style.display = "none";
       document.body.style.overflow = "";
     }
-    // Botão grande de copiar chave Pix
     function copiarPixChave() {
       var chave = document.getElementById('pixChave').innerText.trim();
       navigator.clipboard.writeText(chave).then(function() {
@@ -1033,7 +1006,6 @@
         }, 1500);
       });
     }
-    // Fecha ao clicar fora do modal
     document.getElementById('modalPixBg').addEventListener('click', function(e){
       if(e.target.id === 'modalPixBg'){ fecharModalPix(); }
     });
