@@ -1012,4 +1012,155 @@
     });
   </script>
 </body>
+
+
+
+
+<!-- SLIDE DE VÍDEOS DOS SORTEIOS -->
+<div id="slideVideos" class="painel-videos">
+  <h2 class="titulo-videos">🎥 Ganhadores dos Sorteios</h2>
+
+  <div class="slide-container">
+    <div id="videosWrapper" class="slides"></div>
+
+    <!-- Botões -->
+    <button id="btnPrev" class="btn-slide" aria-label="Anterior">❮</button>
+    <button id="btnNext" class="btn-slide" aria-label="Próximo">❯</button>
+  </div>
+</div>
+
+<style>
+  .painel-videos {
+    max-width: 840px;
+    margin: 50px auto 50px auto;
+    padding: 22px;
+    border-radius: 26px;
+    background: linear-gradient(145deg, rgba(29,47,84,0.95), rgba(22,34,56,0.85));
+    box-shadow: 0 0 45px #00347488, 0 0 0 4px #7dc6ff22 inset, 0 0 0 8px #ffe17522 inset;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border: 3px solid #7dc6ff55;
+    backdrop-filter: blur(6px);
+  }
+
+  .titulo-videos {
+    color: #ffe175;
+    font-size: 1.6em;
+    margin-bottom: 20px;
+    font-weight: 900;
+    text-shadow: 0 0 16px #7dc6ff, 0 0 25px #ffe17577;
+    animation: brilhoTitulo 3s infinite alternate;
+  }
+
+  @keyframes brilhoTitulo {
+    0% { text-shadow: 0 0 14px #7dc6ff, 0 0 24px #ffe17555; }
+    100% { text-shadow: 0 0 24px #7dc6ffcc, 0 0 34px #ffe175aa; }
+  }
+
+  .slide-container {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    border-radius: 18px;
+    box-shadow: 0 0 25px #00347477 inset, 0 0 35px #ffe17533 inset;
+    background: #001a3b;
+  }
+
+  .slides {
+    display: flex;
+    transition: transform 0.7s cubic-bezier(.34,1.56,.64,1);
+    width: 100%;
+  }
+
+  .slides iframe {
+    width: 100%;
+    height: 220px;
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0 4px 18px #0009;
+  }
+
+  .btn-slide {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: radial-gradient(circle at 40% 40%, #7dc6ff 0%, #22304c 85%);
+    color: #ffe175;
+    border: 2.5px solid #7dc6ff99;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    font-size: 1.4em;
+    font-weight: bold;
+    transition: all 0.2s;
+    box-shadow: 0 0 15px #7dc6ff77;
+  }
+
+  .btn-slide:hover {
+    transform: translateY(-50%) scale(1.15);
+    background: linear-gradient(145deg,#ffe175,#7dc6ff);
+    color: #002347;
+    border-color: #ffe175;
+    box-shadow: 0 0 25px #ffe175aa, 0 0 40px #7dc6ffaa;
+  }
+
+  #btnPrev { left: 10px; }
+  #btnNext { right: 10px; }
+
+  @media (max-width: 600px) {
+    .slide-container { height: 180px; }
+    .slides iframe { height: 180px; }
+    .btn-slide { width: 38px; height: 38px; font-size: 1.2em; }
+    .titulo-videos { font-size: 1.3em; }
+  }
+</style>
+
+<script>
+  // IDs dos vídeos (cole aqui os vídeos do YouTube)
+  const listaVideos = [
+    "https://youtu.be/xl04aUX8p3Y?si=oElzxxnpT_JqaTw0",
+    "VIDEO_ID_2",
+    "VIDEO_ID_3",
+    "VIDEO_ID_4",
+    "VIDEO_ID_5",
+    "VIDEO_ID_6",
+    "VIDEO_ID_7",
+    "VIDEO_ID_8"
+  ];
+
+  const wrapper = document.getElementById("videosWrapper");
+  let indiceAtual = 0;
+
+  function atualizarSlides() {
+    wrapper.style.width = `${listaVideos.length * 100}%`;
+    wrapper.innerHTML = listaVideos.map(id =>
+      `<iframe src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe>`
+    ).join("");
+    moverSlide(0);
+  }
+
+  function moverSlide(n) {
+    indiceAtual = (n + listaVideos.length) % listaVideos.length;
+    wrapper.style.transform = `translateX(-${indiceAtual * 100}%)`;
+  }
+
+  document.getElementById("btnNext").onclick = () => moverSlide(indiceAtual + 1);
+  document.getElementById("btnPrev").onclick = () => moverSlide(indiceAtual - 1);
+
+  // Passagem automática a cada 12 segundos
+  setInterval(() => moverSlide(indiceAtual + 1), 12000);
+
+  atualizarSlides();
+</script>
+
+
+
+
+
+
+
+  
 </html>
