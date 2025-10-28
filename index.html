@@ -1016,9 +1016,12 @@
 
 
 
+
+
+
 <!-- SLIDE DE VÍDEOS DOS SORTEIOS -->
 <div id="slideVideos" class="painel-videos">
-  <h2 class="titulo-videos">🎥 Ganhadores dos Sorteios</h2>
+  <h2 class="titulo-videos">🎥 Oradores dos Sorteios</h2>
 
   <div class="slide-container">
     <div id="videosWrapper" class="slides"></div>
@@ -1061,7 +1064,7 @@
   .slide-container {
     position: relative;
     width: 100%;
-    height: 220px;
+    height: 260px;
     overflow: hidden;
     border-radius: 18px;
     box-shadow: 0 0 25px #00347477 inset, 0 0 35px #ffe17533 inset;
@@ -1078,13 +1081,31 @@
     width: 100%;
     height: 220px;
     border: none;
-    border-radius: 18px;
+    border-radius: 18px 18px 0 0;
     box-shadow: 0 4px 18px #0009;
+  }
+
+  .legenda-video {
+    color: #ffe175;
+    font-size: 1em;
+    font-weight: 700;
+    text-shadow: 0 0 10px #7dc6ffcc;
+    background: rgba(29,47,84,0.75);
+    border-radius: 0 0 18px 18px;
+    padding: 6px 10px 8px 10px;
+    border-top: 2px solid #7dc6ff55;
+    letter-spacing: 0.03em;
+    animation: brilhoLegenda 2s infinite alternate;
+  }
+
+  @keyframes brilhoLegenda {
+    0% { text-shadow: 0 0 8px #7dc6ff; color: #ffe175; }
+    100% { text-shadow: 0 0 16px #ffe175; color: #fffde3; }
   }
 
   .btn-slide {
     position: absolute;
-    top: 50%;
+    top: 45%;
     transform: translateY(-50%);
     background: radial-gradient(circle at 40% 40%, #7dc6ff 0%, #22304c 85%);
     color: #ffe175;
@@ -1111,7 +1132,7 @@
   #btnNext { right: 10px; }
 
   @media (max-width: 600px) {
-    .slide-container { height: 180px; }
+    .slide-container { height: 220px; }
     .slides iframe { height: 180px; }
     .btn-slide { width: 38px; height: 38px; font-size: 1.2em; }
     .titulo-videos { font-size: 1.3em; }
@@ -1119,44 +1140,125 @@
 </style>
 
 <script>
-  // IDs dos vídeos (cole aqui os vídeos do YouTube)
+  // ========= CONFIGURAÇÃO DOS VÍDEOS =========
   const listaVideos = [
-    "xl04aUX8p3Y",
-    "VIDEO_ID_2",
-    "VIDEO_ID_3",
-    "VIDEO_ID_4",
-    "VIDEO_ID_5",
-    "VIDEO_ID_6",
-    "VIDEO_ID_7",
-    "VIDEO_ID_8"
+    { id: "xl04aUX8p3Y", titulo: "Sorteio das .. – 00/00" },
+    // Adicione mais vídeos:
+    // { id: "OUTROID1", titulo: "Sorteio das  PB – /" },
+    // { id: "OUTROID2", titulo: "Sorteio – /" },
   ];
 
   const wrapper = document.getElementById("videosWrapper");
   let indiceAtual = 0;
+  let playerAPI = [];
+  let duracaoVideo = 0;
+  let intervaloProgresso = null;
 
+  // ======== BARRA DE PROGRESSO DOURADA ========
+  function criarBarraProgresso(container) {
+    const barra = document.createElement("div");
+    barra.className = "barra-progresso";
+    barra.style.position = "absolute";
+    barra.style.bottom = "0";
+    barra.style.left = "0";
+    barra.style.height = "5px";
+    barra.style.width = "0%";
+    barra.style.borderRadius = "0 8px 8px 0";
+    barra.style.background = "linear-gradient(90deg,#ffe175 0%,#7dc6ff 100%)";
+    barra.style.boxShadow = "0 0 12px #ffe175aa,0 0 20px #7dc6ffaa";
+    barra.style.transition = "width 0.3s linear";
+    container.appendChild(barra);
+    return barra;
+  }
+
+  // ======== INSERE SCRIPT DA API YOUTUBE ========
+  function carregarAPI() {
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.body.appendChild(tag);
+  }
+
+  // ======== QUANDO API ESTIVER PRONTA ========
+  function onYouTubeIframeAPIReady() {
+    atualizarSlides();
+  }
+
+  // ======== CRIA OS PLAYERS ========
   function atualizarSlides() {
+    wrapper.innerHTML = listaVideos.map((vid, i) => `
+      <div class="video-container" style="width:100%;flex-shrink:0;position:relative;">
+        <div id="player${i}" style="width:100%;height:220px;border-radius:18px 18px 0 0;overflow:hidden;"></div>
+        <div class="legenda-video">${vid.titulo}</div>
+      </div>
+    `).join("");
     wrapper.style.width = `${listaVideos.length * 100}%`;
-    wrapper.innerHTML = listaVideos.map(id =>
-      `<iframe src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe>`
-    ).join("");
+
+    listaVideos.forEach((vid, i) => {
+      playerAPI[i] = new YT.Player(`player${i}`, {
+        videoId: vid.id,
+        playerVars: {
+          autoplay: 0,
+          controls: 1,
+          rel: 0,
+          modestbranding: 1
+        },
+        events: {
+          'onReady': (e) => {
+            const cont = e.target.getIframe().parentNode;
+            cont.barra = criarBarraProgresso(cont);
+          },
+          'onStateChange': (event) => {
+            const player = event.target;
+            const cont = player.getIframe().parentNode;
+            clearInterval(intervaloProgresso);
+
+            if (event.data === YT.PlayerState.PLAYING) {
+              duracaoVideo = player.getDuration();
+              intervaloProgresso = setInterval(() => {
+                const tempoAtual = player.getCurrentTime();
+                const porcentagem = (tempoAtual / duracaoVideo) * 100;
+                cont.barra.style.width = `${porcentagem}%`;
+              }, 300);
+            }
+
+            if (event.data === YT.PlayerState.ENDED) {
+              cont.barra.style.width = "100%";
+              clearInterval(intervaloProgresso);
+              setTimeout(() => moverSlide(indiceAtual + 1), 1000);
+            }
+
+            if (event.data === YT.PlayerState.PAUSED) {
+              clearInterval(intervaloProgresso);
+            }
+          }
+        }
+      });
+    });
     moverSlide(0);
   }
 
+  // ======== TROCA DE SLIDES ========
   function moverSlide(n) {
     indiceAtual = (n + listaVideos.length) % listaVideos.length;
     wrapper.style.transform = `translateX(-${indiceAtual * 100}%)`;
+
+    // Pausa outros vídeos
+    playerAPI.forEach((p, i) => {
+      if (p && p.pauseVideo && i !== indiceAtual) p.pauseVideo();
+    });
   }
 
+  // ======== BOTÕES ========
   document.getElementById("btnNext").onclick = () => moverSlide(indiceAtual + 1);
   document.getElementById("btnPrev").onclick = () => moverSlide(indiceAtual - 1);
 
-  // Passagem automática a cada 12 segundos
-  setInterval(() => moverSlide(indiceAtual + 1), 12000);
-
-  atualizarSlides();
+  carregarAPI();
 </script>
 
 
+
+
+  
 
 
 
