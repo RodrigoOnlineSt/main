@@ -1017,11 +1017,9 @@
 
 
 
-
-
 <!-- SLIDE DE VÍDEOS DOS SORTEIOS -->
-<div id="slideVideos" class="painel-videos">
-  <h2 class="titulo-videos">🎥 Oradores dos Sorteios</h2>
+<div id="slideVideos" class="painel-videos efeito-brilho">
+  <h2 class="titulo-videos">🎥  Sorteios</h2>
 
   <div class="slide-container">
     <div id="videosWrapper" class="slides"></div>
@@ -1033,29 +1031,55 @@
 </div>
 
 <style>
+  /* ======= BASE PAINEL ======= */
   .painel-videos {
-    max-width: 840px;
-    margin: 50px auto 50px auto;
+    max-width: 860px;
+    margin: 60px auto;
     padding: 22px;
-    border-radius: 26px;
-    background: linear-gradient(145deg, rgba(29,47,84,0.95), rgba(22,34,56,0.85));
-    box-shadow: 0 0 45px #00347488, 0 0 0 4px #7dc6ff22 inset, 0 0 0 8px #ffe17522 inset;
+    border-radius: 28px;
+    background: radial-gradient(circle at 40% 30%, #1b274b, #0d182e 90%);
+    box-shadow: 0 0 60px #00347499 inset, 0 0 60px #003474aa;
     text-align: center;
     position: relative;
     overflow: hidden;
     border: 3px solid #7dc6ff55;
-    backdrop-filter: blur(6px);
+    backdrop-filter: blur(7px) brightness(1.05);
   }
 
+  /* ======= BRILHO ROTATIVO NA BORDA ======= */
+  .efeito-brilho::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    background: conic-gradient(from 0deg, #7dc6ff, #ffe175, #7dc6ff, #ffe175, #7dc6ff);
+    animation: girarBorda 8s linear infinite;
+    filter: blur(2px);
+    z-index: 1;
+  }
+  .efeito-brilho::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, #22304c 40%, #0d182e 100%);
+    border-radius: 26px;
+    z-index: 2;
+  }
+  @keyframes girarBorda {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* ======= CONTEÚDO CENTRAL ======= */
   .titulo-videos {
+    position: relative;
+    z-index: 3;
     color: #ffe175;
-    font-size: 1.6em;
-    margin-bottom: 20px;
+    font-size: 1.7em;
+    margin-bottom: 22px;
     font-weight: 900;
-    text-shadow: 0 0 16px #7dc6ff, 0 0 25px #ffe17577;
+    text-shadow: 0 0 18px #7dc6ff, 0 0 28px #ffe17588;
     animation: brilhoTitulo 3s infinite alternate;
   }
-
   @keyframes brilhoTitulo {
     0% { text-shadow: 0 0 14px #7dc6ff, 0 0 24px #ffe17555; }
     100% { text-shadow: 0 0 24px #7dc6ffcc, 0 0 34px #ffe175aa; }
@@ -1064,11 +1088,12 @@
   .slide-container {
     position: relative;
     width: 100%;
-    height: 260px;
+    height: 280px;
     overflow: hidden;
-    border-radius: 18px;
-    box-shadow: 0 0 25px #00347477 inset, 0 0 35px #ffe17533 inset;
+    border-radius: 22px;
+    box-shadow: 0 0 35px #00347488 inset, 0 0 45px #ffe17533 inset;
     background: #001a3b;
+    z-index: 3;
   }
 
   .slides {
@@ -1081,7 +1106,7 @@
     width: 100%;
     height: 220px;
     border: none;
-    border-radius: 18px 18px 0 0;
+    border-radius: 22px 22px 0 0;
     box-shadow: 0 4px 18px #0009;
   }
 
@@ -1090,19 +1115,19 @@
     font-size: 1em;
     font-weight: 700;
     text-shadow: 0 0 10px #7dc6ffcc;
-    background: rgba(29,47,84,0.75);
-    border-radius: 0 0 18px 18px;
-    padding: 6px 10px 8px 10px;
+    background: rgba(29,47,84,0.8);
+    border-radius: 0 0 22px 22px;
+    padding: 8px 10px;
     border-top: 2px solid #7dc6ff55;
     letter-spacing: 0.03em;
     animation: brilhoLegenda 2s infinite alternate;
   }
-
   @keyframes brilhoLegenda {
     0% { text-shadow: 0 0 8px #7dc6ff; color: #ffe175; }
     100% { text-shadow: 0 0 16px #ffe175; color: #fffde3; }
   }
 
+  /* ======= SETAS ======= */
   .btn-slide {
     position: absolute;
     top: 45%;
@@ -1111,14 +1136,18 @@
     color: #ffe175;
     border: 2.5px solid #7dc6ff99;
     border-radius: 50%;
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     cursor: pointer;
-    font-size: 1.4em;
+    font-size: 1.5em;
     font-weight: bold;
     transition: all 0.2s;
-    box-shadow: 0 0 15px #7dc6ff77;
+    box-shadow: 0 0 18px #7dc6ff77;
+    z-index: 5;
+    opacity: 0;
+    pointer-events: none;
   }
+  .slide-container:hover .btn-slide { opacity: 1; pointer-events: all; }
 
   .btn-slide:hover {
     transform: translateY(-50%) scale(1.15);
@@ -1127,14 +1156,26 @@
     border-color: #ffe175;
     box-shadow: 0 0 25px #ffe175aa, 0 0 40px #7dc6ffaa;
   }
+  #btnPrev { left: 12px; }
+  #btnNext { right: 12px; }
 
-  #btnPrev { left: 10px; }
-  #btnNext { right: 10px; }
+  /* ======= BARRA DE PROGRESSO ======= */
+  .barra-progresso {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 5px;
+    width: 0%;
+    border-radius: 0 8px 8px 0;
+    background: linear-gradient(90deg,#ffe175 0%,#7dc6ff 100%);
+    box-shadow: 0 0 12px #ffe175aa,0 0 20px #7dc6ffaa;
+    transition: width 0.3s linear;
+  }
 
   @media (max-width: 600px) {
-    .slide-container { height: 220px; }
+    .slide-container { height: 230px; }
     .slides iframe { height: 180px; }
-    .btn-slide { width: 38px; height: 38px; font-size: 1.2em; }
+    .btn-slide { width: 40px; height: 40px; font-size: 1.3em; }
     .titulo-videos { font-size: 1.3em; }
   }
 </style>
@@ -1142,9 +1183,8 @@
 <script>
   // ========= CONFIGURAÇÃO DOS VÍDEOS =========
   const listaVideos = [
-    { id: "xl04aUX8p3Y", titulo: "Sorteio das .. – 00/00" },
-    // Adicione mais vídeos:
-    // { id: "OUTROID1", titulo: "Sorteio das  PB – /" },
+    { id: "xl04aUX8p3Y", titulo: "Sorteio das  – /0" },
+    // { id: "NUJN2e-PMoI", titulo: "Sorteio das – /" },
     // { id: "OUTROID2", titulo: "Sorteio – /" },
   ];
 
@@ -1154,19 +1194,10 @@
   let duracaoVideo = 0;
   let intervaloProgresso = null;
 
-  // ======== BARRA DE PROGRESSO DOURADA ========
+  // ======== CRIA BARRA DE PROGRESSO ========
   function criarBarraProgresso(container) {
     const barra = document.createElement("div");
     barra.className = "barra-progresso";
-    barra.style.position = "absolute";
-    barra.style.bottom = "0";
-    barra.style.left = "0";
-    barra.style.height = "5px";
-    barra.style.width = "0%";
-    barra.style.borderRadius = "0 8px 8px 0";
-    barra.style.background = "linear-gradient(90deg,#ffe175 0%,#7dc6ff 100%)";
-    barra.style.boxShadow = "0 0 12px #ffe175aa,0 0 20px #7dc6ffaa";
-    barra.style.transition = "width 0.3s linear";
     container.appendChild(barra);
     return barra;
   }
@@ -1187,7 +1218,7 @@
   function atualizarSlides() {
     wrapper.innerHTML = listaVideos.map((vid, i) => `
       <div class="video-container" style="width:100%;flex-shrink:0;position:relative;">
-        <div id="player${i}" style="width:100%;height:220px;border-radius:18px 18px 0 0;overflow:hidden;"></div>
+        <div id="player${i}" style="width:100%;height:220px;border-radius:22px 22px 0 0;overflow:hidden;"></div>
         <div class="legenda-video">${vid.titulo}</div>
       </div>
     `).join("");
@@ -1211,8 +1242,11 @@
             const player = event.target;
             const cont = player.getIframe().parentNode;
             clearInterval(intervaloProgresso);
+            const botoes = document.querySelectorAll(".btn-slide");
 
+            // Quando o vídeo toca, as setas somem
             if (event.data === YT.PlayerState.PLAYING) {
+              botoes.forEach(b => b.style.opacity = "0");
               duracaoVideo = player.getDuration();
               intervaloProgresso = setInterval(() => {
                 const tempoAtual = player.getCurrentTime();
@@ -1221,13 +1255,17 @@
               }, 300);
             }
 
+            // Quando termina, volta as setas
             if (event.data === YT.PlayerState.ENDED) {
               cont.barra.style.width = "100%";
+              botoes.forEach(b => b.style.opacity = "1");
               clearInterval(intervaloProgresso);
               setTimeout(() => moverSlide(indiceAtual + 1), 1000);
             }
 
+            // Pausado → mostra as setas
             if (event.data === YT.PlayerState.PAUSED) {
+              botoes.forEach(b => b.style.opacity = "1");
               clearInterval(intervaloProgresso);
             }
           }
@@ -1241,8 +1279,6 @@
   function moverSlide(n) {
     indiceAtual = (n + listaVideos.length) % listaVideos.length;
     wrapper.style.transform = `translateX(-${indiceAtual * 100}%)`;
-
-    // Pausa outros vídeos
     playerAPI.forEach((p, i) => {
       if (p && p.pauseVideo && i !== indiceAtual) p.pauseVideo();
     });
@@ -1254,11 +1290,6 @@
 
   carregarAPI();
 </script>
-
-
-
-
-  
 
 
 
