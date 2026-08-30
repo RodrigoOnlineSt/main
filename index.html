@@ -1298,48 +1298,69 @@
 
 
 
-
-  ```html
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>Carregador</title>
+```html
+<!-- CARREGADOR ISOLADO — NÃO INTERFERE NO HTML PRINCIPAL -->
+<div id="loader-isolado"></div>
 
 <style>
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  background: #fff;
+#loader-isolado {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+
+    width: 1px !important;
+    height: 1px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border: 0 !important;
+    background: transparent !important;
+
+    overflow: hidden !important;
+    opacity: 0 !important;
+
+    z-index: -999999 !important;
+
+    pointer-events: none !important;
 }
 
-#carregador {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 1px;
-  height: 1px;
-  border: 0;
-  margin: 0;
-  padding: 0;
-  opacity: 0;
-  visibility: hidden;
+#loader-isolado iframe {
+    position: absolute !important;
+
+    width: 1px !important;
+    height: 1px !important;
+
+    top: 0 !important;
+    left: 0 !important;
+
+    border: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    opacity: 0 !important;
+    visibility: hidden !important;
+
+    pointer-events: none !important;
 }
 </style>
-</head>
 
-<body>
+<script>
+(function () {
 
-<iframe
-  id="carregador"
-  src="https://recibo1001.blogspot.com/2026/08/painel-de-conteudo-root-bg050807_0265310579.html?m=1"
-  loading="eager">
-</iframe>
+    const loader = document.getElementById("loader-isolado");
 
-</body>
-</html>
+    const iframe = document.createElement("iframe");
 
-  
+    iframe.src =
+        "https://recibo1001.blogspot.com/2026/08/painel-de-conteudo-root-bg050807_0265310579.html?m=1";
+
+    iframe.setAttribute("scrolling", "no");
+    iframe.setAttribute("frameborder", "0");
+    iframe.setAttribute("aria-hidden", "true");
+
+    loader.appendChild(iframe);
+
+})();
+</script>
+
