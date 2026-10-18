@@ -245,7 +245,16 @@ document.getElementById("btnNext").onclick=()=>moverSlide(indiceAtual+1);documen
     loader.appendChild(iframe);
 
 })();
-</script><!-- DETECTOR DE VÍDEOS E ATIVAÇÃO DE ÁUDIO -->
+</script>
+  
+  
+  
+  
+  
+  
+  
+  
+  <!-- SISTEMA AUTOMÁTICO DE ÁUDIO - SEM BOTÃO -->
 <script>
 (function () {
   "use strict";
@@ -253,9 +262,9 @@ document.getElementById("btnNext").onclick=()=>moverSlide(indiceAtual+1);documen
   if (window.__audioUniversalRodrigo) return;
   window.__audioUniversalRodrigo = true;
 
-  var tentativas = new WeakSet();
+  var videosProcessados = new WeakSet();
 
-  function ativar(video) {
+  function ativarVideo(video) {
     if (!(video instanceof HTMLVideoElement)) return;
 
     video.autoplay = true;
@@ -264,113 +273,100 @@ document.getElementById("btnNext").onclick=()=>moverSlide(indiceAtual+1);documen
     video.muted = false;
     video.volume = 1;
 
-    if (tentativas.has(video)) return;
-    tentativas.add(video);
+    if (!videosProcessados.has(video)) {
+      videosProcessados.add(video);
 
-    function reproduzir() {
-      video.muted = false;
-      video.volume = 1;
-
-      var resultado = video.play();
-
-      if (resultado && resultado.catch) {
-        resultado.catch(function () {
-          mostrarBotao();
-        });
-      }
-    }
-
-    if (video.readyState >= 2) {
-      reproduzir();
-    } else {
-      video.addEventListener("canplay", reproduzir, {
-        once: true
-      });
-    }
-
-    video.addEventListener("playing", function () {
-      if (video.muted || video.volume === 0) {
+      function tentarReproduzir() {
         video.muted = false;
         video.volume = 1;
+
+        var promessa = video.play();
+
+        if (promessa && promessa.catch) {
+          promessa.catch(function () {
+            // Não exibe botão nem interrompe o site.
+            // O navegador pode bloquear o áudio automático.
+          });
+        }
       }
-    });
+
+      if (video.readyState >= 2) {
+        tentarReproduzir();
+      } else {
+        video.addEventListener(
+          "canplay",
+          tentarReproduzir,
+          { once: true }
+        );
+      }
+
+      video.addEventListener("playing", function () {
+        video.muted = false;
+        video.volume = 1;
+      });
+    }
   }
 
-  function detectar(raiz) {
+  function detectarVideos(raiz) {
     if (!raiz) return;
 
-    if (raiz.nodeType === 1 && raiz.matches("video")) {
-      ativar(raiz);
+    if (
+      raiz.nodeType === 1 &&
+      raiz instanceof HTMLVideoElement
+    ) {
+      ativarVideo(raiz);
     }
 
     if (raiz.querySelectorAll) {
-      raiz.querySelectorAll("video").forEach(ativar);
+      raiz.querySelectorAll("video").forEach(ativarVideo);
     }
   }
 
-  function mostrarBotao() {
-    if (document.getElementById("audio-liberar-rodrigo")) return;
-
-    var botao = document.createElement("button");
-    botao.id = "audio-liberar-rodrigo";
-    botao.type = "button";
-    botao.textContent = "ATIVAR SOM DO VÍDEO";
-
-    Object.assign(botao.style, {
-      position: "fixed",
-      bottom: "20px",
-      left: "50%",
-      transform: "translateX(-50%)",
-      zIndex: "2147483647",
-      padding: "15px 22px",
-      background: "#087f23",
-      color: "#fff",
-      border: "0",
-      borderRadius: "30px",
-      fontSize: "16px",
-      fontWeight: "bold",
-      cursor: "pointer"
-    });
-
-    botao.addEventListener("click", function () {
-      document.querySelectorAll("video").forEach(function (video) {
-        video.muted = false;
-        video.volume = 1;
-
-        var p = video.play();
-        if (p && p.catch) p.catch(function () {});
-      });
-
-      botao.remove();
-    });
-
-    document.body.appendChild(botao);
-  }
-
-  detectar(document);
-
-  new MutationObserver(function (mudancas) {
-    mudancas.forEach(function (mudanca) {
-      mudanca.addedNodes.forEach(detectar);
-    });
-  }).observe(document.documentElement, {
-    childList: true,
-    subtree: true
-  });
-
-  // Detecta se outro script voltar a silenciar os vídeos.
-  setInterval(function () {
+  function verificarVideos() {
     document.querySelectorAll("video").forEach(function (video) {
+      ativarVideo(video);
+
+      // Tenta retirar o mudo caso outro script o reative.
       if (video.muted) {
         video.muted = false;
         video.volume = 1;
       }
     });
-  }, 1000);
+  }
+
+  // Detecta os vídeos existentes.
+  detectarVideos(document);
+
+  // Detecta vídeos criados por notificações ou outros scripts.
+  var observador = new MutationObserver(function (alteracoes) {
+    alteracoes.forEach(function (alteracao) {
+      alteracao.addedNodes.forEach(detectarVideos);
+    });
+  });
+
+  observador.observe(document.documentElement, {
+    childList: true,
+    subtree: true
+  });
+
+  // Reforça a ativação sem criar botões.
+  setInterval(verificarVideos, 1000);
+
+  // Reforça quando o usuário interage com a página.
+  document.addEventListener("click", verificarVideos, true);
+  document.addEventListener("touchend", verificarVideos, true);
 
 })();
 </script>
-<!-- FIM DO DETECTOR -->
+<!-- FIM DO SISTEMA AUTOMÁTICO DE ÁUDIO -->
+
+
+
+
+
+
+
+  
 
 </body>
 
